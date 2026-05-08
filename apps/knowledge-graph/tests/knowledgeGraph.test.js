@@ -53,6 +53,19 @@ const allowedCssHexColors = new Set([
   "#1E1D1A",
   "#6B6862",
 ]);
+const allowedFontSizes = new Set([
+  "12",
+  "13",
+  "14",
+  "16",
+  "18",
+  "24",
+  "32",
+  "48",
+  "64",
+  "80",
+  "96",
+]);
 const disallowedCssPatterns = [
   "box-shadow",
   "linear-gradient",
@@ -255,22 +268,24 @@ test("user-facing source copy avoids forbidden filler terms", () => {
   }
 });
 
-test("unfinished entries remain visibly marked", () => {
-  const canvasSource = readFileSync(
-    resolve(
-      projectRoot,
-      "apps/knowledge-graph/src/components/graph/KnowledgeGraphCanvas.tsx",
-    ),
+test("pending feature cards must be visibly marked when present", () => {
+  const appShellSource = readFileSync(
+    resolve(projectRoot, "apps/knowledge-graph/src/components/layout/AppShell.tsx"),
     "utf8",
   );
 
-  expect(canvasSource.includes("暂未实现")).toBe(true);
+  if (appShellSource.includes("isPending")) {
+    expect(appShellSource.includes("暂未实现")).toBe(true);
+  }
 });
 
 test("css stays within design color and decoration boundaries", () => {
   for (const relativePath of cssFiles) {
     const content = readFileSync(resolve(projectRoot, relativePath), "utf8");
     const hexColors = content.match(/#[0-9a-fA-F]{3,8}\b/g) ?? [];
+    const fontSizes = [...content.matchAll(/font-size:\s*(\d+)px/g)].map(
+      (match) => match[1],
+    );
 
     for (const color of hexColors) {
       expect(allowedCssHexColors.has(color.toUpperCase())).toBe(true);
@@ -278,6 +293,10 @@ test("css stays within design color and decoration boundaries", () => {
 
     for (const pattern of disallowedCssPatterns) {
       expect(content.includes(pattern)).toBe(false);
+    }
+
+    for (const fontSize of fontSizes) {
+      expect(allowedFontSizes.has(fontSize)).toBe(true);
     }
   }
 });

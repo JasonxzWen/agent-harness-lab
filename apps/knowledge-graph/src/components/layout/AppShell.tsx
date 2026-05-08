@@ -51,14 +51,7 @@ export function AppShell() {
           </div>
           <div className="feature-cards">
             {featureCards.map((feature) => (
-              <article
-                className={
-                  "isPending" in feature && feature.isPending
-                    ? "is-pending"
-                    : undefined
-                }
-                key={feature.label}
-              >
+              <article key={feature.label}>
                 <h3>{feature.label}</h3>
                 <p>{feature.summary}</p>
                 <span>{feature.status}</span>

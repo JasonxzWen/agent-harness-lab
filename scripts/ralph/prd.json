@@ -258,8 +258,8 @@
         "Set-Location D:\\agent-harness-lab\\apps\\knowledge-graph; bun run build"
       ],
       "priority": 12,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "完成最终视觉、文案、交互验收：移除过期暂未实现提示，清理 pending 分支，CSS 字号纳入 DESIGN.md 刻度并由测试约束；最终截图 output/playwright/us012-desktop.png、output/playwright/us012-mobile.png；typecheck/test/build 通过。"
     }
   ]
 }

@@ -418,3 +418,37 @@ Branch: ralph/knowledge-graph-completion
 - why / what / how
   - Tests now require every node to keep why text, what summary, and how references.
 ---
+
+## 2026-05-08T18:28:00+08:00 - US-012 completion
+- What was implemented
+  - Ran the final UI, copy, layout, and interaction audit against `AGENTS.md`, `apps/knowledge-graph/AGENTS.md`, and `DESIGN.md`.
+  - Removed stale `暂未实现` copy after content checks and final visual review were completed.
+  - Removed leftover pending-card rendering branch and dashed pending CSS.
+  - Adjusted remaining non-token CSS font sizes to DESIGN.md scale values.
+  - Expanded CSS boundary tests to enforce the allowed font-size scale.
+- Files changed
+  - `apps/knowledge-graph/src/components/graph/KnowledgeGraphCanvas.tsx`
+  - `apps/knowledge-graph/src/components/layout/AppShell.tsx`
+  - `apps/knowledge-graph/src/styles/app-shell.css`
+  - `apps/knowledge-graph/tests/knowledgeGraph.test.js`
+  - `scripts/ralph/prd.json`
+  - `scripts/ralph/progress.txt`
+  - `output/playwright/us012-desktop.png`
+  - `output/playwright/us012-mobile.png`
+- Checks run
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck` passed.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test` passed, 15 tests.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build` passed.
+- Browser screenshot result
+  - Local in-app browser remained blocked for local URLs.
+  - Playwright fallback screenshots passed: `output/playwright/us012-desktop.png` and `output/playwright/us012-mobile.png`.
+- Hover / focus / active / click feedback
+  - Toolbar links, graph controls, nodes, drawer buttons, progress buttons, copy buttons, and command buttons keep visible hover / focus / active feedback.
+  - No `box-shadow`, gradient, transform-scale hover, or icon library was added.
+- Global thinking check
+  - Removing the stale pending notice reduces one full-width element inside the graph block.
+  - The first action remains clear: search or click a graph node.
+  - Desktop and mobile layouts keep the graph, summary, drawer, references, and feature cards in a predictable order.
+- why / what / how
+  - Final screenshots confirm node detail still shows the visual why / what / how path before references and commands.
+---

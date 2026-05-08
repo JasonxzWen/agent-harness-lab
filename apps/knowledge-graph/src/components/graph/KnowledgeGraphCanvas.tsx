@@ -732,10 +732,6 @@ export function KnowledgeGraphCanvas() {
         <span>{graphStats.themeCount} 个主题</span>
       </div>
 
-      <p className="pending-notice">
-        暂未实现：内容边界自动校验、最终视觉验收。当前可搜索、筛选、切换路径、保存进度并查看引用。
-      </p>
-
       <ul className="theme-grid" aria-label="知识图谱主题数量">
         {visibleThemeSummaries.map((themeSummary) => (
           <li key={themeSummary.theme}>

@@ -195,7 +195,7 @@ p {
   color: var(--color-bg);
   padding: 10px 12px;
   font-family: var(--font-zh-serif), var(--font-serif);
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.2;
 }
 
@@ -504,7 +504,7 @@ p {
 
 .graph-empty-results p {
   font-family: var(--font-zh-serif), var(--font-serif);
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.4;
 }
 
@@ -767,7 +767,6 @@ p {
 .reference-panel h4,
 .reference-panel strong,
 .compare-section dt,
-.pending-notice,
 .feature-cards span {
   font-family: var(--font-mono);
   font-size: 12px;
@@ -873,7 +872,7 @@ p {
 
 .learning-visual strong {
   font-family: var(--font-zh-display), var(--font-display);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 800;
   line-height: 1.1;
 }
@@ -911,7 +910,7 @@ p {
 
 .progress-editor strong {
   font-family: var(--font-zh-display), var(--font-display);
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 800;
   line-height: 1.1;
 }
@@ -1039,7 +1038,7 @@ p {
 
 .reference-panel li span {
   font-family: var(--font-zh-display), var(--font-display);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 800;
   line-height: 1.1;
 }
@@ -1143,14 +1142,6 @@ p {
   font-weight: 400;
 }
 
-.pending-notice {
-  grid-column: 1 / -1;
-  border: 1px solid var(--color-bg);
-  margin: 0;
-  padding: 16px;
-  opacity: 0.86;
-}
-
 .theme-grid {
   grid-column: 1 / -1;
   display: grid;
@@ -1221,10 +1212,6 @@ p {
   background: var(--color-bg);
   border: 1px solid var(--color-ink);
   padding: 32px;
-}
-
-.feature-cards article.is-pending {
-  border-style: dashed;
 }
 
 .feature-cards h3 {
