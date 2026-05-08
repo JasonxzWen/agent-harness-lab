@@ -56,6 +56,8 @@ bun run typecheck
 
 ## Git 规范
 
+默认在 `main` 分支开发和提交。除非明确需要 PR 隔离、风险验证或用户指定，不要新建额外开发分支。
+
 提交信息使用 Conventional Commits：
 
 ```text
