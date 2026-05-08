@@ -108,8 +108,9 @@ p {
 .graph-canvas-panel {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 42fr) minmax(480px, 58fr);
+  grid-template-columns: minmax(0, 28fr) minmax(320px, 36fr) minmax(320px, 36fr);
   align-items: stretch;
+  gap: 32px;
   min-height: 460px;
   overflow: hidden;
   border-radius: var(--radius-block);
@@ -142,8 +143,9 @@ p {
   display: grid;
   gap: 24px;
   width: 100%;
-  max-width: 560px;
-  justify-self: end;
+  min-width: 0;
+  max-width: none;
+  justify-self: stretch;
   border: 1px solid var(--color-bg);
   padding: 24px;
 }
@@ -186,24 +188,50 @@ p {
   border-left: 1px solid var(--color-bg);
   content: "";
   opacity: 0.48;
+  pointer-events: none;
 }
 
 .mechanism-node {
   position: relative;
+}
+
+.mechanism-node-button {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: 64px 1fr;
   gap: 24px;
-  border-bottom: 1px solid var(--color-bg);
+  width: 100%;
+  border: 1px solid transparent;
+  background: transparent;
+  color: inherit;
   padding: 16px 0;
+  text-align: left;
+  cursor: pointer;
 }
 
-.mechanism-node:first-child {
-  padding-top: 0;
+.mechanism-node-button:hover,
+.mechanism-node-button:focus-visible,
+.mechanism-node-button.is-selected {
+  border-color: var(--color-bg);
 }
 
-.mechanism-node:last-child {
-  border-bottom: 0;
-  padding-bottom: 0;
+.mechanism-node-button:focus-visible {
+  outline: 1px solid var(--color-bg);
+  outline-offset: 4px;
+}
+
+.mechanism-node-button.is-selected {
+  background: var(--color-bg);
+  color: var(--color-dark);
+}
+
+.mechanism-node-button.is-selected .mechanism-copy span {
+  opacity: 0.86;
+}
+
+.mechanism-node:not(:last-child) {
+  border-bottom: 1px solid var(--color-bg);
 }
 
 .mechanism-index {
@@ -245,6 +273,168 @@ p {
   margin-left: 8px;
   content: "->";
   opacity: 0.72;
+}
+
+.detail-drawer,
+.detail-empty-state {
+  position: relative;
+  z-index: 1;
+  align-self: stretch;
+  min-width: 0;
+  border: 1px solid var(--color-bg);
+  color: var(--color-bg);
+  padding: 24px;
+}
+
+.detail-drawer {
+  display: grid;
+  align-content: start;
+  gap: 24px;
+  max-height: 720px;
+  overflow: auto;
+}
+
+.detail-empty-state {
+  display: grid;
+  align-content: center;
+  gap: 16px;
+}
+
+.detail-empty-state span,
+.detail-drawer-header span,
+.detail-section h3,
+.source-list span,
+.compare-section dt {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.2;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+.detail-empty-state h2,
+.detail-drawer-header h2 {
+  font-family: var(--font-zh-display), var(--font-display);
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.05;
+}
+
+.detail-empty-state p,
+.detail-section p,
+.compare-section dd {
+  font-family: var(--font-zh-serif), var(--font-serif);
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.detail-drawer-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: 16px;
+  border-bottom: 1px solid var(--color-bg);
+  padding-bottom: 24px;
+}
+
+.detail-drawer-header > div {
+  display: grid;
+  gap: 8px;
+}
+
+.detail-drawer-header button,
+.command-block button {
+  border: 1px solid var(--color-bg);
+  border-radius: 0;
+  font-family: var(--font-zh-display), var(--font-display);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.detail-drawer-header button {
+  background: transparent;
+  color: var(--color-bg);
+  padding: 8px 16px;
+}
+
+.detail-drawer-header button:hover,
+.detail-drawer-header button:focus-visible {
+  border-width: 2px;
+}
+
+.detail-drawer-header button:focus-visible,
+.command-block button:focus-visible {
+  outline: 1px solid var(--color-bg);
+  outline-offset: 4px;
+}
+
+.detail-section {
+  display: grid;
+  gap: 16px;
+}
+
+.source-list,
+.command-list {
+  display: grid;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.source-list li {
+  display: grid;
+  gap: 8px;
+  border-top: 1px solid var(--color-bg);
+  padding-top: 16px;
+}
+
+.source-list code,
+.command-block code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.command-block {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 16px;
+  border: 1px solid var(--color-bg);
+  padding: 16px;
+}
+
+.command-block button {
+  background: var(--color-bg);
+  color: var(--color-dark);
+  padding: 8px 16px;
+  white-space: nowrap;
+}
+
+.command-block button:hover,
+.command-block button:focus-visible {
+  border-width: 2px;
+}
+
+.compare-section dl {
+  display: grid;
+  gap: 16px;
+  margin: 0;
+}
+
+.compare-section div {
+  display: grid;
+  gap: 8px;
+  border-top: 1px solid var(--color-bg);
+  padding-top: 16px;
+}
+
+.compare-section dd {
+  margin: 0;
 }
 
 .graph-data-strip {
@@ -407,6 +597,10 @@ p {
     max-width: none;
   }
 
+  .detail-drawer {
+    max-height: none;
+  }
+
   .feature-cards {
     grid-template-columns: 1fr;
   }
@@ -418,7 +612,7 @@ p {
 }
 
 @media (max-width: 560px) {
-  .mechanism-node {
+  .mechanism-node-button {
     grid-template-columns: 48px 1fr;
     gap: 16px;
   }
@@ -429,5 +623,14 @@ p {
 
   .mechanism-index {
     width: 48px;
+  }
+
+  .detail-drawer-header,
+  .command-block {
+    grid-template-columns: 1fr;
+  }
+
+  .command-block button {
+    justify-self: start;
   }
 }

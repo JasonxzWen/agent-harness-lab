@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   graphStats,
   knowledgeNodes,
@@ -6,6 +7,7 @@ import {
 import { getNodeDisplayCopy } from "../../data/copy";
 import { learningPaths } from "../../data/paths";
 import type { KnowledgeNode } from "../../types/graph";
+import { DetailDrawer } from "../drawer/DetailDrawer";
 
 const nodeById = new Map(knowledgeNodes.map((node) => [node.id, node]));
 const beginnerPath = learningPaths.find((path) => path.id === "beginner");
@@ -21,6 +23,9 @@ const themeSummaries = Object.entries(themeLabels).map(([theme, label]) => ({
 }));
 
 export function KnowledgeGraphCanvas() {
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const selectedNode = selectedNodeId ? nodeById.get(selectedNodeId) : undefined;
+
   return (
     <section className="graph-canvas-panel" id="map" aria-label="Agent harness 机制地图">
       <div className="visual-title">
@@ -36,17 +41,31 @@ export function KnowledgeGraphCanvas() {
         </div>
 
         <ol className="mechanism-stack">
-          {beginnerPathNodes.map((node, index) => (
-            <li className="mechanism-node" key={node.id}>
-              <span className="mechanism-index">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-              <span className="mechanism-copy">
-                <strong>{getNodeDisplayCopy(node).title}</strong>
-                <span>{getNodeDisplayCopy(node).summary}</span>
-              </span>
-            </li>
-          ))}
+          {beginnerPathNodes.map((node, index) => {
+            const displayCopy = getNodeDisplayCopy(node);
+            const isSelected = selectedNodeId === node.id;
+
+            return (
+              <li className="mechanism-node" key={node.id}>
+                <button
+                  aria-controls="node-detail-drawer"
+                  aria-expanded={isSelected}
+                  className={`mechanism-node-button${isSelected ? " is-selected" : ""}`}
+                  data-node-id={node.id}
+                  type="button"
+                  onClick={() => setSelectedNodeId(node.id)}
+                >
+                  <span className="mechanism-index">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span className="mechanism-copy">
+                    <strong>{displayCopy.title}</strong>
+                    <span>{displayCopy.summary}</span>
+                  </span>
+                </button>
+              </li>
+            );
+          })}
         </ol>
 
         <div className="trace-route" aria-label="入门路径前五步">
@@ -61,6 +80,20 @@ export function KnowledgeGraphCanvas() {
           })}
         </div>
       </div>
+
+      {selectedNode ? (
+        <DetailDrawer node={selectedNode} onClose={() => setSelectedNodeId(null)} />
+      ) : (
+        <aside
+          aria-label="节点详情等待区"
+          className="detail-empty-state"
+          id="node-detail-drawer"
+        >
+          <span>DETAIL</span>
+          <h2>点击一个机制节点</h2>
+          <p>右侧会显示一句解释、源码路径、Bun 命令、常见误解和版本对照。</p>
+        </aside>
+      )}
 
       <div className="graph-data-strip" aria-label="图谱数据覆盖范围">
         <span>{beginnerPath?.title ?? "Beginner Path"}</span>

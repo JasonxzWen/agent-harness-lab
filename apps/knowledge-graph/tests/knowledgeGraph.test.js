@@ -6,7 +6,7 @@ import {
   knowledgeNodes,
   themeLabels,
 } from "../src/data/knowledgeGraph";
-import { nodeDisplayCopy } from "../src/data/copy";
+import { nodeDetailCopy, nodeDisplayCopy } from "../src/data/copy";
 import { learningPaths } from "../src/data/paths";
 
 const nodeIds = new Set(knowledgeNodes.map((node) => node.id));
@@ -107,6 +107,28 @@ test("display copy stays short and plain", () => {
 
     expect(copy.title.length).toBeLessThanOrEqual(36);
     expect(copy.summary.length).toBeLessThanOrEqual(42);
+
+    for (const term of forbiddenCopyTerms) {
+      expect(text.includes(term)).toBe(false);
+    }
+  }
+});
+
+test("node detail copy is complete and Chinese-first", () => {
+  for (const node of knowledgeNodes) {
+    const copy = nodeDetailCopy[node.id];
+
+    expect(copy).toBeDefined();
+    expect(copy.shortExplanation.length).toBeGreaterThan(0);
+    expect(copy.shortExplanation.length).toBeLessThanOrEqual(72);
+    expect(copy.misconception.length).toBeGreaterThan(0);
+    expect(copy.misconception.length).toBeLessThanOrEqual(72);
+    expect(copy.compare.teachingVersion.length).toBeGreaterThan(0);
+    expect(copy.compare.productionVersion.length).toBeGreaterThan(0);
+
+    const text = `${copy.shortExplanation}${copy.misconception}${copy.compare.teachingVersion}${copy.compare.productionVersion}`;
+
+    expect(/[\u4e00-\u9fff]/.test(text)).toBe(true);
 
     for (const term of forbiddenCopyTerms) {
       expect(text.includes(term)).toBe(false);

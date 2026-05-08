@@ -1,0 +1,98 @@
+import { useEffect } from "react";
+import { getNodeDetailCopy, getNodeDisplayCopy } from "../../data/copy";
+import { themeLabels } from "../../data/knowledgeGraph";
+import type { KnowledgeNode, SourceReference } from "../../types/graph";
+import { CommandBlock } from "../ui/CommandBlock";
+
+type DetailDrawerProps = {
+  node: KnowledgeNode;
+  onClose: () => void;
+};
+
+const referenceLabels: Record<SourceReference["kind"], string> = {
+  "local-doc": "本仓库文档",
+  "lab-source": "实验源码",
+  "ccb-source-mapping": "CCB 对照路径",
+  "external-link": "外部链接",
+};
+
+export function DetailDrawer({ node, onClose }: DetailDrawerProps) {
+  const displayCopy = getNodeDisplayCopy(node);
+  const detailCopy = getNodeDetailCopy(node);
+  const sourceReferences = [...node.labFiles, ...node.ccbMappings];
+
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
+
+  return (
+    <aside
+      aria-labelledby="detail-drawer-title"
+      className="detail-drawer"
+      id="node-detail-drawer"
+    >
+      <div className="detail-drawer-header">
+        <div>
+          <span>{themeLabels[node.theme]}</span>
+          <h2 id="detail-drawer-title">{displayCopy.title}</h2>
+        </div>
+        <button aria-label="关闭详情" type="button" onClick={onClose}>
+          关闭
+        </button>
+      </div>
+
+      <section className="detail-section">
+        <h3>一句短解释</h3>
+        <p>{detailCopy.shortExplanation}</p>
+      </section>
+
+      <section className="detail-section">
+        <h3>对应源码路径</h3>
+        <ul className="source-list">
+          {sourceReferences.map((reference) => (
+            <li key={reference.id}>
+              <span>{referenceLabels[reference.kind]}</span>
+              <code>{reference.target}</code>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="detail-section">
+        <h3>可复制 Bun 命令</h3>
+        <div className="command-list">
+          {node.demoCommands.map((command) => (
+            <CommandBlock command={command} key={command} />
+          ))}
+        </div>
+      </section>
+
+      <section className="detail-section">
+        <h3>常见误解</h3>
+        <p>{detailCopy.misconception}</p>
+      </section>
+
+      <section className="detail-section compare-section">
+        <h3>教学版 vs 生产版</h3>
+        <dl>
+          <div>
+            <dt>教学版</dt>
+            <dd>{detailCopy.compare.teachingVersion}</dd>
+          </div>
+          <div>
+            <dt>生产版</dt>
+            <dd>{detailCopy.compare.productionVersion}</dd>
+          </div>
+        </dl>
+      </section>
+    </aside>
+  );
+}
