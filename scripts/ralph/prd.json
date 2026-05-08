@@ -153,8 +153,8 @@
         "Set-Location D:\\agent-harness-lab\\apps\\knowledge-graph; bun run build"
       ],
       "priority": 7,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "2026-05-08: 完成四条路径切换、路径摘要、可见步骤计数、当前路径节点/边高亮；按用户反馈移除“机制地图”侧标题释放画布空间。截图：output/playwright/us007-path.png、output/playwright/us007-advanced.png。验证：typecheck/test/build 通过。"
     },
     {
       "id": "US-008",

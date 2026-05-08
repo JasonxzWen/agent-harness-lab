@@ -111,7 +111,7 @@ p {
 .graph-canvas-panel {
   position: relative;
   display: grid;
-  grid-template-columns: 160px minmax(0, 1fr) minmax(288px, 0.72fr);
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.66fr);
   align-items: stretch;
   gap: 32px;
   min-height: 460px;
@@ -121,24 +121,6 @@ p {
   color: var(--color-bg);
   margin-top: 96px;
   padding: 96px 64px;
-}
-
-.visual-title {
-  position: relative;
-  z-index: 1;
-  align-self: end;
-  display: grid;
-  gap: 8px;
-  max-width: 160px;
-  font-family: var(--font-zh-serif), var(--font-serif);
-  font-size: 48px;
-  line-height: 0.98;
-  overflow-wrap: anywhere;
-}
-
-.visual-title strong {
-  font: inherit;
-  font-weight: 500;
 }
 
 .harness-diagram {
@@ -264,6 +246,60 @@ p {
 }
 
 .theme-filter-options span {
+  margin-left: 4px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1;
+}
+
+.path-filter {
+  display: grid;
+  gap: 10px;
+  border-top: 1px solid var(--color-bg);
+  padding-top: 14px;
+}
+
+.path-filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.path-filter-header span,
+.path-filter-header strong {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.path-filter-header span {
+  opacity: 0.72;
+}
+
+.path-filter-header strong {
+  font-weight: 400;
+}
+
+.path-filter p {
+  font-family: var(--font-zh-serif), var(--font-serif);
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.path-filter-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.path-filter-options button[data-active="true"] {
+  background: var(--color-bg);
+  color: var(--color-dark);
+}
+
+.path-filter-options span {
   margin-left: 4px;
   font-family: var(--font-mono);
   font-size: 12px;
@@ -1060,11 +1096,6 @@ p {
   .graph-canvas-panel {
     margin-top: 96px;
     padding: 48px 32px;
-  }
-
-  .visual-title {
-    max-width: none;
-    font-size: 48px;
   }
 
   .harness-diagram {

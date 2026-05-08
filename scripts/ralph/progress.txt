@@ -255,3 +255,36 @@ Branch: ralph/knowledge-graph-completion
   - Theme filtering does not add new knowledge content.
   - Filtered nodes still open the drawer with the `why / what / how` visual path from `US-004`.
 ---
+
+## 2026-05-08T17:56:00+08:00 - US-007 completion
+- What was implemented
+  - Added four learning path buttons: Beginner, Context, Safety, and Advanced.
+  - Current path summary and visible step count are shown above the graph.
+  - Current path nodes and edges keep full visual weight; other nodes remain accessible with lower weight.
+  - Removed the `机制地图` side title after user feedback, freeing the left column for the graph.
+- Files changed
+  - `apps/knowledge-graph/src/components/graph/KnowledgeGraphCanvas.tsx`
+  - `apps/knowledge-graph/src/styles/app-shell.css`
+  - `scripts/ralph/prd.json`
+  - `scripts/ralph/progress.txt`
+  - `output/playwright/us007-path.png`
+  - `output/playwright/us007-advanced.png`
+- Checks run
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck` passed.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test` passed, 10 tests.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build` passed.
+- Browser screenshot result
+  - Local in-app browser remained blocked for local URLs.
+  - Playwright fallback screenshots passed: `output/playwright/us007-path.png` and `output/playwright/us007-advanced.png`.
+- Hover / focus / active / click feedback
+  - Path buttons use the same border, underline, and token background language as search and theme filters.
+  - The selected path has a persistent token background.
+  - Click immediately updates route summary, trace route, path node emphasis, and active edges.
+- Global thinking check
+  - Removing the side title fixed the uneven layout and gave the graph more horizontal space.
+  - The controls are more numerous now, but they are grouped by search, theme, path, and viewport controls.
+  - Progress persistence still shows `暂未实现`.
+- why / what / how
+  - Path mode does not add new knowledge content.
+  - Nodes opened from any path still show the `why / what / how` visual path from `US-004`.
+---

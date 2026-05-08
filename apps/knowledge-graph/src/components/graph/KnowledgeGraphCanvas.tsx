@@ -7,20 +7,15 @@ import {
 } from "../../data/knowledgeGraph";
 import { getNodeDisplayCopy } from "../../data/copy";
 import { learningPaths } from "../../data/paths";
-import type { KnowledgeNode, ProgressStatus, Theme } from "../../types/graph";
+import type {
+  KnowledgeNode,
+  LearningPathId,
+  ProgressStatus,
+  Theme,
+} from "../../types/graph";
 import { DetailDrawer } from "../drawer/DetailDrawer";
 
 const nodeById = new Map(knowledgeNodes.map((node) => [node.id, node]));
-const beginnerPath = learningPaths.find((path) => path.id === "beginner");
-const activePathNodeIds = new Set(beginnerPath?.nodeIds ?? []);
-const activePathEdges = new Set(
-  knowledgeEdges
-    .filter(
-      (edge) =>
-        activePathNodeIds.has(edge.source) && activePathNodeIds.has(edge.target),
-    )
-    .map((edge) => edge.id),
-);
 
 const themeOrder: Theme[] = [
   "foundation",
@@ -157,11 +152,24 @@ function nodeMatchesSearch(node: KnowledgeNode, query: string) {
   return searchableText.includes(query);
 }
 
+function getLearningPath(pathId: LearningPathId) {
+  const path = learningPaths.find((learningPath) => learningPath.id === pathId);
+
+  if (!path) {
+    throw new Error(`Unknown learning path: ${pathId}`);
+  }
+
+  return path;
+}
+
 export function KnowledgeGraphCanvas() {
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [previewNodeId, setPreviewNodeId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTheme, setActiveTheme] = useState<Theme | "all">("all");
+  const [activePathId, setActivePathId] = useState<LearningPathId>(
+    "beginner",
+  );
   const [viewport, setViewport] = useState<ViewportState>({
     x: 0,
     y: 0,
@@ -208,6 +216,27 @@ export function KnowledgeGraphCanvas() {
       })),
     [filteredNodes],
   );
+  const activePath = useMemo(() => getLearningPath(activePathId), [activePathId]);
+  const activePathNodeIds = useMemo(
+    () => new Set(activePath.nodeIds),
+    [activePath],
+  );
+  const activePathEdges = useMemo(
+    () =>
+      new Set(
+        knowledgeEdges
+          .filter(
+            (edge) =>
+              activePathNodeIds.has(edge.source) &&
+              activePathNodeIds.has(edge.target),
+          )
+          .map((edge) => edge.id),
+      ),
+    [activePathNodeIds],
+  );
+  const visibleActivePathSteps = activePath.nodeIds.filter((nodeId) =>
+    filteredNodeIds.has(nodeId),
+  ).length;
   const themeFilterOptions = useMemo(
     () =>
       Object.entries(themeLabels).map(([theme, label]) => ({
@@ -298,11 +327,6 @@ export function KnowledgeGraphCanvas() {
 
   return (
     <section className="graph-canvas-panel" id="map" aria-label="Agent harness 机制地图">
-      <div className="visual-title">
-        <span>机制</span>
-        <strong>地图</strong>
-      </div>
-
       <div className="harness-diagram" aria-label="可交互知识图谱">
         <div className="trace-header">
           <span>{filteredNodes.length} / {graphStats.nodeCount} 个机制节点</span>
@@ -354,6 +378,28 @@ export function KnowledgeGraphCanvas() {
                   onClick={() => setActiveTheme(option.theme)}
                 >
                   {option.label} <span>{option.count}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="path-filter" aria-label="路径模式">
+            <div className="path-filter-header">
+              <span>路径模式</span>
+              <strong>
+                {visibleActivePathSteps} / {activePath.nodeIds.length} 步可见
+              </strong>
+            </div>
+            <p>{activePath.summary}</p>
+            <div className="path-filter-options">
+              {learningPaths.map((path) => (
+                <button
+                  data-active={activePathId === path.id}
+                  data-path-filter={path.id}
+                  key={path.id}
+                  type="button"
+                  onClick={() => setActivePathId(path.id)}
+                >
+                  {path.title} <span>{path.nodeIds.length}</span>
                 </button>
               ))}
             </div>
@@ -501,7 +547,7 @@ export function KnowledgeGraphCanvas() {
         </div>
 
         <div className="trace-route" aria-label="入门路径前五步">
-          {(beginnerPath?.nodeIds ?? []).slice(0, 5).map((nodeId) => {
+          {activePath.nodeIds.slice(0, 5).map((nodeId) => {
             const routeNode = nodeById.get(nodeId);
 
             return (
@@ -528,13 +574,13 @@ export function KnowledgeGraphCanvas() {
       )}
 
       <div className="graph-data-strip" aria-label="图谱数据覆盖范围">
-        <span>{beginnerPath?.title ?? "Beginner Path"}</span>
+        <span>{activePath.title}</span>
         <strong>{learningPaths.length} 条路径</strong>
         <span>{graphStats.themeCount} 个主题</span>
       </div>
 
       <p className="pending-notice">
-        暂未实现：路径切换和学习进度保存。当前可搜索、主题筛选、拖动画布、缩放视口、点击节点查看详情。
+        暂未实现：学习进度保存。当前可搜索、主题筛选、路径切换、拖动画布、缩放视口、点击节点查看详情。
       </p>
 
       <ul className="theme-grid" aria-label="知识图谱主题数量">
