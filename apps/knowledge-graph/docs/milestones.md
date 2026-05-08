@@ -1,6 +1,6 @@
 # Claude Code Harness 知识图谱里程碑
 
-学习进度：里程碑规划 `[██████████] 100%`
+学习进度：里程碑规划 `[■■■■■] 100%`
 
 ## M0：定位与文档
 
@@ -8,7 +8,7 @@
 
 目标：
 
-- 确定方案 B：`apps/knowledge-graph` 作为 root-level 展示型前端工程。
+- 确定 `apps/knowledge-graph` 作为仓库级展示型前端工程。
 - 更新项目说明文档。
 - 落地整体设计、开发计划和里程碑。
 
@@ -17,12 +17,6 @@
 ```powershell
 Set-Location D:\agent-harness-lab; git status --short --untracked-files=all
 Set-Location D:\agent-harness-lab; git diff -- apps AGENTS.md README.md learn reference labs
-```
-
-建议提交：
-
-```text
-docs: plan root knowledge graph app
 ```
 
 ## M1：可运行前端壳
@@ -44,12 +38,6 @@ Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck
 Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build
 ```
 
-建议提交：
-
-```text
-feat: scaffold knowledge graph app
-```
-
 ## M2：静态知识图谱数据
 
 状态：已完成。
@@ -58,7 +46,7 @@ feat: scaffold knowledge graph app
 
 - 定义 TypeScript 数据模型。
 - 建立第一批 25-35 个知识节点。
-- 四条学习路径可被数据表达。
+- 四条学习路径可由数据表达。
 
 验收：
 
@@ -67,18 +55,15 @@ Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck
 Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test
 ```
 
-建议提交：
-
-```text
-feat: add typed harness graph data
-```
-
 ## M3：交互画布
+
+状态：已完成。
 
 目标：
 
 - 图谱主画布可缩放、拖拽。
 - 节点和边能按主题、路径、progress 呈现不同状态。
+- 支持紧凑和分层布局，不新增 D3 依赖。
 
 验收：
 
@@ -87,19 +72,16 @@ Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck
 Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build
 ```
 
-建议提交：
-
-```text
-feat: render harness graph canvas
-```
-
 ## M4：学习工作流
+
+状态：已完成。
 
 目标：
 
 - hover 摘要可用。
 - click detail drawer 可用。
 - 引用面板、demo 命令、常见误解、对照模式可用。
+- 每个节点都有 why / what / how 可视化卡片和节点测验。
 
 验收：
 
@@ -108,13 +90,9 @@ Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck
 Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build
 ```
 
-建议提交：
-
-```text
-feat: add graph learning workflow
-```
-
 ## M5：展示级打磨
+
+状态：已完成。
 
 目标：
 
@@ -130,24 +108,24 @@ Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build
 Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test
 ```
 
-建议提交：
-
-```text
-fix: polish knowledge graph UX and verification
-```
-
 ## M6：后续增强
+
+状态：已完成。
 
 目标：
 
-- 从 Markdown 或本地机制对照表生成部分引用索引。
+- 从 typed data 生成引用索引。
 - 增加 Playwright 视觉回归。
 - 增加节点学习测验。
-- 增加 D3 layout 优化。
+- 增加紧凑 / 分层布局切换。
 - 增加 progress 导入导出。
 
-建议提交：
+验收：
 
-```text
-feat: add generated graph references
+```powershell
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run generate:references
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run visual:regression
 ```

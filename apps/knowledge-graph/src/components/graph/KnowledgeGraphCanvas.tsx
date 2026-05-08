@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
 import {
   graphStats,
   knowledgeEdges,
@@ -31,11 +31,22 @@ const themeOrder: Theme[] = [
 
 const nodeWidth = 152;
 const nodeHeight = 72;
-const columnGap = 160;
-const rowGap = 88;
-const graphPaddingX = 40;
-const graphPaddingY = 48;
-const graphWidth = 1024;
+const layoutSettings = {
+  layered: {
+    columnGap: 160,
+    rowGap: 88,
+    paddingX: 40,
+    paddingY: 48,
+    minWidth: 1024,
+  },
+  compact: {
+    columnGap: 144,
+    rowGap: 80,
+    paddingX: 32,
+    paddingY: 40,
+    minWidth: 936,
+  },
+} as const;
 
 type LayoutNode = {
   node: KnowledgeNode;
@@ -59,6 +70,14 @@ type DragState = {
 
 type ProgressByNode = Partial<Record<string, ProgressStatus>>;
 
+type LayoutMode = keyof typeof layoutSettings;
+
+type ProgressExportPayload = {
+  version: 1;
+  exportedAt: string;
+  progress: ProgressByNode;
+};
+
 const progressStorageKey = "knowledge-graph-progress";
 const progressStatuses: ProgressStatus[] = [
   "not-started",
@@ -81,6 +100,18 @@ function isProgressStatus(value: unknown): value is ProgressStatus {
   );
 }
 
+function normalizeProgressEntries(value: unknown): ProgressByNode {
+  if (!value || typeof value !== "object") {
+    return {};
+  }
+
+  return Object.fromEntries(
+    Object.entries(value as Record<string, unknown>).filter(
+      ([nodeId, status]) => nodeById.has(nodeId) && isProgressStatus(status),
+    ),
+  ) as ProgressByNode;
+}
+
 function readStoredProgress(): ProgressByNode {
   if (typeof window === "undefined") {
     return {};
@@ -94,16 +125,7 @@ function readStoredProgress(): ProgressByNode {
 
   try {
     const parsedValue: unknown = JSON.parse(rawValue);
-
-    if (!parsedValue || typeof parsedValue !== "object") {
-      return {};
-    }
-
-    return Object.fromEntries(
-      Object.entries(parsedValue as Record<string, unknown>).filter(
-        ([nodeId, status]) => nodeById.has(nodeId) && isProgressStatus(status),
-      ),
-    ) as ProgressByNode;
+    return normalizeProgressEntries(parsedValue);
   } catch {
     return {};
   }
@@ -123,7 +145,12 @@ function getRelatedLabels(nodeIds: string[], fallback: string) {
   return nodeIds.map(getDisplayTitle).join("、");
 }
 
-function buildGraphLayout(nodes: KnowledgeNode[]) {
+function buildGraphLayout(
+  nodes: KnowledgeNode[],
+  layoutMode: LayoutMode,
+  activePathNodeIds: Set<string>,
+) {
+  const settings = layoutSettings[layoutMode];
   const layers = new Map<number, KnowledgeNode[]>();
 
   for (const node of nodes) {
@@ -136,6 +163,15 @@ function buildGraphLayout(nodes: KnowledgeNode[]) {
 
   for (const [layer, layerNodes] of layers) {
     const sortedNodes = [...layerNodes].sort((a, b) => {
+      if (layoutMode === "compact") {
+        const pathDelta =
+          Number(activePathNodeIds.has(b.id)) - Number(activePathNodeIds.has(a.id));
+
+        if (pathDelta !== 0) {
+          return pathDelta;
+        }
+      }
+
       const themeDelta =
         themeOrder.indexOf(a.theme) - themeOrder.indexOf(b.theme);
 
@@ -149,20 +185,27 @@ function buildGraphLayout(nodes: KnowledgeNode[]) {
     sortedNodes.forEach((node, index) => {
       layoutNodes.push({
         node,
-        x: graphPaddingX + (layer - 1) * columnGap,
-        y: graphPaddingY + index * rowGap,
+        x: settings.paddingX + (layer - 1) * settings.columnGap,
+        y: settings.paddingY + index * settings.rowGap,
       });
     });
   }
 
+  const maxLayer = Math.max(1, ...Array.from(layers.keys()));
   const maxLayerRows = Math.max(
     1,
     ...Array.from(layers.values()).map((layerNodes) => layerNodes.length),
   );
-  const graphHeight = graphPaddingY * 2 + maxLayerRows * rowGap;
+  const graphHeight =
+    settings.paddingY * 2 + (maxLayerRows - 1) * settings.rowGap + nodeHeight;
+  const graphWidth = Math.max(
+    settings.minWidth,
+    settings.paddingX * 2 + (maxLayer - 1) * settings.columnGap + nodeWidth,
+  );
 
   return {
     graphHeight,
+    graphWidth,
     layoutNodes,
     nodePositionById: new Map(layoutNodes.map((entry) => [entry.node.id, entry])),
   };
@@ -215,6 +258,8 @@ export function KnowledgeGraphCanvas() {
   const [activePathId, setActivePathId] = useState<LearningPathId>(
     "beginner",
   );
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>("compact");
+  const [progressMessage, setProgressMessage] = useState<string | null>(null);
   const [progressByNode, setProgressByNode] =
     useState<ProgressByNode>(readStoredProgress);
   const [viewport, setViewport] = useState<ViewportState>({
@@ -223,6 +268,7 @@ export function KnowledgeGraphCanvas() {
     zoom: 0.72,
   });
   const dragState = useRef<DragState | null>(null);
+  const importProgressInputRef = useRef<HTMLInputElement>(null);
   const graphViewportRef = useRef<HTMLDivElement>(null);
   const selectedNode = selectedNodeId ? nodeById.get(selectedNodeId) : undefined;
   const previewNodeIdToShow = previewNodeId ?? selectedNodeId;
@@ -246,6 +292,11 @@ export function KnowledgeGraphCanvas() {
     () => new Set(filteredNodes.map((node) => node.id)),
     [filteredNodes],
   );
+  const activePath = useMemo(() => getLearningPath(activePathId), [activePathId]);
+  const activePathNodeIds = useMemo(
+    () => new Set(activePath.nodeIds),
+    [activePath],
+  );
   const visibleEdges = useMemo(
     () =>
       knowledgeEdges.filter(
@@ -254,7 +305,10 @@ export function KnowledgeGraphCanvas() {
       ),
     [filteredNodeIds],
   );
-  const graphLayout = useMemo(() => buildGraphLayout(filteredNodes), [filteredNodes]);
+  const graphLayout = useMemo(
+    () => buildGraphLayout(filteredNodes, layoutMode, activePathNodeIds),
+    [activePathNodeIds, filteredNodes, layoutMode],
+  );
   const visibleThemeSummaries = useMemo(
     () =>
       Object.entries(themeLabels).map(([theme, label]) => ({
@@ -263,11 +317,6 @@ export function KnowledgeGraphCanvas() {
         count: filteredNodes.filter((node) => node.theme === theme).length,
       })),
     [filteredNodes],
-  );
-  const activePath = useMemo(() => getLearningPath(activePathId), [activePathId]);
-  const activePathNodeIds = useMemo(
-    () => new Set(activePath.nodeIds),
-    [activePath],
   );
   const activePathEdges = useMemo(
     () =>
@@ -416,6 +465,11 @@ export function KnowledgeGraphCanvas() {
     });
   }
 
+  function countStartedProgress(progress: ProgressByNode) {
+    return Object.keys(progress).filter((nodeId) => progress[nodeId] !== "not-started")
+      .length;
+  }
+
   function selectNode(nodeId: string) {
     setSelectedNodeId(nodeId);
     setPreviewNodeId(nodeId);
@@ -448,6 +502,52 @@ export function KnowledgeGraphCanvas() {
 
   function clearProgress() {
     setProgressByNode({});
+    setProgressMessage("已清除本地进度");
+  }
+
+  function exportProgress() {
+    const payload: ProgressExportPayload = {
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      progress: progressByNode,
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], {
+      type: "application/json",
+    });
+    const href = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = href;
+    link.download = "knowledge-graph-progress.json";
+    link.click();
+    URL.revokeObjectURL(href);
+    setProgressMessage(`已导出 ${countStartedProgress(progressByNode)} 个节点`);
+  }
+
+  async function importProgressFromFile(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    try {
+      const parsedValue: unknown = JSON.parse(await file.text());
+      const importedValue =
+        parsedValue &&
+        typeof parsedValue === "object" &&
+        "progress" in parsedValue
+          ? (parsedValue as ProgressExportPayload).progress
+          : parsedValue;
+      const nextProgress = normalizeProgressEntries(importedValue);
+
+      setProgressByNode(nextProgress);
+      setProgressMessage(`已导入 ${countStartedProgress(nextProgress)} 个节点`);
+    } catch {
+      setProgressMessage("导入失败：请使用导出的 JSON 文件");
+    } finally {
+      event.target.value = "";
+    }
   }
 
   return (
@@ -529,6 +629,28 @@ export function KnowledgeGraphCanvas() {
               ))}
             </div>
           </div>
+          <div className="layout-filter" aria-label="布局模式">
+            <div className="layout-filter-header">
+              <span>布局</span>
+              <strong>{layoutMode === "compact" ? "紧凑" : "分层"}</strong>
+            </div>
+            <div className="layout-filter-options">
+              <button
+                data-active={layoutMode === "compact"}
+                type="button"
+                onClick={() => setLayoutMode("compact")}
+              >
+                紧凑
+              </button>
+              <button
+                data-active={layoutMode === "layered"}
+                type="button"
+                onClick={() => setLayoutMode("layered")}
+              >
+                分层
+              </button>
+            </div>
+          </div>
           <div className="progress-control" aria-label="学习进度">
             <div className="progress-control-header">
               <span>学习进度</span>
@@ -544,9 +666,31 @@ export function KnowledgeGraphCanvas() {
                 </span>
               ))}
             </div>
-            <button type="button" onClick={clearProgress}>
-              清除本地进度
-            </button>
+            <div className="progress-actions">
+              <button type="button" onClick={clearProgress}>
+                清除本地进度
+              </button>
+              <button type="button" onClick={exportProgress}>
+                导出进度
+              </button>
+              <button
+                type="button"
+                onClick={() => importProgressInputRef.current?.click()}
+              >
+                导入进度
+              </button>
+              <input
+                ref={importProgressInputRef}
+                accept="application/json,.json"
+                type="file"
+                onChange={importProgressFromFile}
+              />
+            </div>
+            {progressMessage ? (
+              <span className="progress-message" role="status">
+                {progressMessage}
+              </span>
+            ) : null}
           </div>
           <p>拖动画布。点击节点看详情。</p>
           <div className="viewport-controls" aria-label="画布缩放">
@@ -606,15 +750,15 @@ export function KnowledgeGraphCanvas() {
             style={{
               height: graphLayout.graphHeight,
               transform: `translate(${viewport.x}px, ${viewport.y}px) scale(${viewport.zoom})`,
-              width: graphWidth,
+              width: graphLayout.graphWidth,
             }}
           >
             <svg
               aria-hidden="true"
               className="graph-edge-layer"
               height={graphLayout.graphHeight}
-              viewBox={`0 0 ${graphWidth} ${graphLayout.graphHeight}`}
-              width={graphWidth}
+              viewBox={`0 0 ${graphLayout.graphWidth} ${graphLayout.graphHeight}`}
+              width={graphLayout.graphWidth}
             >
               {visibleEdges.map((edge) => {
                 const source = graphLayout.nodePositionById.get(edge.source);

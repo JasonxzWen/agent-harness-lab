@@ -1,10 +1,8 @@
 # Claude Code Harness Knowledge Graph
 
-状态：M2 已完成。站点已发布到 GitHub Pages。
+状态：M6 已完成。站点已发布到 GitHub Pages。
 
-这是 `agent-harness-lab` 的前端入口。它把 Claude Code-like agent harness 的学习内容做成知识图谱。
-
-界面中文优先，必要时保留英文机制名。
+这是 `agent-harness-lab` 的前端入口。它把 Claude Code-like agent harness 的学习内容做成可交互知识图谱。
 
 线上入口：
 
@@ -18,35 +16,38 @@ https://jasonxzwen.github.io/agent-harness-lab/
 - [开发计划](docs/development-plan.md)
 - [里程碑](docs/milestones.md)
 
-## 产品边界
+## 当前能力
 
-MVP 打开后直接进入知识图谱，不做 landing page。
+- 查看 34 个机制节点和 35 条关系。
+- 按 4 条学习路径浏览节点。
+- 搜索节点，按主题筛选，切换紧凑或分层布局。
+- hover 看摘要，click 打开详情，`Esc` 关闭并回到原节点。
+- 查看 why / what / how 可视化卡片、引用面板、Bun 命令和节点测验。
+- 本地保存学习进度，支持导入和导出 JSON。
+- 从 typed data 生成引用索引，不复制 CCB、skill-hub 或第三方正文。
 
-核心功能：
-
-- 查看 34 个机制节点。
-- 查看 4 条学习路径。
-- 查看主题分组。
-- 后续会加入节点详情、搜索、筛选和进度。
-
-## 当前技术栈
+## 技术栈
 
 - Bun
 - Vite
 - React
 - TypeScript
+- Playwright CLI 视觉回归
 - GitHub Pages
 - GitHub Actions
 
-后续按交互复杂度决定是否引入 React Flow 和状态管理。
+当前不引入 React Flow、D3 或额外图标库。布局用本仓库的 typed data、React 状态和 CSS 实现。
 
 ## 常用命令
 
 ```powershell
 Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun install
 Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run dev
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run generate:references
 Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test
 Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run visual:regression
 Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build:pages
 ```
 
@@ -66,8 +67,11 @@ GitHub 仓库需要在 `Settings -> Pages -> Build and deployment` 中选择 `Gi
 1. 本地运行：
 
 ```powershell
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run generate:references
 Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test
 Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run visual:regression
 Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build:pages
 ```
 

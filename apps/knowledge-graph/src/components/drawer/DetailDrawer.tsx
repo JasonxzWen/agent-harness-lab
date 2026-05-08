@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { getNodeDetailCopy, getNodeDisplayCopy } from "../../data/copy";
-import { themeLabels } from "../../data/knowledgeGraph";
+import { knowledgeNodes, themeLabels } from "../../data/knowledgeGraph";
 import type {
   KnowledgeNode,
   ProgressStatus,
@@ -36,6 +36,14 @@ const progressOptions: ProgressStatus[] = [
   "reviewed",
 ];
 
+type QuizResult = "idle" | "correct" | "incorrect";
+
+type QuizOption = {
+  id: string;
+  text: string;
+  isCorrect: boolean;
+};
+
 export function DetailDrawer({
   node,
   progressStatus,
@@ -44,6 +52,10 @@ export function DetailDrawer({
 }: DetailDrawerProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const [copiedReferenceId, setCopiedReferenceId] = useState<string | null>(null);
+  const [selectedQuizOptionId, setSelectedQuizOptionId] = useState<string | null>(
+    null,
+  );
+  const [quizResult, setQuizResult] = useState<QuizResult>("idle");
   const displayCopy = getNodeDisplayCopy(node);
   const detailCopy = getNodeDetailCopy(node);
   const sourceReferences = [
@@ -72,6 +84,31 @@ export function DetailDrawer({
       text: firstSourcePath,
     },
   ];
+  const quizOptions = useMemo<QuizOption[]>(() => {
+    const otherNodes = knowledgeNodes
+      .filter((candidate) => candidate.id !== node.id)
+      .sort((a, b) => a.id.localeCompare(b.id));
+    const firstIndex = node.id.length % otherNodes.length;
+    const distractors = [
+      otherNodes[firstIndex],
+      otherNodes[(firstIndex + 7) % otherNodes.length],
+    ].filter((candidate): candidate is KnowledgeNode => Boolean(candidate));
+    const options = [
+      {
+        id: node.id,
+        text: detailCopy.why,
+        isCorrect: true,
+      },
+      ...distractors.map((candidate) => ({
+        id: candidate.id,
+        text: getNodeDetailCopy(candidate).why,
+        isCorrect: false,
+      })),
+    ];
+    const offset = node.id.charCodeAt(0) % options.length;
+
+    return [...options.slice(offset), ...options.slice(0, offset)];
+  }, [detailCopy.why, node.id]);
   const referenceGroups = useMemo(
     () =>
       Object.entries(referenceLabels)
@@ -91,8 +128,26 @@ export function DetailDrawer({
     setCopiedReferenceId(reference.id);
   }
 
+  function chooseQuizOption(option: QuizOption) {
+    setSelectedQuizOptionId(option.id);
+
+    if (option.isCorrect) {
+      setQuizResult("correct");
+      onProgressChange("reviewed");
+      return;
+    }
+
+    setQuizResult("incorrect");
+  }
+
   useEffect(() => {
     closeButtonRef.current?.focus();
+  }, [node.id]);
+
+  useEffect(() => {
+    setCopiedReferenceId(null);
+    setSelectedQuizOptionId(null);
+    setQuizResult("idle");
   }, [node.id]);
 
   useEffect(() => {
@@ -182,6 +237,43 @@ export function DetailDrawer({
             先看 <code>{firstSourcePath}</code>，再运行下面的 Bun 命令。
           </p>
         </article>
+      </section>
+
+      <section className="detail-section quiz-panel" aria-label="节点测验">
+        <div>
+          <span>QUIZ</span>
+          <h3>先解决什么问题？</h3>
+          <p>选出这个机制的 why。答对后，本节点会标记为已复盘。</p>
+        </div>
+        <div className="quiz-options">
+          {quizOptions.map((option) => {
+            const isSelected = selectedQuizOptionId === option.id;
+            const state =
+              isSelected && option.isCorrect
+                ? "correct"
+                : isSelected
+                  ? "incorrect"
+                  : "idle";
+
+            return (
+              <button
+                data-state={state}
+                key={option.id}
+                type="button"
+                onClick={() => chooseQuizOption(option)}
+              >
+                {option.text}
+              </button>
+            );
+          })}
+        </div>
+        <p className="quiz-feedback" role="status">
+          {quizResult === "correct"
+            ? "答对了，已标记为已复盘。"
+            : quizResult === "incorrect"
+              ? "不对，回到 WHY 再看一遍。"
+              : "未作答。"}
+        </p>
       </section>
 
       <section className="detail-section reference-panel" aria-label="引用面板">

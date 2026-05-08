@@ -1,5 +1,8 @@
 import { KnowledgeGraphCanvas } from "../graph/KnowledgeGraphCanvas";
 import { GraphToolbar } from "./GraphToolbar";
+import { referenceIndexStats } from "../../data/generatedReferenceIndex";
+import { graphStats } from "../../data/knowledgeGraph";
+import { learningPaths } from "../../data/paths";
 
 const featureCards = [
   {
@@ -20,6 +23,11 @@ const featureCards = [
   {
     label: "搜索筛选",
     summary: "搜索节点，切换主题和路径，保存学习状态。",
+    status: "已实现",
+  },
+  {
+    label: "引用索引",
+    summary: `生成 ${referenceIndexStats.uniqueReferences} 条引用，覆盖 ${referenceIndexStats.nodeCount} 个节点。`,
     status: "已实现",
   },
 ] as const;
@@ -45,7 +53,8 @@ export function AppShell() {
           <div>
             <h2>现在能看什么？</h2>
             <p>
-              当前有 34 个节点、35 条关系、4 条路径。点击节点后，
+              当前有 {graphStats.nodeCount} 个节点、{graphStats.edgeCount} 条关系、
+              {learningPaths.length} 条路径。点击节点后，
               可以先看 why / what / how，再看源码、命令和版本对照。
             </p>
           </div>

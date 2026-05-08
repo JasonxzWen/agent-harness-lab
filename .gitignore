@@ -7,3 +7,4 @@ apps/knowledge-graph/dist/
 scripts/ralph/.last-branch
 scripts/ralph/.last-message.txt
 .playwright-cli/
+output/playwright/regression/

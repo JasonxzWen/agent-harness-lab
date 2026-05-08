@@ -7,6 +7,10 @@ import {
   themeLabels,
 } from "../src/data/knowledgeGraph";
 import { nodeDetailCopy, nodeDisplayCopy } from "../src/data/copy";
+import {
+  generatedReferenceIndex,
+  referenceIndexStats,
+} from "../src/data/generatedReferenceIndex";
 import { learningPaths } from "../src/data/paths";
 import { sourceReferences } from "../src/data/references";
 
@@ -166,6 +170,31 @@ test("source references stay inside allowed metadata boundaries", () => {
 
     for (const fragment of forbiddenPathFragments) {
       expect(reference.target.includes(fragment)).toBe(false);
+    }
+  }
+});
+
+test("generated reference index stays synced with graph nodes", () => {
+  const allNodeReferences = knowledgeNodes.flatMap((node) => [
+    ...node.labFiles,
+    ...node.ccbMappings,
+    ...node.externalLinks,
+  ]);
+  const uniqueReferenceTargets = new Set(
+    allNodeReferences.map((reference) => `${reference.kind}:${reference.target}`),
+  );
+
+  expect(referenceIndexStats.totalReferences).toBe(allNodeReferences.length);
+  expect(referenceIndexStats.uniqueReferences).toBe(uniqueReferenceTargets.size);
+  expect(referenceIndexStats.nodeCount).toBe(knowledgeNodes.length);
+  expect(generatedReferenceIndex).toHaveLength(uniqueReferenceTargets.size);
+
+  for (const item of generatedReferenceIndex) {
+    expect(uniqueReferenceTargets.has(`${item.kind}:${item.target}`)).toBe(true);
+    expect(item.nodeIds.length).toBeGreaterThan(0);
+
+    for (const nodeId of item.nodeIds) {
+      expect(nodeIds.has(nodeId)).toBe(true);
     }
   }
 });

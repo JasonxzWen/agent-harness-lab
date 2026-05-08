@@ -8,7 +8,9 @@
     "typecheck": "tsc --noEmit",
     "build": "tsc --noEmit && vite build",
     "build:pages": "tsc --noEmit && vite build --mode github-pages",
-    "preview": "vite preview --host 127.0.0.1"
+    "preview": "vite preview --host 127.0.0.1",
+    "generate:references": "bun scripts/generate-reference-index.ts",
+    "visual:regression": "bun run build && bun scripts/visual-regression.mjs"
   },
   "dependencies": {
     "react": "^19.2.5",

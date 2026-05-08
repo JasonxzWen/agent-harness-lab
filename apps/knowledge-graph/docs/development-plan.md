@@ -1,8 +1,10 @@
 # Claude Code Harness 知识图谱开发计划
 
-学习进度：展示型前端开发计划 `[██████████] 100%`
+学习进度：展示型前端开发计划 `[■■■■■] 100%`
 
 ## 阶段 0：工程骨架
+
+状态：已完成。
 
 目标：
 
@@ -28,18 +30,14 @@ Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck
 Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build
 ```
 
-建议提交：
-
-```text
-feat: scaffold knowledge graph app
-```
-
 ## 阶段 1：图谱数据模型
+
+状态：已完成。
 
 目标：
 
 - 定义 `KnowledgeNode`、`KnowledgeEdge`、`SourceReference` 等类型。
-- 建立第一批 25-35 个知识节点。
+- 建立 34 个知识节点。
 - 定义 Beginner、Context、Safety、Advanced 四条路径。
 
 产出：
@@ -48,6 +46,7 @@ feat: scaffold knowledge graph app
 - `src/data/knowledgeGraph.ts`
 - `src/data/paths.ts`
 - `src/data/references.ts`
+- `src/data/copy.ts`
 
 验收命令：
 
@@ -56,25 +55,21 @@ Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck
 Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test
 ```
 
-建议提交：
-
-```text
-feat: add typed harness knowledge graph data
-```
-
 ## 阶段 2：交互主画布
+
+状态：已完成。
 
 目标：
 
 - 渲染可缩放、可拖拽的知识图谱主画布。
-- 实现自定义节点和主题色。
+- 实现自定义节点、关系线和主题状态。
 - 支持路径节点高亮。
+- 支持紧凑 / 分层布局切换。
 
 产出：
 
 - `src/components/graph/KnowledgeGraphCanvas.tsx`
-- `src/components/graph/KnowledgeNodeCard.tsx`
-- `src/components/graph/graphLayout.ts`
+- `src/styles/app-shell.css`
 
 验收命令：
 
@@ -86,60 +81,50 @@ Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build
 手动验收：
 
 - 画布可缩放。
-- 节点可拖拽。
+- 画布可拖拽。
 - 节点文本不溢出。
 - 宽屏和窄屏布局不重叠。
 
-建议提交：
-
-```text
-feat: render interactive graph explorer
-```
-
 ## 阶段 3：节点交互和详情抽屉
+
+状态：已完成。
 
 目标：
 
 - hover 显示摘要、前置知识、推荐下一步。
 - click 打开右侧 detail drawer。
-- detail drawer 展示机制解释、存在原因、引用、demo 命令、常见误解。
+- detail drawer 展示 why / what / how、引用、demo 命令、常见误解、教学版 vs 生产版。
+- 节点测验答对后把当前节点标记为已复盘。
 
 产出：
 
-- `src/components/graph/NodeHoverCard.tsx`
 - `src/components/drawer/DetailDrawer.tsx`
-- `src/components/references/ReferencePanel.tsx`
 - `src/components/ui/CommandBlock.tsx`
+- `src/styles/app-shell.css`
 
 验收命令：
 
 ```powershell
 Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck
 Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build
-```
-
-建议提交：
-
-```text
-feat: add node details and reference panels
 ```
 
 ## 阶段 4：筛选、路径和进度
 
+状态：已完成。
+
 目标：
 
-- 支持主题过滤、搜索、layer/tag/path 筛选。
-- 支持 Beginner、Context、Safety、Advanced 路径模式。
+- 支持主题筛选、搜索、路径模式。
 - 支持 progress 状态和 localStorage 持久化。
-- 支持“教学版 vs 生产版”对照模式。
+- 支持 progress JSON 导入和导出。
+- 未实现入口必须显示“暂未实现”；当前页面入口均已实现。
 
 产出：
 
-- `src/store/graphStore.ts`
-- `src/components/filters/FilterSidebar.tsx`
-- `src/components/layout/GraphToolbar.tsx`
-- `src/components/drawer/CompareBlock.tsx`
-- `src/components/drawer/ProgressControl.tsx`
+- `src/components/graph/KnowledgeGraphCanvas.tsx`
+- `src/components/layout/AppShell.tsx`
+- `tests/knowledgeGraph.test.js`
 
 验收命令：
 
@@ -147,36 +132,35 @@ feat: add node details and reference panels
 Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck
 Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build
 Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test
-```
-
-建议提交：
-
-```text
-feat: add graph filters paths progress and compare mode
 ```
 
 ## 阶段 5：可访问性、响应式和安全校验
 
+状态：已完成。
+
 目标：
 
-- 完成键盘导航、focus 管理、tooltip、reduced motion。
-- 增加节点列表视图。
-- 增加内容边界校验脚本，避免复制 `.external/skill-hub` 或第三方正文。
-- 完成 diff review。
+- 完成键盘导航、focus 管理和 reduced motion。
+- `Esc` 关闭详情抽屉，关闭后焦点回到原节点。
+- 增加内容边界校验，避免复制 `.external/skill-hub` 或第三方正文。
+- 增加 Playwright 视觉回归。
+- 从 typed data 生成引用索引。
 
 产出：
 
-- `src/components/layout/NodeListPanel.tsx`
-- `src/components/ui/Tooltip.tsx`
-- `src/utils/contentGuards.ts`
-- `tests/`
+- `scripts/generate-reference-index.ts`
+- `scripts/visual-regression.mjs`
+- `src/data/generatedReferenceIndex.ts`
+- `tests/knowledgeGraph.test.js`
 
 验收命令：
 
 ```powershell
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run generate:references
 Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck
-Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build
 Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run visual:regression
 ```
 
 手动验收：
@@ -185,19 +169,13 @@ Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test
 - `Esc` 能关闭 drawer。
 - 关闭 drawer 后焦点回到原节点。
 - 窄屏下筛选、画布、详情不互相遮挡。
-- diff 中没有 `src/`、`packages/`、`docs/` 或 `.external/skill-hub` 内容变更。
-
-建议提交：
-
-```text
-fix: improve knowledge graph accessibility and safeguards
-```
+- diff 中没有 `src/`、`packages/`、`docs/` 或 `.external/skill-hub` 正文变更。
 
 ## MVP 完成标准
 
 - 首屏直接进入知识图谱。
-- 34 个左右知识节点可浏览。
+- 34 个知识节点可浏览。
 - 搜索、主题筛选、路径模式、progress 可用。
 - detail drawer 内容完整。
 - 引用面板只展示元数据和路径，不复制第三方内容。
-- `bun run typecheck` 和 `bun run build` 通过。
+- `bun run typecheck`、`bun test`、`bun run build`、`bun run visual:regression` 通过。

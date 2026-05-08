@@ -1,6 +1,6 @@
 # Claude Code Harness 可交互知识图谱整体设计
 
-学习进度：知识图谱前端设计 `[██████████] 100%`
+学习进度：知识图谱前端设计 `[■■■■■] 100%`
 
 ## 产品定位
 
@@ -8,19 +8,19 @@
 
 1. 对 Claude Code-like harness 机制的系统理解。
 2. 前端信息架构、交互设计和可访问性能力。
-3. TypeScript 数据建模、React 组件拆分和 Bun 工程化能力。
+3. TypeScript 数据建模、React 组件拆分和 Bun 工程能力。
 
-它不替代 `labs/ts-agent/`。`labs/ts-agent/` 继续放教学版 harness 代码，知识图谱负责把这些机制组织成可阅读、可操作的学习界面。
+它不替代 `labs/ts-agent/`。`labs/ts-agent/` 继续放教学版 harness 代码，知识图谱负责把这些机制组织成可读、可操作的学习界面。
 
 ## 信息架构
 
 ```mermaid
 flowchart TD
-    A["知识图谱<br/>首屏直接进入工作区"] --> B["顶部工具栏<br/>搜索 / 路径 / 对照模式"]
-    A --> C["左侧筛选区<br/>主题 / layer / tag / progress"]
-    A --> D["知识图谱主画布<br/>缩放 / 拖拽 / 节点关系"]
-    A --> E["右侧详情抽屉<br/>机制 / 引用 / demo / 误解"]
-    A --> F["引用面板<br/>local docs / lab source / CCB mapping / external links"]
+    A["知识图谱<br/>首屏直接进入工作区"] --> B["顶部工具栏<br/>项目定位 / 机制地图 / 当前进度"]
+    A --> C["控制区<br/>搜索 / 主题 / 路径 / 布局 / progress"]
+    A --> D["主画布<br/>缩放 / 拖拽 / 节点关系"]
+    A --> E["右侧详情抽屉<br/>why / what / how / 测验 / 引用 / 命令"]
+    A --> F["引用索引<br/>typed data 生成 / 元数据展示"]
 ```
 
 ## 用户路径
@@ -28,34 +28,35 @@ flowchart TD
 ```mermaid
 sequenceDiagram
     participant U as User
-    participant T as Toolbar
+    participant C as Controls
     participant G as Graph Canvas
     participant D as Detail Drawer
     participant P as Progress Store
 
-    U->>T: 选择 Beginner Path
-    T->>G: 高亮路径节点
+    U->>C: 选择学习路径或主题
+    C->>G: 过滤节点并高亮路径
     U->>G: Hover Agent Loop
     G-->>U: 显示摘要、前置知识、下一步
     U->>G: Click Agent Loop
     G->>D: 打开机制详情
-    U->>D: 查看 demo 命令和引用
-    U->>D: 标记 learning / implemented
-    D->>P: 写入 localStorage
+    U->>D: 查看 why / what / how
+    U->>D: 完成节点测验
+    D->>P: 写入 reviewed 状态
 ```
 
-## MVP 功能
+## 当前功能
 
-- 可缩放、拖拽的知识图谱主画布。
+- 可缩放、可拖拽的知识图谱主画布。
 - 节点 hover 展开摘要、前置知识、推荐下一步。
 - 节点 click 打开右侧 detail drawer。
-- detail drawer 包含机制解释、存在原因、教学版 lab 文件引用、CCB 对照引用、外部资料引用、demo 命令、常见误解。
+- detail drawer 包含 why / what / how 可视化卡片、引用、demo 命令、常见误解、教学版 vs 生产版、节点测验。
 - 支持主题过滤：foundation、tool-system、planning、context、safety、runtime、multi-agent、extension、dream。
 - 支持路径模式：Beginner Path、Context Path、Safety Path、Advanced Path。
-- 支持“教学版 vs 生产版”对照模式。
 - 支持 progress 状态：not-started、learning、implemented、reviewed。
+- 支持 progress localStorage 持久化、JSON 导入、JSON 导出。
 - 支持引用面板：local docs、lab source、CCB source mapping、external links。
-- 支持搜索节点、按 layer/tag/path 筛选节点。
+- 支持从 typed data 生成引用索引。
+- 支持 Playwright 视觉回归截图。
 
 ## 推荐方案
 
@@ -75,31 +76,30 @@ D:\agent-harness-lab\apps\knowledge-graph
 flowchart TB
     A["Vite React App"] --> B["App Shell"]
     B --> C["Graph Toolbar"]
-    B --> D["Filter Sidebar"]
-    B --> E["Graph Canvas"]
-    B --> F["Detail Drawer"]
-    B --> G["Reference Panel"]
+    B --> D["Knowledge Graph Canvas"]
+    B --> E["Detail Drawer"]
+    B --> F["Command Block"]
 
-    H["Typed Graph Data"] --> E
-    H --> F
-    I["Graph Store"] --> C
-    I --> D
-    I --> E
-    I --> F
-    I --> G
-    J["localStorage Progress"] --> I
+    G["Typed Graph Data"] --> D
+    G --> E
+    H["Display Copy"] --> D
+    H --> E
+    I["Generated Reference Index"] --> B
+    J["localStorage Progress"] --> D
+    J --> E
+    K["Playwright Visual Script"] --> A
 ```
 
 技术选择：
 
 - Runtime：Bun。
 - App：Vite + React + TypeScript。
-- 图谱：MVP 先使用 typed data + React/CSS 自研静态画布，交互阶段再评估是否引入 React Flow。
-- 图标：不引入图标库，遵守 `DESIGN.md`，仅使用文字和极少数极简箭头。
-- 状态：Zustand 优先，复杂度不够时也可以先用 Context + Reducer。
+- 图谱：typed data + React/CSS 自研画布。
+- 图标：不引入图标库，遵守 `DESIGN.md`。
+- 状态：组件内 React state，progress 写入 localStorage。
 - 样式：CSS variables + 模块化组件样式。
-- 数据：TypeScript 静态 seed graph。
-- 持久化：localStorage 只保存 progress 和视图偏好。
+- 数据：TypeScript seed graph。
+- 持久化：localStorage 保存 progress。
 
 ## 数据模型草案
 
@@ -132,41 +132,6 @@ export type ReferenceKind =
   | "lab-source"
   | "ccb-source-mapping"
   | "external-link";
-
-export type SourceReference = {
-  id: string;
-  kind: ReferenceKind;
-  title: string;
-  target: string;
-  note?: string;
-};
-
-export type KnowledgeNode = {
-  id: string;
-  title: string;
-  theme: Theme;
-  layer: number;
-  tags: string[];
-  summary: string;
-  prerequisites: string[];
-  recommendedNext: string[];
-  labFiles: SourceReference[];
-  ccbMappings: SourceReference[];
-  externalLinks: SourceReference[];
-  misconceptions: string[];
-  demoCommands: string[];
-  compare: {
-    teachingVersion: string;
-    productionVersion: string;
-  };
-};
-
-export type KnowledgeEdge = {
-  id: string;
-  source: string;
-  target: string;
-  relation: "prerequisite" | "extends" | "contrasts" | "runtime-flow";
-};
 ```
 
 ## 第一批知识节点
@@ -177,27 +142,20 @@ export type KnowledgeEdge = {
 | tool-system | Tool Registry、Tool Schema、Tool Context、read_file、write_file / list_files、run_shell |
 | planning | TodoWrite、TodoRead、Task State |
 | context | Project Rules、Memory、Skills、Compact、Context Budget |
-| safety | Permissions、Policy Presets、Approval Request、Approval Store、Hooks、Path Guard |
+| safety | Permissions、Policy Presets、Approval Request、Approval Store、Path Guard |
 | runtime | Bun Runtime、Vite React Shell、Demo Commands |
-| multi-agent | Subagents、Task Runtime、Background Tasks、Agent Teams、Worktree Isolation |
+| multi-agent | Subagents、Background Tasks、Worktree Isolation |
 | extension | MCP、Plugin Loader |
-| dream | Dream、Memory Hygiene |
+| dream | Memory Hygiene |
 
 ## 组件拆分
 
-- `AppShell`：整体布局。
-- `GraphToolbar`：搜索、路径、对照模式。
-- `FilterSidebar`：theme、layer、tag、progress。
-- `KnowledgeGraphCanvas`：图谱画布容器。
-- `KnowledgeNodeCard`：自定义节点。
-- `NodeHoverCard`：hover 摘要。
-- `DetailDrawer`：右侧详情。
-- `ReferencePanel`：四类引用。
-- `PathModeTabs`：学习路径切换。
-- `ProgressControl`：progress 状态切换。
-- `CompareBlock`：教学版和生产版对照。
+- `AppShell`：整体布局和能力卡片。
+- `GraphToolbar`：顶部说明和跳转。
+- `KnowledgeGraphCanvas`：画布、搜索、主题筛选、路径模式、布局模式、progress。
+- `DetailDrawer`：右侧详情、why / what / how、节点测验、引用面板、对照说明。
 - `CommandBlock`：可复制 Bun 命令。
-- `KeyboardHelpDialog`：键盘帮助。
+- `generatedReferenceIndex`：由脚本生成的引用索引。
 
 ## 视觉方向
 
@@ -206,7 +164,7 @@ export type KnowledgeEdge = {
 - 避免营销 landing page、空洞 hero、通用紫色渐变。
 - 节点是结构入口，不承载长文。
 - 详情抽屉承载解释、引用和 demo。
-- 卡片半径控制在 8px 以内，按钮优先 icon + tooltip。
+- 卡片半径控制在 8px 以内。
 
 ## 可访问性
 
@@ -215,7 +173,6 @@ export type KnowledgeEdge = {
 - hover 内容也能通过 focus 触发。
 - drawer 关闭后焦点回到原节点。
 - progress 不只靠颜色表达。
-- 提供节点列表视图作为 canvas 的键盘替代入口。
 - 支持 `prefers-reduced-motion`。
 
 ## 内容与安全边界
