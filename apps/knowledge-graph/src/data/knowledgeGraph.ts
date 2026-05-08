@@ -725,15 +725,15 @@ export const knowledgeEdges: KnowledgeEdge[] = [
 ];
 
 export const themeLabels = {
-  foundation: "Foundation",
-  "tool-system": "Tool System",
-  planning: "Planning",
-  context: "Context",
-  safety: "Safety",
-  runtime: "Runtime",
-  "multi-agent": "Multi-Agent",
-  extension: "Extension",
-  dream: "Dream",
+  foundation: "基础 Foundation",
+  "tool-system": "工具 Tool System",
+  planning: "计划 Planning",
+  context: "上下文 Context",
+  safety: "安全 Safety",
+  runtime: "运行时 Runtime",
+  "multi-agent": "多 Agent",
+  extension: "扩展 Extension",
+  dream: "长期能力 Dream",
 } satisfies Record<Theme, string>;
 
 export const graphStats = {

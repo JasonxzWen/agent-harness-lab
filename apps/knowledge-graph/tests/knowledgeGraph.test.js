@@ -4,6 +4,7 @@ import {
   knowledgeNodes,
   themeLabels,
 } from "../src/data/knowledgeGraph";
+import { nodeDisplayCopy } from "../src/data/copy";
 import { learningPaths } from "../src/data/paths";
 
 const nodeIds = new Set(knowledgeNodes.map((node) => node.id));
@@ -56,5 +57,16 @@ test("nodes use known themes and bounded reference kinds", () => {
       expect(referenceKinds.has(reference.kind)).toBe(true);
       expect(reference.target.includes(".external/skill-hub")).toBe(false);
     }
+  }
+});
+
+test("nodes have Chinese-first display copy", () => {
+  for (const node of knowledgeNodes) {
+    const copy = nodeDisplayCopy[node.id];
+
+    expect(copy).toBeDefined();
+    expect(copy.title.length).toBeGreaterThan(0);
+    expect(copy.summary.length).toBeGreaterThan(0);
+    expect(/[\u4e00-\u9fff]/.test(`${copy.title}${copy.summary}`)).toBe(true);
   }
 });

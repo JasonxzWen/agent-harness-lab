@@ -3,8 +3,8 @@ import type { LearningPath } from "../types/graph";
 export const learningPaths = [
   {
     id: "beginner",
-    title: "Beginner Path",
-    summary: "Follow the minimal loop from message state to tool result write-back.",
+    title: "入门路径 / Beginner Path",
+    summary: "从 message 状态一路看到 tool result write-back 的最小闭环。",
     nodeIds: [
       "message",
       "agent-loop",
@@ -19,8 +19,8 @@ export const learningPaths = [
   },
   {
     id: "context",
-    title: "Context Path",
-    summary: "Study how prompts, rules, memory, skills, and compaction shape behavior.",
+    title: "上下文路径 / Context Path",
+    summary: "理解 prompt、项目规则、memory、skills 和 compact 如何影响行为。",
     nodeIds: [
       "system-prompt",
       "project-rules",
@@ -33,8 +33,8 @@ export const learningPaths = [
   },
   {
     id: "safety",
-    title: "Safety Path",
-    summary: "Trace how tool execution becomes bounded by policy, approval, and paths.",
+    title: "安全路径 / Safety Path",
+    summary: "追踪工具执行如何被 policy、approval 和 path guard 限制。",
     nodeIds: [
       "permissions",
       "policy-presets",
@@ -46,8 +46,8 @@ export const learningPaths = [
   },
   {
     id: "advanced",
-    title: "Advanced Path",
-    summary: "Connect model boundaries, task runtime, multi-agent isolation, MCP, and plugins.",
+    title: "进阶路径 / Advanced Path",
+    summary: "串起 model boundary、task runtime、多 agent 隔离、MCP 和 plugin。",
     nodeIds: [
       "model-adapter",
       "tool-schema",

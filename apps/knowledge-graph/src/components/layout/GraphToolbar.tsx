@@ -1,22 +1,21 @@
 const navLinks = [
-  { href: "#research", label: "Research" },
-  { href: "#map", label: "Mechanisms" },
-  { href: "#references", label: "References" },
-  { href: "#notes", label: "Learn" },
+  { href: "#research", label: "项目定位" },
+  { href: "#map", label: "机制地图" },
+  { href: "#references", label: "当前进度" },
 ] as const;
 
 export function GraphToolbar() {
   return (
     <header className="graph-toolbar">
       <div className="toolbar-brand" aria-label="Application identity">
-        <strong>HARNESS</strong>
+        <strong>HARNESS LAB</strong>
       </div>
 
-      <nav className="path-tabs" aria-label="Learning path modes">
+      <nav className="path-tabs" aria-label="页面导航">
         {navLinks.map((navLink) => (
           <a
-            aria-current={navLink.label === "Research" ? "page" : undefined}
-            className={navLink.label === "Research" ? "is-active" : undefined}
+            aria-current={navLink.label === "项目定位" ? "page" : undefined}
+            className={navLink.label === "项目定位" ? "is-active" : undefined}
             href={navLink.href}
             key={navLink.href}
           >
@@ -26,7 +25,7 @@ export function GraphToolbar() {
       </nav>
 
       <a className="toolbar-cta" href="#map">
-        Open Graph
+        打开图谱
       </a>
     </header>
   );

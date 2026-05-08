@@ -3,6 +3,7 @@ import {
   knowledgeNodes,
   themeLabels,
 } from "../../data/knowledgeGraph";
+import { getNodeDisplayCopy } from "../../data/copy";
 import { learningPaths } from "../../data/paths";
 import type { KnowledgeNode } from "../../types/graph";
 
@@ -21,17 +22,17 @@ const themeSummaries = Object.entries(themeLabels).map(([theme, label]) => ({
 
 export function KnowledgeGraphCanvas() {
   return (
-    <section className="graph-canvas-panel" id="map" aria-label="Harness visual">
+    <section className="graph-canvas-panel" id="map" aria-label="Agent harness 机制地图">
       <div className="visual-title">
-        <span>Agent</span>
+        <span>机制</span>
         <strong>Harness</strong>
-        <span>Trace</span>
+        <span>地图</span>
       </div>
 
-      <div className="harness-diagram" aria-label="Agent harness mechanism trace">
+      <div className="harness-diagram" aria-label="入门路径机制链路">
         <div className="trace-header">
-          <span>{graphStats.nodeCount} typed nodes</span>
-          <span>{graphStats.edgeCount} relationships</span>
+          <span>{graphStats.nodeCount} 个机制节点</span>
+          <span>{graphStats.edgeCount} 条关系</span>
         </div>
 
         <ol className="mechanism-stack">
@@ -41,27 +42,33 @@ export function KnowledgeGraphCanvas() {
                 {String(index + 1).padStart(2, "0")}
               </span>
               <span className="mechanism-copy">
-                <strong>{node.title}</strong>
-                <span>{node.summary}</span>
+                <strong>{getNodeDisplayCopy(node).title}</strong>
+                <span>{getNodeDisplayCopy(node).summary}</span>
               </span>
             </li>
           ))}
         </ol>
 
-        <div className="trace-route" aria-label="Learning path route">
-          {(beginnerPath?.nodeIds ?? []).slice(0, 5).map((nodeId) => (
-            <span key={nodeId}>{nodeById.get(nodeId)?.title ?? nodeId}</span>
-          ))}
+        <div className="trace-route" aria-label="入门路径前五步">
+          {(beginnerPath?.nodeIds ?? []).slice(0, 5).map((nodeId) => {
+            const routeNode = nodeById.get(nodeId);
+
+            return (
+              <span key={nodeId}>
+                {routeNode ? getNodeDisplayCopy(routeNode).title : nodeId}
+              </span>
+            );
+          })}
         </div>
       </div>
 
-      <div className="graph-data-strip" aria-label="Graph data coverage">
+      <div className="graph-data-strip" aria-label="图谱数据覆盖范围">
         <span>{beginnerPath?.title ?? "Beginner Path"}</span>
-        <strong>{learningPaths.length} paths</strong>
-        <span>{graphStats.themeCount} themes</span>
+        <strong>{learningPaths.length} 条路径</strong>
+        <span>{graphStats.themeCount} 个主题</span>
       </div>
 
-      <ul className="theme-grid" aria-label="Knowledge graph theme counts">
+      <ul className="theme-grid" aria-label="知识图谱主题数量">
         {themeSummaries.map((themeSummary) => (
           <li key={themeSummary.theme}>
             <strong>{themeSummary.count}</strong>
