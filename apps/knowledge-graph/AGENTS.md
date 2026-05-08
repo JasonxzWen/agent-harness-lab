@@ -49,3 +49,14 @@ Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test
 2. `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build`
 3. 桌面和窄屏手动检查一次。
 4. 检查 diff，确认没有复制 `src/`、`packages/`、`docs/` 或 `.external/skill-hub` 内容。
+
+每次改动完成后，回复里都要补一段 Mermaid 验收顺序图，说明用户应先看什么、再运行什么命令、最后检查什么页面状态。
+
+## 全局思维检查
+
+每次 UI 或文案改动后，都要说明这次改动对全局页面的影响：
+
+- 页面元素是否变多，是否需要合并、隐藏或延后展示。
+- 新区域是否挤压 hero、画布、详情、导航或移动端布局。
+- 用户进入交互路径时，第一步是否清楚，关闭、复制、返回等动作是否容易找到。
+- 文案是否回答“这是什么、现在能做什么、下一步是什么”，是否有多余解释。
