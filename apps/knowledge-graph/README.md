@@ -1,10 +1,10 @@
 # Claude Code Harness Knowledge Graph
 
-状态：editorial MVP 已上线开发，GitHub Pages 发布基建已配置。
+状态：M2 已完成。站点已发布到 GitHub Pages。
 
-这是 `agent-harness-lab` 的仓库级展示型前端工程。目标是把 Claude Code-like agent harness 的学习内容做成可搜索、可筛选、可对照的知识图谱。
+这是 `agent-harness-lab` 的前端入口。它把 Claude Code-like agent harness 的学习内容做成知识图谱。
 
-界面文案采用中文优先、英文机制术语辅助的方式，避免展示站点只剩抽象英文概念而不说明当前学习价值。
+界面中文优先，必要时保留英文机制名。
 
 线上入口：
 
@@ -24,12 +24,10 @@ MVP 打开后直接进入知识图谱，不做 landing page。
 
 核心功能：
 
-- 可缩放、可拖拽的知识图谱主画布。
-- 节点 hover 展开摘要、前置知识和推荐下一步。
-- 节点 click 打开右侧 detail drawer。
-- 支持主题过滤、路径模式、搜索、progress 状态。
-- 支持“教学版 vs 生产版”对照。
-- 支持 local docs、lab source、CCB source mapping、external links 引用面板。
+- 查看 34 个机制节点。
+- 查看 4 条学习路径。
+- 查看主题分组。
+- 后续会加入节点详情、搜索、筛选和进度。
 
 ## 当前技术栈
 

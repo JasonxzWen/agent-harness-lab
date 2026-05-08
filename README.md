@@ -2,15 +2,15 @@
 
 Live Demo: https://jasonxzwen.github.io/agent-harness-lab/
 
-这是一个原创的 agent harness learning + knowledge graph showcase 仓库，不是任何项目的 fork。目标是用 TypeScript/Bun 从零实现一个小型 Claude Code-like agent harness，并把学习路线、机制映射和实验成果产品化成可交互的知识图谱前端。
+这是一个原创学习仓库，不是 fork。目标是用 TypeScript/Bun 写一个小型 Claude Code-like agent harness，再把学习路线、机制关系和实验命令做成知识图谱。
 
 ## 项目定位
 
-- `apps/knowledge-graph/`：Vite + React + TypeScript + Bun 的展示型前端，是仓库级作品入口。
+- `apps/knowledge-graph/`：Vite + React + TypeScript + Bun 前端，是仓库作品入口。
 - `labs/ts-agent/`：从零实现的小型 TypeScript/Bun agent harness 实验区。
 - `learn/`：学习路线、章节文档、实践计划。
 - `notes/`：源码阅读笔记、问题和实验记录。
-- `reference/`：外部资料映射、机制对照、归档和 submodule。
+- `reference/`：外部资料、机制对照、归档和 submodule。
 - `design/`：视觉参考与设计约束。
 
 当前重点不是复刻完整 Claude Code 或 CCB，而是理解并实现 harness 机制：

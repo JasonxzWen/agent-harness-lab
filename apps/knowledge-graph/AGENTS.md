@@ -1,37 +1,37 @@
 # AGENTS.md
 
-Scope: this file applies to `apps/knowledge-graph/`.
+作用范围：`apps/knowledge-graph/`。
 
-This app is the root-level showcase frontend for the Claude Code-like harness learning project. It should feel like a professional developer tool and knowledge operations console, not a marketing landing page.
+这是仓库的展示前端。它要像一个清楚的学习工具，不做营销页。
 
-## Product Goal
+## 产品目标
 
-- Turn the linear harness learning path into an interactive knowledge graph.
-- Make `labs/ts-agent/` mechanisms easier to explore, compare, and demo.
-- Showcase frontend architecture, TypeScript modeling, interaction design, and AI agent harness understanding.
+- 把 `labs/ts-agent/` 里的机制做成知识图谱。
+- 让用户能按路径学习、看源码、跑命令。
+- 展示 TypeScript 数据建模、React 组件拆分和前端交互能力。
 
-## Tech Rules
+## 技术规则
 
-- Use Bun for all install, run, test, typecheck, and build commands.
-- Use Vite + React + TypeScript.
-- Start with typed data + React/CSS for the graph canvas. Evaluate React Flow only when interaction needs justify it.
-- D3 may be introduced later for layout or motion, but keep the MVP simple.
-- Avoid `any`; prefer explicit unions, typed records, and narrow data models.
-- Do not use `dangerouslySetInnerHTML`.
-- Do not add analytics, tracking scripts, remote logging, or external data sinks.
+- 所有命令使用 Bun。
+- 使用 Vite + React + TypeScript。
+- 图谱先用 typed data + React/CSS 实现。
+- 只有交互复杂度需要时，才评估 React Flow。
+- 不使用 `any`；优先用 union、typed record 和明确数据模型。
+- 不使用 `dangerouslySetInnerHTML`。
+- 不添加 analytics、tracking script、远程日志或外部数据上报。
 
-## Content Rules
+## 文案规则
 
-- Use Chinese-first copy with short English mechanism terms only when useful.
-- Keep copy short and concrete. Say what the user can see or do now.
-- Avoid AI-flavored filler: 赋能、打造、沉淀、范式、生态、底座、抓手、心智、信息熵.
-- Avoid vague nouns when a file, command, node, or action can be named.
-- Store original summaries and reference metadata only.
-- Do not copy CCB source, third-party docs, or local skill content into app data.
-- Do not use `.external/skill-hub` as committed app content; it may be named only when documenting this boundary.
-- Local references should point to paths such as `labs/ts-agent/src/loop.ts`, `learn/00-roadmap.md`, and `reference/mechanism-comparison.md`.
+- 中文优先，必要时保留英文机制名。
+- 文案要短、准、具体。先说用户现在能看到什么、能做什么。
+- 禁止空泛词：赋能、打造、沉淀、范式、生态、底座、抓手、心智、信息熵。
+- 能写文件、命令、节点、动作，就不要写抽象名词。
+- 应用数据只保存原创摘要和引用元数据。
+- 不复制 CCB 源码、第三方正文或本地 skill 内容。
+- `.external/skill-hub` 只能用于说明边界，不得作为提交内容。
+- 本地引用路径应指向 `labs/ts-agent/src/loop.ts`、`learn/00-roadmap.md`、`reference/mechanism-comparison.md` 这类文件。
 
-## Commands
+## 命令
 
 ```powershell
 Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun install
@@ -41,11 +41,11 @@ Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build
 Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test
 ```
 
-## Verification
+## 验证
 
-Before a complete milestone is considered done, run:
+完成一个阶段前，至少运行：
 
 1. `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck`
 2. `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build`
-3. Manual UI review in desktop and narrow viewport.
-4. Diff review to confirm no `src/`, `packages/`, `docs/`, or `.external/skill-hub` content was copied or modified.
+3. 桌面和窄屏手动检查一次。
+4. 检查 diff，确认没有复制 `src/`、`packages/`、`docs/` 或 `.external/skill-hub` 内容。

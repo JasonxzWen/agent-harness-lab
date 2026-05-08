@@ -1,103 +1,73 @@
-# Knowledge Graph Visual Iteration Plan
+# 知识图谱视觉迭代计划
 
-Status: current visual direction approved after the Anthropic-style editorial pass.
+状态：当前站点使用中文优先文案和极简编辑风格。
 
-## Current Decision
+## 当前决定
 
-The app now uses an editorial showcase entry instead of a dense tool-console shell.
-The approved direction keeps:
+- 首页直接说明项目用途。
+- 首屏保留一个深色机制图。
+- 颜色、字号、间距继续遵守 `DESIGN.md`。
+- 不使用图标库、阴影、渐变和 token 外颜色。
+- 页面文案必须短、具体、少抽象词。
 
-- large asymmetric hero typography;
-- monochrome cream/ink palette from `DESIGN.md`;
-- one dark visual block as the main editorial signal;
-- a small set of low-friction navigation links;
-- three supporting capability cards below the hero.
+## 已完成
 
-The goal is not to clone Anthropic exactly. The current version intentionally borrows
-the editorial structure, then should diverge through harness-specific visual language
-and product behavior in later iterations.
+- 从旧的三栏控制台改成更清楚的页面结构。
+- 去掉首屏常驻筛选、抽屉和复杂控制。
+- 主导航改成中文：项目定位、机制地图、当前进度。
+- 图谱数据已接入：34 个节点、35 条关系、4 条路径。
+- 每个节点都有中文优先展示文案。
 
-## What Changed In This Pass
+## 下一步
 
-- Replaced the previous dashboard-like three-column UI with a landing-like editorial
-  entry page.
-- Removed permanent filter, drawer, and node-control panels from the first viewport.
-- Reduced visible actions to Research, Mechanisms, References, Learn, and the Open
-  Graph CTA.
-- Converted the graph from a dense interactive canvas preview into a dark editorial
-  visual block.
-- Removed icon-library usage, gradients, shadows, and non-token colors from source.
+### 1. 让深色图块可操作
 
-## Next Iteration Plan
+- 点击节点后打开详情。
+- 默认展示入门路径。
+- 控制项不超过 3 个。
 
-### 1. Differentiate From Anthropic Without Losing The Style
+验收：
 
-Keep the editorial layout, but make the visual identity more specific to the harness
-learning project:
+- 用户 5 秒内知道这里能点。
+- `bun run typecheck` 和 `bun run build` 通过。
 
-- replace the current polygon visual with a harness-specific diagram language;
-- use terms from agent internals, such as loop, registry, result write-back, memory,
-  permissions, and compact;
-- avoid copying Anthropic content-block composition one-to-one.
+### 2. 做详情抽屉
 
-Acceptance:
+- 展示一句机制解释。
+- 展示对应源码路径。
+- 展示可复制 Bun 命令。
+- 展示常见误解。
 
-- the page still feels editorial and restrained;
-- the page no longer reads as a direct Anthropic clone;
-- no new color token is introduced without updating `DESIGN.md`.
+验收：
 
-### 2. Turn The Dark Visual Block Into A Product Entry
+- 点击任一节点能看到详情。
+- 详情文字短、具体、无禁用词。
+- `Esc` 能关闭详情。
 
-Make the dark block a deliberate entry point rather than decorative media:
+### 3. 做路径和筛选
 
-- add a lightweight state for the selected mechanism;
-- reveal one mechanism path at a time;
-- keep controls minimal and text-based;
-- avoid reintroducing sidebars or permanent drawers in the hero viewport.
+- 支持入门、上下文、安全、进阶四条路径。
+- 支持按主题筛选节点。
+- 支持搜索节点。
 
-Acceptance:
+验收：
 
-- the user can understand the core interaction in under five seconds;
-- visible controls stay within three primary actions;
-- typecheck and build pass.
+- 路径切换后节点明显变化。
+- 窄屏不遮挡内容。
 
-### 3. Reintroduce Knowledge Graph Data Behind The Editorial Surface
+### 4. 做视觉检查
 
-Move from static presentation to typed graph content:
+- 截桌面图和窄屏图。
+- 检查标题不重叠。
+- 检查深色图块首屏可见。
 
-- define the first typed graph model;
-- add 12-18 high-signal harness nodes first, not the full 30+ node set;
-- connect references by metadata only;
-- keep long explanations behind progressive disclosure.
+## 暂缓决定
 
-Acceptance:
+- 是否引入 React Flow。
+- 是否增加 D3 布局。
+- 是否增加截图自动测试。
 
-- graph data is typed;
-- no copied CCB source or third-party body content enters app data;
-- the first viewport remains uncluttered.
-
-### 4. Add Responsive And Visual Regression Checks
-
-Formalize visual verification:
-
-- capture desktop and narrow viewport screenshots;
-- check that hero text does not overlap;
-- check that the dark block remains visible in the first viewport;
-- add a lightweight Playwright screenshot script when test tooling is introduced.
-
-Acceptance:
-
-- desktop and mobile screenshots are attached to each visual PR;
-- `bun run typecheck` and `bun run build` pass before review.
-
-## Deferred Decisions
-
-- Whether to extend `DESIGN.md` with additional Anthropic-like tinted block tokens.
-- Whether OpenSpec should govern the eventual multi-state graph explorer.
-- Whether React Flow should appear in the first viewport or only after entering the
-  graph explorer.
-
-## Verification Commands
+## 验证命令
 
 ```powershell
 Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck

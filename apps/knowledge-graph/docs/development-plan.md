@@ -195,7 +195,7 @@ fix: improve knowledge graph accessibility and safeguards
 
 ## MVP 完成标准
 
-- 首屏直接进入知识图谱探索器。
+- 首屏直接进入知识图谱。
 - 34 个左右知识节点可浏览。
 - 搜索、主题筛选、路径模式、progress 可用。
 - detail drawer 内容完整。

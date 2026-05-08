@@ -1,4 +1,6 @@
 import { expect, test } from "bun:test";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import {
   knowledgeEdges,
   knowledgeNodes,
@@ -28,6 +30,18 @@ const forbiddenCopyTerms = [
   "闭环",
   "数据底座",
   "高信息密度",
+];
+const projectRoot = resolve(import.meta.dir, "../../..");
+const userFacingDocs = [
+  "README.md",
+  "apps/knowledge-graph/README.md",
+  "apps/knowledge-graph/docs/overall-design.md",
+  "apps/knowledge-graph/docs/development-plan.md",
+  "apps/knowledge-graph/docs/milestones.md",
+  "apps/knowledge-graph/docs/visual-iteration-plan.md",
+  "learn/01-typescript-bun.md",
+  "learn/03-zero-to-one-plan.md",
+  "learn/06-mermaid-learning-map.md",
 ];
 
 test("seed graph keeps the MVP node count in range", () => {
@@ -109,6 +123,16 @@ test("learning path copy stays short and plain", () => {
 
     for (const term of forbiddenCopyTerms) {
       expect(text.includes(term)).toBe(false);
+    }
+  }
+});
+
+test("user-facing docs avoid forbidden filler terms", () => {
+  for (const relativePath of userFacingDocs) {
+    const content = readFileSync(resolve(projectRoot, relativePath), "utf8");
+
+    for (const term of forbiddenCopyTerms) {
+      expect(content.includes(term)).toBe(false);
     }
   }
 });

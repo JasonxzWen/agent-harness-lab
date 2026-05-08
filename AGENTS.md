@@ -98,8 +98,8 @@ feat: 添加最小 agent loop 实验
 - 用户喜欢用 Mermaid 图理解学习路线、模块关系、组件映射和工作流。
 - Mermaid 节点内换行统一使用 `<br/>`，不要使用字面量 `\n`。
 - 中文 Markdown 文件不要用 PowerShell 做整文件读写替换；优先用 `apply_patch`，必要时用 Node.js 按 UTF-8 读写并校验。
-- 教学时给用户可复制运行的命令，必须带上对应工作路径，例如 `Set-Location D:\learn-cc\labs\ts-agent; bun run dev "hello"`。
-- 展示型前端命令也必须带完整路径，例如 `Set-Location D:\learn-cc\apps\knowledge-graph; bun run dev`。
+- 教学时给用户可复制运行的命令，必须带上对应工作路径，例如 `Set-Location D:\agent-harness-lab\labs\ts-agent; bun run dev "hello"`。
+- 展示型前端命令也必须带完整路径，例如 `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run dev`。
 - 教学中改动 agent 代码时，要给出各文件变更摘要，并用 Mermaid 画出这些变更如何组成新的功能模块。
 - 能使用时序图表达的时序，就优先使用 Mermaid `sequenceDiagram`，不要改用其他 Mermaid 图形，以免时序关系不直观。
 - 教学中展示变更文件时，要标出用户需要重点看的结构、函数、类型定义及其行号。

@@ -529,7 +529,7 @@ export const knowledgeNodes: KnowledgeNode[] = [
     title: "Vite React Shell",
     theme: "runtime",
     layer: 1,
-    tags: ["frontend", "vite", "showcase"],
+    tags: ["frontend", "vite", "site"],
     summary:
       "The repository-level front-end surface that turns harness learning into a browsable product artifact.",
     prerequisites: ["bun-runtime"],
@@ -537,7 +537,7 @@ export const knowledgeNodes: KnowledgeNode[] = [
     labFiles: [ref.implementationPlan],
     ccbMappings: emptyReferences,
     externalLinks: emptyReferences,
-    misconceptions: ["The showcase app belongs at repo level, not hidden inside the teaching harness lab."],
+    misconceptions: ["前端应用放在仓库级 apps，不放进 lab 内部。"],
     demoCommands: ["Set-Location D:\\agent-harness-lab\\apps\\knowledge-graph; bun run build"],
     compare: {
       teachingVersion: "A static Vite app that renders typed graph data.",
