@@ -4,7 +4,7 @@ export const learningPaths = [
   {
     id: "beginner",
     title: "入门路径 / Beginner Path",
-    summary: "从 message 状态一路看到 tool result write-back 的最小闭环。",
+    summary: "从 message 状态看到 tool result write-back 的完整流程。",
     nodeIds: [
       "message",
       "agent-loop",
@@ -47,7 +47,7 @@ export const learningPaths = [
   {
     id: "advanced",
     title: "进阶路径 / Advanced Path",
-    summary: "串起 model boundary、task runtime、多 agent 隔离、MCP 和 plugin。",
+    summary: "学习模型边界、任务运行、多 agent、MCP 和插件。",
     nodeIds: [
       "model-adapter",
       "tool-schema",

@@ -34,9 +34,17 @@
 - 使用 Vite + React + TypeScript。
 - 所有命令使用 Bun。
 - 页面打开后直接进入知识图谱探索器，不做营销 landing page。
-- 知识图谱使用 React Flow；D3 只作为后续布局或动效增强。
+- 知识图谱先用 typed data + React/CSS 实现。只有交互复杂度需要时，才评估 React Flow。
 - 应用可以引用 `labs/ts-agent/`、`learn/`、`reference/` 中的路径，但不要复制 CCB 源码、第三方正文或 skill-hub 内容。
 - 不要引入远程分析脚本、第三方跟踪或危险动态 HTML。
+
+## 文案规则
+
+- 中文优先，英文术语只在必要时保留。
+- 写短句，少用抽象词。用户应该一眼看懂“这是什么、能做什么、下一步是什么”。
+- 禁止空泛词和 AI 味：赋能、打造、沉淀、范式、生态、底座、抓手、心智、信息熵。
+- 文档给可执行步骤；页面给当前状态和入口。
+- 解释机制时，优先写文件、命令、输入、输出，不写泛泛而谈的概念包装。
 
 ## 模块推进规则
 
@@ -69,20 +77,20 @@
 改 `labs/ts-agent` 后运行：
 
 ```powershell
-Set-Location D:\learn-cc\labs\ts-agent; bun run typecheck
+Set-Location D:\agent-harness-lab\labs\ts-agent; bun run typecheck
 ```
 
 改 `apps/knowledge-graph` 后运行：
 
 ```powershell
-Set-Location D:\learn-cc\apps\knowledge-graph; bun run typecheck
-Set-Location D:\learn-cc\apps\knowledge-graph; bun run build
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build
 ```
 
 改根仓库 CCB 源码后运行：
 
 ```powershell
-Set-Location D:\learn-cc; bun run typecheck
+Set-Location D:\agent-harness-lab; bun run typecheck
 ```
 
 ## 文档规则

@@ -14,6 +14,21 @@ const referenceKinds = new Set([
   "ccb-source-mapping",
   "external-link",
 ]);
+const forbiddenCopyTerms = [
+  "赋能",
+  "打造",
+  "沉淀",
+  "范式",
+  "生态",
+  "底座",
+  "抓手",
+  "心智",
+  "信息熵",
+  "可探索",
+  "闭环",
+  "数据底座",
+  "高信息密度",
+];
 
 test("seed graph keeps the MVP node count in range", () => {
   expect(knowledgeNodes.length).toBeGreaterThanOrEqual(25);
@@ -68,5 +83,32 @@ test("nodes have Chinese-first display copy", () => {
     expect(copy.title.length).toBeGreaterThan(0);
     expect(copy.summary.length).toBeGreaterThan(0);
     expect(/[\u4e00-\u9fff]/.test(`${copy.title}${copy.summary}`)).toBe(true);
+  }
+});
+
+test("display copy stays short and plain", () => {
+  for (const node of knowledgeNodes) {
+    const copy = nodeDisplayCopy[node.id];
+    const text = `${copy.title}${copy.summary}`;
+
+    expect(copy.title.length).toBeLessThanOrEqual(36);
+    expect(copy.summary.length).toBeLessThanOrEqual(42);
+
+    for (const term of forbiddenCopyTerms) {
+      expect(text.includes(term)).toBe(false);
+    }
+  }
+});
+
+test("learning path copy stays short and plain", () => {
+  for (const path of learningPaths) {
+    const text = `${path.title}${path.summary}`;
+
+    expect(path.title.length).toBeLessThanOrEqual(36);
+    expect(path.summary.length).toBeLessThanOrEqual(48);
+
+    for (const term of forbiddenCopyTerms) {
+      expect(text.includes(term)).toBe(false);
+    }
   }
 });

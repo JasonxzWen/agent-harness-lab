@@ -11,15 +11,15 @@ Claude Code 是一个 CLI agent harness。它需要同时处理：
 - 异步流程：API streaming、工具执行、后台任务、用户中断。
 - 终端 UI：React/Ink 组件模型。
 - 跨平台运行：macOS、Linux、Windows。
-- 与 JavaScript 生态集成：MCP、Node 包、终端库、编辑器协议。
+- 与 JavaScript 工具链集成：MCP、Node 包、终端库、编辑器协议。
 
 TypeScript 的优势正好对应这些需求：
 
 - 类型系统能描述复杂消息结构，减少工具调用和状态机错误。
-- ESM 和 npm 生态适合 CLI、SDK、协议库集成。
+- ESM 和 npm 适合 CLI、SDK、协议库集成。
 - `async/await`、AsyncGenerator 很适合 streaming 和 event pipeline。
-- React/Ink 可以复用 React 心智模型构建终端 UI。
-- 编译后仍然运行在 JavaScript 生态里，分发和集成成本低。
+- React/Ink 可以复用 React 的组件写法构建终端 UI。
+- 编译后仍然运行在 JavaScript 工具链里，分发和集成成本低。
 
 ## 为什么使用 Bun
 
@@ -29,7 +29,7 @@ Bun 在这个项目里主要提供：
 - 快速包管理：`bun install`
 - 内置测试：`bun test`
 - 打包能力：`Bun.build()`
-- 对 Node 生态的较高兼容性
+- 对 Node 包的较高兼容性
 
 Claude Code/CCB 这类 CLI 工具重视启动速度和单文件/少文件分发，Bun 的运行和构建模型比较匹配。
 

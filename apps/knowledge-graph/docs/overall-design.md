@@ -4,19 +4,19 @@
 
 ## 产品定位
 
-`apps/knowledge-graph` 是 `agent-harness-lab` 的展示型前端工程，用来展示：
+`apps/knowledge-graph` 是 `agent-harness-lab` 的展示型前端工程，用来说明：
 
 1. 对 Claude Code-like harness 机制的系统理解。
 2. 前端信息架构、交互设计和可访问性能力。
 3. TypeScript 数据建模、React 组件拆分和 Bun 工程化能力。
 
-它不替代 `labs/ts-agent/`。`labs/ts-agent/` 继续承载教学版 harness 实现，知识图谱负责把这些机制组织成可探索的学习界面。
+它不替代 `labs/ts-agent/`。`labs/ts-agent/` 继续放教学版 harness 代码，知识图谱负责把这些机制组织成可阅读、可操作的学习界面。
 
 ## 信息架构
 
 ```mermaid
 flowchart TD
-    A["知识图谱探索器<br/>首屏直接进入工作台"] --> B["顶部工具栏<br/>搜索 / 路径 / 对照模式"]
+    A["知识图谱<br/>首屏直接进入工作区"] --> B["顶部工具栏<br/>搜索 / 路径 / 对照模式"]
     A --> C["左侧筛选区<br/>主题 / layer / tag / progress"]
     A --> D["知识图谱主画布<br/>缩放 / 拖拽 / 节点关系"]
     A --> E["右侧详情抽屉<br/>机制 / 引用 / demo / 误解"]
@@ -202,7 +202,7 @@ export type KnowledgeEdge = {
 ## 视觉方向
 
 - 像专业开发工具和知识操作台。
-- 高信息密度，但用层级、留白和清晰边界保持可扫读。
+- 内容可以多，但每一屏要能快速扫读。
 - 避免营销 landing page、空洞 hero、通用紫色渐变。
 - 节点是结构入口，不承载长文。
 - 详情抽屉承载解释、引用和 demo。

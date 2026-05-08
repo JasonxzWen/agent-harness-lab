@@ -41,7 +41,7 @@ bun run dev "hello agent"
 
 学习目标：
 
-- 理解 agent 的最小闭环。
+- 理解 agent 的最小工作流程。
 - 理解 `messages` 不是聊天展示，而是下一轮推理输入。
 - 理解 `tool_result` 必须写回 messages。
 

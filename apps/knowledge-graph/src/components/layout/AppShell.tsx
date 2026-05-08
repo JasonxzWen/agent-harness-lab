@@ -4,15 +4,15 @@ import { GraphToolbar } from "./GraphToolbar";
 const featureCards = [
   {
     label: "机制地图",
-    summary: "从 Message 到 tool_result write-back，看清 agent loop 的闭环。",
+    summary: "按顺序看消息、循环、工具和结果写回。",
   },
   {
     label: "源码引用",
-    summary: "每个机制都会连接到本仓库 lab 文件和 CCB 阅读映射。",
+    summary: "每个机制对应一个本仓库文件。",
   },
   {
     label: "实验命令",
-    summary: "用 Bun 命令跑教学版 harness，先实现，再对照生产版。",
+    summary: "复制命令，在 labs/ts-agent 跑起来。",
   },
 ] as const;
 
@@ -23,13 +23,11 @@ export function AppShell() {
       <main className="anthropic-page" aria-label="Agent harness 知识图谱工作台">
         <section className="hero-section" id="research">
           <h1>
-            把 <span>Agent Harness</span> 拆成能学会的{" "}
-            <span>机制地图</span>
+            用一张中文图，学会 <span>Agent Harness</span>
           </h1>
           <p>
-            这里不是 Claude Code 复刻版，而是一个中文优先的学习作品：
-            用 TypeScript/Bun 自己实现小型 harness，再把 loop、tools、
-            memory、permissions、subagents 等机制做成可探索图谱。
+            先用 TypeScript/Bun 写一个小 harness，再把每个机制做成节点。
+            你可以按路径学习，也可以直接看源码和命令。
           </p>
         </section>
 
@@ -37,10 +35,10 @@ export function AppShell() {
 
         <section className="feature-band" id="references" aria-label="当前站点能力">
           <div>
-            <h2>当前版本已经完成数据底座，正在进入交互图谱。</h2>
+            <h2>现在能看什么？</h2>
             <p>
-              你现在看到的是 M2：34 个机制节点、35 条关系、4 条学习路径。
-              下一步会把这些节点变成可点击、可筛选、可查看详情的学习工作台。
+              当前有 34 个节点、35 条关系、4 条路径。下一步做点击详情、
+              筛选和学习进度。
             </p>
           </div>
           <div className="feature-cards">

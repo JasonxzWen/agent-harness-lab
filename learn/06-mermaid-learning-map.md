@@ -66,7 +66,7 @@ flowchart TD
 
 - `messages[]` 是下一轮模型推理输入，不只是显示记录。
 - `tool_result` 必须写回 `messages[]`。
-- 这就是 agent 从“会说话”变成“会做事”的最小闭环。
+- 这就是 agent 从“会说话”变成“会做事”的最小流程。
 
 ## 4. 教学版到生产版的组件映射
 
@@ -198,7 +198,7 @@ flowchart TD
     E --> E2["notes/questions.md"]
 ```
 
-## 8. 当前阶段你应该盯住的闭环
+## 8. 当前阶段你应该盯住的流程
 
 ```mermaid
 flowchart TD

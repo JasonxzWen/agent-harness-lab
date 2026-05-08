@@ -2,7 +2,7 @@
 
 状态：editorial MVP 已上线开发，GitHub Pages 发布基建已配置。
 
-这是 `agent-harness-lab` 的仓库级展示型前端工程。目标是把 Claude Code-like agent harness 的学习内容从线性教程升级成可搜索、可筛选、可对照、可推进进度的知识图谱探索器。
+这是 `agent-harness-lab` 的仓库级展示型前端工程。目标是把 Claude Code-like agent harness 的学习内容做成可搜索、可筛选、可对照的知识图谱。
 
 界面文案采用中文优先、英文机制术语辅助的方式，避免展示站点只剩抽象英文概念而不说明当前学习价值。
 
@@ -20,7 +20,7 @@ https://jasonxzwen.github.io/agent-harness-lab/
 
 ## 产品边界
 
-MVP 打开后直接进入知识图谱探索器，不做 landing page。
+MVP 打开后直接进入知识图谱，不做 landing page。
 
 核心功能：
 
@@ -40,7 +40,7 @@ MVP 打开后直接进入知识图谱探索器，不做 landing page。
 - GitHub Pages
 - GitHub Actions
 
-后续再按需要引入 React Flow 和状态管理。
+后续按交互复杂度决定是否引入 React Flow 和状态管理。
 
 ## 常用命令
 
