@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { getNodeDetailCopy, getNodeDisplayCopy } from "../../data/copy";
 import { themeLabels } from "../../data/knowledgeGraph";
 import type {
@@ -43,9 +43,14 @@ export function DetailDrawer({
   onProgressChange,
 }: DetailDrawerProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const [copiedReferenceId, setCopiedReferenceId] = useState<string | null>(null);
   const displayCopy = getNodeDisplayCopy(node);
   const detailCopy = getNodeDetailCopy(node);
-  const sourceReferences = [...node.labFiles, ...node.ccbMappings];
+  const sourceReferences = [
+    ...node.labFiles,
+    ...node.ccbMappings,
+    ...node.externalLinks,
+  ];
   const firstSourcePath = sourceReferences[0]?.target ?? "查看本节点源码引用";
   const firstCommand =
     node.demoCommands[0] ??
@@ -67,6 +72,24 @@ export function DetailDrawer({
       text: firstSourcePath,
     },
   ];
+  const referenceGroups = useMemo(
+    () =>
+      Object.entries(referenceLabels)
+        .map(([kind, label]) => ({
+          kind: kind as SourceReference["kind"],
+          label,
+          references: sourceReferences.filter((reference) => reference.kind === kind),
+        }))
+        .filter((group) => group.references.length > 0),
+    [sourceReferences],
+  );
+
+  function copyReferenceTarget(reference: SourceReference) {
+    void navigator.clipboard
+      ?.writeText(reference.target)
+      .catch(() => undefined);
+    setCopiedReferenceId(reference.id);
+  }
 
   useEffect(() => {
     closeButtonRef.current?.focus();
@@ -161,16 +184,33 @@ export function DetailDrawer({
         </article>
       </section>
 
-      <section className="detail-section">
-        <h3>源码路径</h3>
-        <ul className="source-list">
-          {sourceReferences.map((reference) => (
-            <li key={reference.id}>
-              <span>{referenceLabels[reference.kind]}</span>
-              <code>{reference.target}</code>
-            </li>
+      <section className="detail-section reference-panel" aria-label="引用面板">
+        <h3>引用面板</h3>
+        <div>
+          {referenceGroups.map((group) => (
+            <section key={group.kind} aria-label={group.label}>
+              <h4>{group.label}</h4>
+              <ul>
+                {group.references.map((reference) => (
+                  <li key={reference.id}>
+                    <div>
+                      <span>{reference.title}</span>
+                      <strong>{referenceLabels[reference.kind]}</strong>
+                    </div>
+                    <code>{reference.target}</code>
+                    {reference.note ? <p>{reference.note}</p> : null}
+                    <button
+                      type="button"
+                      onClick={() => copyReferenceTarget(reference)}
+                    >
+                      {copiedReferenceId === reference.id ? "已复制" : "复制路径"}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </section>
           ))}
-        </ul>
+        </div>
       </section>
 
       <section className="detail-section">

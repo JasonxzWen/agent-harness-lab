@@ -197,8 +197,8 @@
         "Set-Location D:\\agent-harness-lab\\apps\\knowledge-graph; bun run build"
       ],
       "priority": 9,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "已实现 drawer 引用面板，按本仓库文档、实验源码、CCB 对照路径、外部链接分组；Playwright 截图 output/playwright/us009-references.png 已确认路径、分组和复制反馈。"
     },
     {
       "id": "US-010",

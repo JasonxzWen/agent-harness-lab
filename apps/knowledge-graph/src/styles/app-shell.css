@@ -750,7 +750,8 @@ p {
 .detail-drawer-header span,
 .learning-frame span,
 .detail-section h3,
-.source-list span,
+.reference-panel h4,
+.reference-panel strong,
 .compare-section dt,
 .pending-notice,
 .feature-cards span {
@@ -982,12 +983,86 @@ p {
   padding-top: 16px;
 }
 
-.source-list code,
+.reference-panel code,
 .command-block code {
   font-family: var(--font-mono);
   font-size: 13px;
   line-height: 1.35;
   overflow-wrap: anywhere;
+}
+
+.reference-panel > div {
+  display: grid;
+  gap: 18px;
+}
+
+.reference-panel section {
+  display: grid;
+  gap: 12px;
+}
+
+.reference-panel ul {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.reference-panel li {
+  display: grid;
+  gap: 10px;
+  border: 1px solid var(--color-bg);
+  padding: 14px;
+}
+
+.reference-panel li > div {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.reference-panel li span {
+  font-family: var(--font-zh-display), var(--font-display);
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.reference-panel p {
+  font-family: var(--font-zh-serif), var(--font-serif);
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.reference-panel button {
+  justify-self: start;
+  border: 1px solid var(--color-bg);
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-bg);
+  padding: 8px 12px;
+  font-family: var(--font-zh-display), var(--font-display);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.reference-panel button:hover,
+.reference-panel button:focus-visible,
+.reference-panel button:active {
+  background: var(--color-bg);
+  color: var(--color-dark);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.reference-panel button:focus-visible {
+  outline: 1px solid var(--color-bg);
+  outline-offset: 4px;
 }
 
 .command-block {

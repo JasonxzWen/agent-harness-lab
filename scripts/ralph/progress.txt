@@ -323,3 +323,35 @@ Branch: ralph/knowledge-graph-completion
   - Progress does not add new knowledge content.
   - Nodes still open the drawer with the `why / what / how` visual path from `US-004`.
 ---
+
+## 2026-05-08T18:12:00+08:00 - US-009 completion
+- What was implemented
+  - Replaced the drawer source-path list with a grouped reference panel.
+  - The panel groups local docs, lab source, CCB mapping paths, and external links.
+  - Each reference shows title, type, path, optional note, and a copy-path action.
+  - Clipboard failure is ignored safely while keeping visible click feedback.
+- Files changed
+  - `apps/knowledge-graph/src/components/drawer/DetailDrawer.tsx`
+  - `apps/knowledge-graph/src/styles/app-shell.css`
+  - `scripts/ralph/prd.json`
+  - `scripts/ralph/progress.txt`
+  - `output/playwright/us009-references.png`
+- Checks run
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck` passed.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test` passed, 10 tests.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build` passed.
+- Browser screenshot result
+  - Local in-app browser remained blocked for local URLs.
+  - Playwright fallback screenshot passed: `output/playwright/us009-references.png`.
+- Hover / focus / active / click feedback
+  - Reference copy buttons use border, underline, focus outline, and active background feedback.
+  - Click changes the current button text from `复制路径` to `已复制`.
+  - Empty reference groups are filtered out before render.
+- Global thinking check
+  - The reference panel sits inside the existing drawer; it does not add a new top-level section.
+  - The panel adds more detail only after why / what / how, so the first read path stays clear.
+  - Search, filter, path mode, and progress controls remain unchanged.
+- why / what / how
+  - Reference panel does not add new knowledge content.
+  - Nodes still open the drawer with the `why / what / how` visual path from `US-004`.
+---
