@@ -1,12 +1,18 @@
 import { useEffect, useRef } from "react";
 import { getNodeDetailCopy, getNodeDisplayCopy } from "../../data/copy";
 import { themeLabels } from "../../data/knowledgeGraph";
-import type { KnowledgeNode, SourceReference } from "../../types/graph";
+import type {
+  KnowledgeNode,
+  ProgressStatus,
+  SourceReference,
+} from "../../types/graph";
 import { CommandBlock } from "../ui/CommandBlock";
 
 type DetailDrawerProps = {
   node: KnowledgeNode;
+  progressStatus: ProgressStatus;
   onClose: () => void;
+  onProgressChange: (status: ProgressStatus) => void;
 };
 
 const referenceLabels: Record<SourceReference["kind"], string> = {
@@ -16,7 +22,26 @@ const referenceLabels: Record<SourceReference["kind"], string> = {
   "external-link": "外部链接",
 };
 
-export function DetailDrawer({ node, onClose }: DetailDrawerProps) {
+const progressLabels = {
+  "not-started": "未开始",
+  learning: "学习中",
+  implemented: "已实现",
+  reviewed: "已复盘",
+} satisfies Record<ProgressStatus, string>;
+
+const progressOptions: ProgressStatus[] = [
+  "not-started",
+  "learning",
+  "implemented",
+  "reviewed",
+];
+
+export function DetailDrawer({
+  node,
+  progressStatus,
+  onClose,
+  onProgressChange,
+}: DetailDrawerProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const displayCopy = getNodeDisplayCopy(node);
   const detailCopy = getNodeDetailCopy(node);
@@ -95,6 +120,25 @@ export function DetailDrawer({ node, onClose }: DetailDrawerProps) {
             </li>
           ))}
         </ol>
+      </section>
+
+      <section className="progress-editor" aria-label="节点学习进度">
+        <div>
+          <span>PROGRESS</span>
+          <strong>{progressLabels[progressStatus]}</strong>
+        </div>
+        <div>
+          {progressOptions.map((status) => (
+            <button
+              data-active={progressStatus === status}
+              key={status}
+              type="button"
+              onClick={() => onProgressChange(status)}
+            >
+              {progressLabels[status]}
+            </button>
+          ))}
+        </div>
       </section>
 
       <section className="learning-frame" aria-label="why what how 学习卡片">

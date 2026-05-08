@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   graphStats,
   knowledgeEdges,
@@ -57,12 +57,57 @@ type DragState = {
   originY: number;
 };
 
+type ProgressByNode = Partial<Record<string, ProgressStatus>>;
+
+const progressStorageKey = "knowledge-graph-progress";
+const progressStatuses: ProgressStatus[] = [
+  "not-started",
+  "learning",
+  "implemented",
+  "reviewed",
+];
+
 const progressLabels = {
   "not-started": "未开始",
   learning: "学习中",
   implemented: "已实现",
   reviewed: "已复盘",
 } satisfies Record<ProgressStatus, string>;
+
+function isProgressStatus(value: unknown): value is ProgressStatus {
+  return (
+    typeof value === "string" &&
+    progressStatuses.includes(value as ProgressStatus)
+  );
+}
+
+function readStoredProgress(): ProgressByNode {
+  if (typeof window === "undefined") {
+    return {};
+  }
+
+  const rawValue = window.localStorage.getItem(progressStorageKey);
+
+  if (!rawValue) {
+    return {};
+  }
+
+  try {
+    const parsedValue: unknown = JSON.parse(rawValue);
+
+    if (!parsedValue || typeof parsedValue !== "object") {
+      return {};
+    }
+
+    return Object.fromEntries(
+      Object.entries(parsedValue as Record<string, unknown>).filter(
+        ([nodeId, status]) => nodeById.has(nodeId) && isProgressStatus(status),
+      ),
+    ) as ProgressByNode;
+  } catch {
+    return {};
+  }
+}
 
 function getDisplayTitle(nodeId: string) {
   const node = nodeById.get(nodeId);
@@ -170,6 +215,8 @@ export function KnowledgeGraphCanvas() {
   const [activePathId, setActivePathId] = useState<LearningPathId>(
     "beginner",
   );
+  const [progressByNode, setProgressByNode] =
+    useState<ProgressByNode>(readStoredProgress);
   const [viewport, setViewport] = useState<ViewportState>({
     x: 0,
     y: 0,
@@ -246,6 +293,25 @@ export function KnowledgeGraphCanvas() {
       })),
     [searchMatchedNodes],
   );
+  const progressSummary = useMemo(() => {
+    const counts = progressStatuses.reduce(
+      (summary, status) => ({
+        ...summary,
+        [status]: 0,
+      }),
+      {} as Record<ProgressStatus, number>,
+    );
+
+    for (const node of knowledgeNodes) {
+      counts[progressByNode[node.id] ?? "not-started"] += 1;
+    }
+
+    return counts;
+  }, [progressByNode]);
+
+  useEffect(() => {
+    window.localStorage.setItem(progressStorageKey, JSON.stringify(progressByNode));
+  }, [progressByNode]);
 
   function zoomBy(delta: number) {
     setViewport((current) => ({
@@ -296,16 +362,34 @@ export function KnowledgeGraphCanvas() {
   }
 
   function getProgressStatus(nodeId: string): ProgressStatus {
-    if (selectedNodeId === nodeId) {
-      return "learning";
-    }
+    return progressByNode[nodeId] ?? "not-started";
+  }
 
-    return "not-started";
+  function setNodeProgress(nodeId: string, status: ProgressStatus) {
+    setProgressByNode((current) => {
+      const nextProgress = { ...current };
+
+      if (status === "not-started") {
+        delete nextProgress[nodeId];
+      } else {
+        nextProgress[nodeId] = status;
+      }
+
+      return nextProgress;
+    });
   }
 
   function selectNode(nodeId: string) {
     setSelectedNodeId(nodeId);
     setPreviewNodeId(nodeId);
+    setProgressByNode((current) =>
+      current[nodeId]
+        ? current
+        : {
+            ...current,
+            [nodeId]: "learning",
+          },
+    );
   }
 
   function closeSelectedNode() {
@@ -323,6 +407,10 @@ export function KnowledgeGraphCanvas() {
         .querySelector<HTMLButtonElement>(`button[data-node-id="${nodeId}"]`)
         ?.focus();
     });
+  }
+
+  function clearProgress() {
+    setProgressByNode({});
   }
 
   return (
@@ -403,6 +491,25 @@ export function KnowledgeGraphCanvas() {
                 </button>
               ))}
             </div>
+          </div>
+          <div className="progress-control" aria-label="学习进度">
+            <div className="progress-control-header">
+              <span>学习进度</span>
+              <strong>
+                {knowledgeNodes.length - progressSummary["not-started"]} /{" "}
+                {knowledgeNodes.length} 已开始
+              </strong>
+            </div>
+            <div className="progress-control-counts">
+              {progressStatuses.map((status) => (
+                <span key={status}>
+                  {progressLabels[status]} {progressSummary[status]}
+                </span>
+              ))}
+            </div>
+            <button type="button" onClick={clearProgress}>
+              清除本地进度
+            </button>
           </div>
           <p>拖动画布。点击节点看详情。</p>
           <div>
@@ -560,7 +667,12 @@ export function KnowledgeGraphCanvas() {
       </div>
 
       {selectedNode ? (
-        <DetailDrawer node={selectedNode} onClose={closeSelectedNode} />
+        <DetailDrawer
+          node={selectedNode}
+          progressStatus={getProgressStatus(selectedNode.id)}
+          onClose={closeSelectedNode}
+          onProgressChange={(status) => setNodeProgress(selectedNode.id, status)}
+        />
       ) : (
         <aside
           aria-label="节点详情等待区"
@@ -580,7 +692,7 @@ export function KnowledgeGraphCanvas() {
       </div>
 
       <p className="pending-notice">
-        暂未实现：学习进度保存。当前可搜索、主题筛选、路径切换、拖动画布、缩放视口、点击节点查看详情。
+        暂未实现：引用分组面板、移动端最终验收。当前可搜索、筛选、切换路径、保存进度并查看详情。
       </p>
 
       <ul className="theme-grid" aria-label="知识图谱主题数量">

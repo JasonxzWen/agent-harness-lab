@@ -288,3 +288,38 @@ Branch: ralph/knowledge-graph-completion
   - Path mode does not add new knowledge content.
   - Nodes opened from any path still show the `why / what / how` visual path from `US-004`.
 ---
+
+## 2026-05-08T18:02:00+08:00 - US-008 completion
+- What was implemented
+  - Added per-node progress states: `not-started`, `learning`, `implemented`, and `reviewed`.
+  - Progress is persisted in `localStorage` and restored after reload.
+  - Clicking a new node moves it from `not-started` to `learning`.
+  - Added drawer progress buttons and a graph-level `清除本地进度` action.
+- Files changed
+  - `apps/knowledge-graph/src/components/graph/KnowledgeGraphCanvas.tsx`
+  - `apps/knowledge-graph/src/components/drawer/DetailDrawer.tsx`
+  - `apps/knowledge-graph/src/styles/app-shell.css`
+  - `scripts/ralph/prd.json`
+  - `scripts/ralph/progress.txt`
+  - `output/playwright/us008-reviewed.png`
+  - `output/playwright/us008-restored.png`
+  - `output/playwright/us008-cleared.png`
+- Checks run
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck` passed.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test` passed, 10 tests.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build` passed.
+- Browser screenshot result
+  - Local in-app browser remained blocked for local URLs.
+  - Playwright fallback screenshots passed: `output/playwright/us008-reviewed.png`, `output/playwright/us008-restored.png`, and `output/playwright/us008-cleared.png`.
+- Hover / focus / active / click feedback
+  - Progress buttons use the same border, underline, and token background language as other controls.
+  - Selected progress has a persistent token background.
+  - Clear progress visibly resets the summary count and node labels.
+- Global thinking check
+  - The progress area adds useful state without adding a new page section.
+  - It sits inside existing graph controls, so the interaction path stays local to the graph.
+  - Reference panel, mobile polish, and final audit remain incomplete.
+- why / what / how
+  - Progress does not add new knowledge content.
+  - Nodes still open the drawer with the `why / what / how` visual path from `US-004`.
+---

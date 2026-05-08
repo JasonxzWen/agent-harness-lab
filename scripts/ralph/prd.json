@@ -175,8 +175,8 @@
         "Set-Location D:\\agent-harness-lab\\apps\\knowledge-graph; bun run build"
       ],
       "priority": 8,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "2026-05-08: 完成节点进度状态、localStorage 持久化、刷新恢复、清除本地进度入口和 drawer 状态切换。截图：output/playwright/us008-reviewed.png、output/playwright/us008-restored.png、output/playwright/us008-cleared.png。验证：typecheck/test/build 通过。"
     },
     {
       "id": "US-009",
