@@ -1,0 +1,14 @@
+# Ralph Progress Log
+Started: 2026-05-08T00:00:00+08:00
+Project: KnowledgeGraphCompletion
+Branch: ralph/knowledge-graph-completion
+
+## Codebase Patterns
+
+- Knowledge graph work lives in `apps/knowledge-graph` and uses Bun, Vite, React, and TypeScript.
+- Before editing UI stories, read `AGENTS.md`, `DESIGN.md`, and `apps/knowledge-graph/AGENTS.md`.
+- Keep user-facing copy Chinese-first, short, and concrete. Avoid the forbidden filler terms listed in tests.
+- Do not submit `.external/`, `node_modules`, `dist`, `labs/ts-agent/workspace`, or copied CCB / skill-hub / third-party body text.
+- Use existing typed graph data and React/CSS first. Do not add a new icon library.
+
+---
