@@ -189,3 +189,36 @@ Branch: ralph/knowledge-graph-completion
   - `why`, `what`, and `how` are now visible both as cards and as a compact path.
   - The visual path uses only local node copy and source-path metadata.
 ---
+
+## 2026-05-08T17:46:00+08:00 - US-005 completion
+- What was implemented
+  - Added a search input to the graph controls.
+  - Search matches display title, summary, tags, lab source paths, and CCB mapping paths.
+  - Filtered graph nodes, visible edges, header counts, and theme counts update immediately.
+  - Empty results show a Chinese message and a clear-search action.
+- Files changed
+  - `apps/knowledge-graph/src/components/graph/KnowledgeGraphCanvas.tsx`
+  - `apps/knowledge-graph/src/styles/app-shell.css`
+  - `scripts/ralph/prd.json`
+  - `scripts/ralph/progress.txt`
+  - `output/playwright/us005-search.png`
+  - `output/playwright/us005-empty.png`
+- Checks run
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck` passed.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test` passed, 10 tests.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build` passed.
+- Browser screenshot result
+  - Local in-app browser remained blocked for local URLs.
+  - Playwright fallback screenshots passed: `output/playwright/us005-search.png` and `output/playwright/us005-empty.png`.
+- Hover / focus / active / click feedback
+  - Search input hover, focus, and active states switch to the token background and keep visible text contrast.
+  - Clear buttons use the same border, underline, and token background feedback as graph controls.
+  - Node click and drawer behavior remain unchanged.
+- Global thinking check
+  - Search adds one control above zoom, but it sits inside the existing graph controls and does not cover nodes.
+  - Empty results are explicit and provide a single recovery action.
+  - Theme filter, path switch, and progress persistence still show `暂未实现`.
+- why / what / how
+  - Search does not add new knowledge content.
+  - Filtered nodes still open the drawer with the `why / what / how` visual path from `US-004`.
+---

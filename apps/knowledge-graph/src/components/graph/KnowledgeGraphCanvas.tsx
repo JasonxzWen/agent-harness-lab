@@ -22,12 +22,6 @@ const activePathEdges = new Set(
     .map((edge) => edge.id),
 );
 
-const themeSummaries = Object.entries(themeLabels).map(([theme, label]) => ({
-  theme,
-  label,
-  count: knowledgeNodes.filter((node) => node.theme === theme).length,
-}));
-
 const themeOrder: Theme[] = [
   "foundation",
   "runtime",
@@ -89,10 +83,10 @@ function getRelatedLabels(nodeIds: string[], fallback: string) {
   return nodeIds.map(getDisplayTitle).join("、");
 }
 
-function buildGraphLayout() {
+function buildGraphLayout(nodes: KnowledgeNode[]) {
   const layers = new Map<number, KnowledgeNode[]>();
 
-  for (const node of knowledgeNodes) {
+  for (const node of nodes) {
     const layerNodes = layers.get(node.layer) ?? [];
     layerNodes.push(node);
     layers.set(node.layer, layerNodes);
@@ -121,10 +115,11 @@ function buildGraphLayout() {
     });
   }
 
-  const graphHeight =
-    graphPaddingY * 2 +
-    Math.max(...Array.from(layers.values()).map((nodes) => nodes.length)) *
-      rowGap;
+  const maxLayerRows = Math.max(
+    1,
+    ...Array.from(layers.values()).map((layerNodes) => layerNodes.length),
+  );
+  const graphHeight = graphPaddingY * 2 + maxLayerRows * rowGap;
 
   return {
     graphHeight,
@@ -137,9 +132,35 @@ function clampZoom(value: number) {
   return Math.min(1.2, Math.max(0.68, Number(value.toFixed(2))));
 }
 
+function normalizeSearch(value: string) {
+  return value.trim().toLowerCase();
+}
+
+function nodeMatchesSearch(node: KnowledgeNode, query: string) {
+  if (!query) {
+    return true;
+  }
+
+  const displayCopy = getNodeDisplayCopy(node);
+  const searchableText = [
+    node.title,
+    node.summary,
+    displayCopy.title,
+    displayCopy.summary,
+    ...node.tags,
+    ...node.labFiles.map((reference) => reference.target),
+    ...node.ccbMappings.map((reference) => reference.target),
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  return searchableText.includes(query);
+}
+
 export function KnowledgeGraphCanvas() {
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [previewNodeId, setPreviewNodeId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const [viewport, setViewport] = useState<ViewportState>({
     x: 0,
     y: 0,
@@ -152,7 +173,33 @@ export function KnowledgeGraphCanvas() {
     ? nodeById.get(previewNodeIdToShow)
     : undefined;
   const previewCopy = previewNode ? getNodeDisplayCopy(previewNode) : undefined;
-  const graphLayout = useMemo(() => buildGraphLayout(), []);
+  const normalizedSearch = normalizeSearch(searchQuery);
+  const filteredNodes = useMemo(
+    () => knowledgeNodes.filter((node) => nodeMatchesSearch(node, normalizedSearch)),
+    [normalizedSearch],
+  );
+  const filteredNodeIds = useMemo(
+    () => new Set(filteredNodes.map((node) => node.id)),
+    [filteredNodes],
+  );
+  const visibleEdges = useMemo(
+    () =>
+      knowledgeEdges.filter(
+        (edge) =>
+          filteredNodeIds.has(edge.source) && filteredNodeIds.has(edge.target),
+      ),
+    [filteredNodeIds],
+  );
+  const graphLayout = useMemo(() => buildGraphLayout(filteredNodes), [filteredNodes]);
+  const visibleThemeSummaries = useMemo(
+    () =>
+      Object.entries(themeLabels).map(([theme, label]) => ({
+        theme,
+        label,
+        count: filteredNodes.filter((node) => node.theme === theme).length,
+      })),
+    [filteredNodes],
+  );
 
   function zoomBy(delta: number) {
     setViewport((current) => ({
@@ -241,11 +288,28 @@ export function KnowledgeGraphCanvas() {
 
       <div className="harness-diagram" aria-label="可交互知识图谱">
         <div className="trace-header">
-          <span>{graphStats.nodeCount} 个机制节点</span>
-          <span>{graphStats.edgeCount} 条关系</span>
+          <span>{filteredNodes.length} / {graphStats.nodeCount} 个机制节点</span>
+          <span>{visibleEdges.length} / {graphStats.edgeCount} 条关系</span>
         </div>
 
         <div className="graph-controls" aria-label="图谱视口控制">
+          <div className="graph-search" role="search">
+            <label htmlFor="graph-search-input">搜索</label>
+            <div>
+              <input
+                id="graph-search-input"
+                placeholder="标题、标签、源码路径"
+                type="text"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+              />
+              {searchQuery ? (
+                <button type="button" onClick={() => setSearchQuery("")}>
+                  清除
+                </button>
+              ) : null}
+            </div>
+          </div>
           <p>拖动画布。点击节点看详情。</p>
           <div>
             <button type="button" onClick={() => zoomBy(-0.08)}>
@@ -313,7 +377,7 @@ export function KnowledgeGraphCanvas() {
               viewBox={`0 0 ${graphWidth} ${graphLayout.graphHeight}`}
               width={graphWidth}
             >
-              {knowledgeEdges.map((edge) => {
+              {visibleEdges.map((edge) => {
                 const source = graphLayout.nodePositionById.get(edge.source);
                 const target = graphLayout.nodePositionById.get(edge.target);
 
@@ -377,6 +441,15 @@ export function KnowledgeGraphCanvas() {
               );
             })}
           </div>
+          {filteredNodes.length === 0 ? (
+            <div className="graph-empty-results" role="status">
+              <strong>没有匹配节点</strong>
+              <p>换个关键词，或清除搜索回到完整图谱。</p>
+              <button type="button" onClick={() => setSearchQuery("")}>
+                清除搜索
+              </button>
+            </div>
+          ) : null}
         </div>
 
         <div className="trace-route" aria-label="入门路径前五步">
@@ -413,11 +486,11 @@ export function KnowledgeGraphCanvas() {
       </div>
 
       <p className="pending-notice">
-        暂未实现：搜索、主题筛选、路径切换和学习进度保存。当前先拖动画布、缩放视口、点击节点查看详情。
+        暂未实现：主题筛选、路径切换和学习进度保存。当前可搜索、拖动画布、缩放视口、点击节点查看详情。
       </p>
 
       <ul className="theme-grid" aria-label="知识图谱主题数量">
-        {themeSummaries.map((themeSummary) => (
+        {visibleThemeSummaries.map((themeSummary) => (
           <li key={themeSummary.theme}>
             <strong>{themeSummary.count}</strong>
             <span>{themeSummary.label}</span>

@@ -109,8 +109,8 @@
         "Set-Location D:\\agent-harness-lab\\apps\\knowledge-graph; bun run build"
       ],
       "priority": 5,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "2026-05-08: 完成搜索输入、即时过滤节点/边/主题计数、空结果和清除动作。截图：output/playwright/us005-search.png、output/playwright/us005-empty.png。验证：typecheck/test/build 通过。"
     },
     {
       "id": "US-006",

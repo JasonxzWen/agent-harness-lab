@@ -179,20 +179,70 @@ p {
   padding-bottom: 16px;
 }
 
+.graph-search {
+  display: grid;
+  gap: 8px;
+}
+
+.graph-search label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.1;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+.graph-search > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.graph-search input {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--color-bg);
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-bg);
+  padding: 10px 12px;
+  font-family: var(--font-zh-serif), var(--font-serif);
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+.graph-search input::placeholder {
+  color: var(--color-bg);
+  opacity: 0.56;
+}
+
+.graph-search input:hover,
+.graph-search input:focus,
+.graph-search input:active {
+  background: var(--color-bg);
+  color: var(--color-dark);
+}
+
+.graph-search input:focus-visible {
+  outline: 1px solid var(--color-bg);
+  outline-offset: 4px;
+}
+
 .graph-controls p {
   font-family: var(--font-zh-serif), var(--font-serif);
   font-size: 16px;
   line-height: 1.35;
 }
 
-.graph-controls > div {
+.graph-controls > div:not(.graph-search) {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
 }
 
-.graph-controls button {
+.graph-controls button,
+.graph-empty-results button {
   border: 1px solid var(--color-bg);
   border-radius: 0;
   background: transparent;
@@ -207,7 +257,10 @@ p {
 
 .graph-controls button:hover,
 .graph-controls button:focus-visible,
-.graph-controls button:active {
+.graph-controls button:active,
+.graph-empty-results button:hover,
+.graph-empty-results button:focus-visible,
+.graph-empty-results button:active {
   background: var(--color-bg);
   color: var(--color-dark);
   text-decoration: underline;
@@ -215,7 +268,8 @@ p {
   text-underline-offset: 4px;
 }
 
-.graph-controls button:focus-visible {
+.graph-controls button:focus-visible,
+.graph-empty-results button:focus-visible {
   outline: 1px solid var(--color-bg);
   outline-offset: 4px;
 }
@@ -302,6 +356,32 @@ p {
 
 .graph-viewport:active {
   cursor: grabbing;
+}
+
+.graph-empty-results {
+  position: absolute;
+  inset: 24px;
+  z-index: 2;
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 12px;
+  border: 1px solid var(--color-bg);
+  background: var(--color-dark);
+  padding: 24px;
+}
+
+.graph-empty-results strong {
+  font-family: var(--font-zh-display), var(--font-display);
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.graph-empty-results p {
+  font-family: var(--font-zh-serif), var(--font-serif);
+  font-size: 15px;
+  line-height: 1.4;
 }
 
 .graph-surface {
