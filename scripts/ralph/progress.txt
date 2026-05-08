@@ -12,3 +12,21 @@ Branch: ralph/knowledge-graph-completion
 - Use existing typed graph data and React/CSS first. Do not add a new icon library.
 
 ---
+
+## 2026-05-08T16:35:00+08:00 - Ralph runner check
+- What was checked
+  - Ran `Set-Location D:\agent-harness-lab; powershell -ExecutionPolicy Bypass -File scripts\ralph\ralph.ps1 -MaxIterations 12`.
+  - `codex` CLI was available at `C:\Users\Admin\AppData\Local\OpenAI\Codex\bin\codex.exe`.
+  - The first Codex CLI iteration selected `US-001`, then stopped because the CLI session did not expose the Browser skill's required `node_repl js` / `mcp__node_repl__js` tool.
+- Files changed
+  - `scripts/ralph/ralph.ps1`
+  - `.gitignore`
+  - `scripts/ralph/progress.txt`
+- Checks run
+  - `Get-Content -LiteralPath scripts\ralph\prd.json -Raw -Encoding UTF8 | ConvertFrom-Json`
+- Learnings for future iterations:
+  - Windows PowerShell needs explicit `-Encoding UTF8` when reading Chinese `prd.json`.
+  - This local `codex exec` uses `--sandbox`, not `--ask-for-approval`.
+  - Ralph must check `--output-last-message` output for `<promise>COMPLETE</promise>` so it does not match the prompt text.
+  - UI stories cannot pass in this CLI environment unless the in-app browser tool is exposed.
+---

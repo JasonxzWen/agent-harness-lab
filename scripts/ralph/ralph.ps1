@@ -22,6 +22,7 @@ $PromptFile = Join-Path $ScriptDir "CODEX.md"
 $ProgressFile = Join-Path $ScriptDir "progress.txt"
 $ArchiveDir = Join-Path $ScriptDir "archive"
 $LastBranchFile = Join-Path $ScriptDir ".last-branch"
+$LastMessageFile = Join-Path $ScriptDir ".last-message.txt"
 
 function Read-Prd {
   if (-not (Test-Path $PrdFile)) {
@@ -94,7 +95,11 @@ for ($i = 1; $i -le $MaxIterations; $i++) {
     $codexArgs += @("--model", $Model)
   }
 
-  $codexArgs += "-"
+  if (Test-Path $LastMessageFile) {
+    Remove-Item -LiteralPath $LastMessageFile -Force
+  }
+
+  $codexArgs += @("--output-last-message", $LastMessageFile, "-")
 
   $previousErrorActionPreference = $ErrorActionPreference
   $ErrorActionPreference = "Continue"
@@ -106,8 +111,12 @@ for ($i = 1; $i -le $MaxIterations; $i++) {
   }
   $text = ($output | Out-String)
   Write-Host $text
+  $lastMessage = ""
+  if (Test-Path $LastMessageFile) {
+    $lastMessage = Get-Content -LiteralPath $LastMessageFile -Raw -Encoding UTF8
+  }
 
-  if ($text -match "<promise>COMPLETE</promise>") {
+  if ($lastMessage -match "<promise>COMPLETE</promise>") {
     Write-Host ""
     Write-Host "Ralph completed all tasks at iteration $i of $MaxIterations."
     exit 0
