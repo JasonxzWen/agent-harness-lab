@@ -1,13 +1,23 @@
-const mechanismRows = [
-  { index: "01", label: "loop", summary: "observe / decide / act" },
-  { index: "02", label: "registry", summary: "typed tool surface" },
-  { index: "03", label: "permissions", summary: "approval boundary" },
-  { index: "04", label: "result write-back", summary: "tool output returns to context" },
-  { index: "05", label: "memory", summary: "durable project state" },
-  { index: "06", label: "compact", summary: "context handoff under pressure" },
-] as const;
+import {
+  graphStats,
+  knowledgeNodes,
+  themeLabels,
+} from "../../data/knowledgeGraph";
+import { learningPaths } from "../../data/paths";
+import type { KnowledgeNode } from "../../types/graph";
 
-const traceRoute = ["prompt", "loop", "tool call", "write-back", "next turn"] as const;
+const nodeById = new Map(knowledgeNodes.map((node) => [node.id, node]));
+const beginnerPath = learningPaths.find((path) => path.id === "beginner");
+const beginnerPathNodes =
+  beginnerPath?.nodeIds
+    .map((nodeId) => nodeById.get(nodeId))
+    .filter((node): node is KnowledgeNode => node !== undefined) ?? [];
+
+const themeSummaries = Object.entries(themeLabels).map(([theme, label]) => ({
+  theme,
+  label,
+  count: knowledgeNodes.filter((node) => node.theme === theme).length,
+}));
 
 export function KnowledgeGraphCanvas() {
   return (
@@ -20,28 +30,45 @@ export function KnowledgeGraphCanvas() {
 
       <div className="harness-diagram" aria-label="Agent harness mechanism trace">
         <div className="trace-header">
-          <span>trace 01</span>
-          <span>minimal agent loop</span>
+          <span>{graphStats.nodeCount} typed nodes</span>
+          <span>{graphStats.edgeCount} relationships</span>
         </div>
 
         <ol className="mechanism-stack">
-          {mechanismRows.map((mechanism) => (
-            <li className="mechanism-node" key={mechanism.index}>
-              <span className="mechanism-index">{mechanism.index}</span>
+          {beginnerPathNodes.map((node, index) => (
+            <li className="mechanism-node" key={node.id}>
+              <span className="mechanism-index">
+                {String(index + 1).padStart(2, "0")}
+              </span>
               <span className="mechanism-copy">
-                <strong>{mechanism.label}</strong>
-                <span>{mechanism.summary}</span>
+                <strong>{node.title}</strong>
+                <span>{node.summary}</span>
               </span>
             </li>
           ))}
         </ol>
 
-        <div className="trace-route" aria-label="Trace route">
-          {traceRoute.map((step) => (
-            <span key={step}>{step}</span>
+        <div className="trace-route" aria-label="Learning path route">
+          {(beginnerPath?.nodeIds ?? []).slice(0, 5).map((nodeId) => (
+            <span key={nodeId}>{nodeById.get(nodeId)?.title ?? nodeId}</span>
           ))}
         </div>
       </div>
+
+      <div className="graph-data-strip" aria-label="Graph data coverage">
+        <span>{beginnerPath?.title ?? "Beginner Path"}</span>
+        <strong>{learningPaths.length} paths</strong>
+        <span>{graphStats.themeCount} themes</span>
+      </div>
+
+      <ul className="theme-grid" aria-label="Knowledge graph theme counts">
+        {themeSummaries.map((themeSummary) => (
+          <li key={themeSummary.theme}>
+            <strong>{themeSummary.count}</strong>
+            <span>{themeSummary.label}</span>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }

@@ -100,6 +100,6 @@ Acceptance:
 ## Verification Commands
 
 ```powershell
-Set-Location D:\learn-cc\apps\knowledge-graph; bun run typecheck
-Set-Location D:\learn-cc\apps\knowledge-graph; bun run build
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build
 ```

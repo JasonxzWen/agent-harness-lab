@@ -6,7 +6,7 @@
 
 目标：
 
-- 在 `D:\learn-cc\apps\knowledge-graph` 建立 Vite + React + TypeScript 应用。
+- 在 `D:\agent-harness-lab\apps\knowledge-graph` 建立 Vite + React + TypeScript 应用。
 - 配置 Bun scripts。
 - 建立基础布局和样式变量。
 
@@ -22,10 +22,10 @@
 验收命令：
 
 ```powershell
-Set-Location D:\learn-cc\apps\knowledge-graph; bun install
-Set-Location D:\learn-cc\apps\knowledge-graph; bun run dev
-Set-Location D:\learn-cc\apps\knowledge-graph; bun run typecheck
-Set-Location D:\learn-cc\apps\knowledge-graph; bun run build
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun install
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run dev
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build
 ```
 
 建议提交：
@@ -52,8 +52,8 @@ feat: scaffold knowledge graph app
 验收命令：
 
 ```powershell
-Set-Location D:\learn-cc\apps\knowledge-graph; bun run typecheck
-Set-Location D:\learn-cc\apps\knowledge-graph; bun test
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test
 ```
 
 建议提交：
@@ -62,7 +62,7 @@ Set-Location D:\learn-cc\apps\knowledge-graph; bun test
 feat: add typed harness knowledge graph data
 ```
 
-## 阶段 2：React Flow 主画布
+## 阶段 2：交互主画布
 
 目标：
 
@@ -79,8 +79,8 @@ feat: add typed harness knowledge graph data
 验收命令：
 
 ```powershell
-Set-Location D:\learn-cc\apps\knowledge-graph; bun run typecheck
-Set-Location D:\learn-cc\apps\knowledge-graph; bun run build
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build
 ```
 
 手动验收：
@@ -93,7 +93,7 @@ Set-Location D:\learn-cc\apps\knowledge-graph; bun run build
 建议提交：
 
 ```text
-feat: render interactive React Flow explorer
+feat: render interactive graph explorer
 ```
 
 ## 阶段 3：节点交互和详情抽屉
@@ -114,8 +114,8 @@ feat: render interactive React Flow explorer
 验收命令：
 
 ```powershell
-Set-Location D:\learn-cc\apps\knowledge-graph; bun run typecheck
-Set-Location D:\learn-cc\apps\knowledge-graph; bun run build
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build
 ```
 
 建议提交：
@@ -144,9 +144,9 @@ feat: add node details and reference panels
 验收命令：
 
 ```powershell
-Set-Location D:\learn-cc\apps\knowledge-graph; bun run typecheck
-Set-Location D:\learn-cc\apps\knowledge-graph; bun run build
-Set-Location D:\learn-cc\apps\knowledge-graph; bun test
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test
 ```
 
 建议提交：
@@ -174,9 +174,9 @@ feat: add graph filters paths progress and compare mode
 验收命令：
 
 ```powershell
-Set-Location D:\learn-cc\apps\knowledge-graph; bun run typecheck
-Set-Location D:\learn-cc\apps\knowledge-graph; bun run build
-Set-Location D:\learn-cc\apps\knowledge-graph; bun test
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test
 ```
 
 手动验收：

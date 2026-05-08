@@ -15,8 +15,8 @@
 验收：
 
 ```powershell
-Set-Location D:\learn-cc; git status --short --untracked-files=all
-Set-Location D:\learn-cc; git diff -- apps AGENTS.md README.md learn reference labs
+Set-Location D:\agent-harness-lab; git status --short --untracked-files=all
+Set-Location D:\agent-harness-lab; git diff -- apps AGENTS.md README.md learn reference labs
 ```
 
 建议提交：
@@ -27,6 +27,8 @@ docs: plan root knowledge graph app
 
 ## M1：可运行前端壳
 
+状态：已完成。
+
 目标：
 
 - Vite + React + TypeScript 应用可启动。
@@ -36,10 +38,10 @@ docs: plan root knowledge graph app
 验收：
 
 ```powershell
-Set-Location D:\learn-cc\apps\knowledge-graph; bun install
-Set-Location D:\learn-cc\apps\knowledge-graph; bun run dev
-Set-Location D:\learn-cc\apps\knowledge-graph; bun run typecheck
-Set-Location D:\learn-cc\apps\knowledge-graph; bun run build
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun install
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run dev
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build
 ```
 
 建议提交：
@@ -50,6 +52,8 @@ feat: scaffold knowledge graph app
 
 ## M2：静态知识图谱数据
 
+状态：已完成。
+
 目标：
 
 - 定义 TypeScript 数据模型。
@@ -59,8 +63,8 @@ feat: scaffold knowledge graph app
 验收：
 
 ```powershell
-Set-Location D:\learn-cc\apps\knowledge-graph; bun run typecheck
-Set-Location D:\learn-cc\apps\knowledge-graph; bun test
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test
 ```
 
 建议提交：
@@ -73,14 +77,14 @@ feat: add typed harness graph data
 
 目标：
 
-- React Flow 主画布可缩放、拖拽。
+- 图谱主画布可缩放、拖拽。
 - 节点和边能按主题、路径、progress 呈现不同状态。
 
 验收：
 
 ```powershell
-Set-Location D:\learn-cc\apps\knowledge-graph; bun run typecheck
-Set-Location D:\learn-cc\apps\knowledge-graph; bun run build
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build
 ```
 
 建议提交：
@@ -100,8 +104,8 @@ feat: render harness graph canvas
 验收：
 
 ```powershell
-Set-Location D:\learn-cc\apps\knowledge-graph; bun run typecheck
-Set-Location D:\learn-cc\apps\knowledge-graph; bun run build
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build
 ```
 
 建议提交：
@@ -121,9 +125,9 @@ feat: add graph learning workflow
 验收：
 
 ```powershell
-Set-Location D:\learn-cc\apps\knowledge-graph; bun run typecheck
-Set-Location D:\learn-cc\apps\knowledge-graph; bun run build
-Set-Location D:\learn-cc\apps\knowledge-graph; bun test
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test
 ```
 
 建议提交：

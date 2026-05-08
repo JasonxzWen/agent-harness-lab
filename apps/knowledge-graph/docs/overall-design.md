@@ -4,7 +4,7 @@
 
 ## 产品定位
 
-`apps/knowledge-graph` 是 `learn-cc` 的展示型前端工程，用来展示：
+`apps/knowledge-graph` 是 `agent-harness-lab` 的展示型前端工程，用来展示：
 
 1. 对 Claude Code-like harness 机制的系统理解。
 2. 前端信息架构、交互设计和可访问性能力。
@@ -18,7 +18,7 @@
 flowchart TD
     A["知识图谱探索器<br/>首屏直接进入工作台"] --> B["顶部工具栏<br/>搜索 / 路径 / 对照模式"]
     A --> C["左侧筛选区<br/>主题 / layer / tag / progress"]
-    A --> D["React Flow 主画布<br/>缩放 / 拖拽 / 节点关系"]
+    A --> D["知识图谱主画布<br/>缩放 / 拖拽 / 节点关系"]
     A --> E["右侧详情抽屉<br/>机制 / 引用 / demo / 误解"]
     A --> F["引用面板<br/>local docs / lab source / CCB mapping / external links"]
 ```
@@ -62,7 +62,7 @@ sequenceDiagram
 采用 root-level app：
 
 ```text
-D:\learn-cc\apps\knowledge-graph
+D:\agent-harness-lab\apps\knowledge-graph
 ```
 
 不采用 `labs/ts-agent/apps/knowledge-graph`，因为这个前端是展示型工程，不只是 lab 内部 demo。
@@ -76,7 +76,7 @@ flowchart TB
     A["Vite React App"] --> B["App Shell"]
     B --> C["Graph Toolbar"]
     B --> D["Filter Sidebar"]
-    B --> E["React Flow Canvas"]
+    B --> E["Graph Canvas"]
     B --> F["Detail Drawer"]
     B --> G["Reference Panel"]
 
@@ -94,8 +94,8 @@ flowchart TB
 
 - Runtime：Bun。
 - App：Vite + React + TypeScript。
-- 图谱：React Flow。
-- 图标：lucide-react。
+- 图谱：MVP 先使用 typed data + React/CSS 自研静态画布，交互阶段再评估是否引入 React Flow。
+- 图标：不引入图标库，遵守 `DESIGN.md`，仅使用文字和极少数极简箭头。
 - 状态：Zustand 优先，复杂度不够时也可以先用 Context + Reducer。
 - 样式：CSS variables + 模块化组件样式。
 - 数据：TypeScript 静态 seed graph。
@@ -188,7 +188,7 @@ export type KnowledgeEdge = {
 - `AppShell`：整体布局。
 - `GraphToolbar`：搜索、路径、对照模式。
 - `FilterSidebar`：theme、layer、tag、progress。
-- `KnowledgeGraphCanvas`：React Flow 容器。
+- `KnowledgeGraphCanvas`：图谱画布容器。
 - `KnowledgeNodeCard`：自定义节点。
 - `NodeHoverCard`：hover 摘要。
 - `DetailDrawer`：右侧详情。
