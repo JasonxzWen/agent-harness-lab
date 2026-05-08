@@ -38,7 +38,8 @@
 
 .path-tabs a:hover,
 .path-tabs a:focus-visible,
-.path-tabs a.is-active {
+.path-tabs a.is-active,
+.path-tabs a:active {
   text-decoration: underline;
   text-decoration-thickness: 2px;
   text-underline-offset: 4px;
@@ -56,7 +57,9 @@
 }
 
 .toolbar-cta:hover,
-.toolbar-cta:focus-visible {
+.toolbar-cta:focus-visible,
+.toolbar-cta:active {
+  background: var(--color-dark);
   text-decoration: underline;
   text-decoration-color: var(--color-bg);
   text-decoration-thickness: 2px;
@@ -212,7 +215,8 @@ p {
 
 .mechanism-node-button:hover,
 .mechanism-node-button:focus-visible,
-.mechanism-node-button.is-selected {
+.mechanism-node-button.is-selected,
+.mechanism-node-button:active {
   border-color: var(--color-bg);
 }
 
@@ -222,6 +226,11 @@ p {
 }
 
 .mechanism-node-button.is-selected {
+  background: var(--color-bg);
+  color: var(--color-dark);
+}
+
+.mechanism-node-button:active {
   background: var(--color-bg);
   color: var(--color-dark);
 }
@@ -302,9 +311,12 @@ p {
 
 .detail-empty-state span,
 .detail-drawer-header span,
+.learning-frame span,
 .detail-section h3,
 .source-list span,
-.compare-section dt {
+.compare-section dt,
+.pending-notice,
+.feature-cards span {
   font-family: var(--font-mono);
   font-size: 12px;
   line-height: 1.2;
@@ -321,6 +333,7 @@ p {
 }
 
 .detail-empty-state p,
+.learning-frame p,
 .detail-section p,
 .compare-section dd {
   font-family: var(--font-zh-serif), var(--font-serif);
@@ -361,7 +374,16 @@ p {
 
 .detail-drawer-header button:hover,
 .detail-drawer-header button:focus-visible {
-  border-width: 2px;
+  background: var(--color-bg);
+  color: var(--color-dark);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.detail-drawer-header button:active {
+  background: transparent;
+  color: var(--color-bg);
 }
 
 .detail-drawer-header button:focus-visible,
@@ -373,6 +395,31 @@ p {
 .detail-section {
   display: grid;
   gap: 16px;
+}
+
+.learning-frame {
+  display: grid;
+  gap: 16px;
+}
+
+.learning-frame article {
+  display: grid;
+  gap: 8px;
+  border: 1px solid var(--color-bg);
+  padding: 16px;
+}
+
+.learning-frame h3 {
+  font-family: var(--font-zh-display), var(--font-display);
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.learning-frame code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  overflow-wrap: anywhere;
 }
 
 .source-list,
@@ -417,7 +464,14 @@ p {
 
 .command-block button:hover,
 .command-block button:focus-visible {
-  border-width: 2px;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.command-block button:active {
+  background: transparent;
+  color: var(--color-bg);
 }
 
 .compare-section dl {
@@ -454,6 +508,14 @@ p {
 
 .graph-data-strip strong {
   font-weight: 400;
+}
+
+.pending-notice {
+  grid-column: 1 / -1;
+  border: 1px solid var(--color-bg);
+  margin: 0;
+  padding: 16px;
+  opacity: 0.86;
 }
 
 .theme-grid {
@@ -528,6 +590,10 @@ p {
   padding: 32px;
 }
 
+.feature-cards article.is-pending {
+  border-style: dashed;
+}
+
 .feature-cards h3 {
   font-family: var(--font-zh-display), var(--font-display);
   font-size: 24px;
@@ -545,10 +611,9 @@ p {
 
 .feature-cards span {
   position: absolute;
-  right: 32px;
+  left: 32px;
   bottom: 24px;
-  font-size: 32px;
-  line-height: 1;
+  opacity: 0.72;
 }
 
 @media (max-width: 980px) {

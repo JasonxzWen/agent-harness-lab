@@ -54,7 +54,13 @@ export function CommandBlock({ command }: CommandBlockProps) {
   return (
     <div className="command-block">
       <code>{command}</code>
-      <button type="button" onClick={copyCommand}>
+      <button
+        aria-label={`复制命令：${command}`}
+        aria-live="polite"
+        data-copy-state={copyState}
+        type="button"
+        onClick={copyCommand}
+      >
         {buttonLabel}
       </button>
     </div>

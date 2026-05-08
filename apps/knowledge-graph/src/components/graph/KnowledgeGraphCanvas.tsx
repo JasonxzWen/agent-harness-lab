@@ -91,7 +91,7 @@ export function KnowledgeGraphCanvas() {
         >
           <span>DETAIL</span>
           <h2>点击一个机制节点</h2>
-          <p>右侧会显示一句解释、源码路径、Bun 命令、常见误解和版本对照。</p>
+          <p>右侧会先说明 why / what / how，再给出源码路径和 Bun 命令。</p>
         </aside>
       )}
 
@@ -100,6 +100,10 @@ export function KnowledgeGraphCanvas() {
         <strong>{learningPaths.length} 条路径</strong>
         <span>{graphStats.themeCount} 个主题</span>
       </div>
+
+      <p className="pending-notice">
+        暂未实现：路径切换、主题筛选和学习进度。当前先点击入门路径节点查看详情。
+      </p>
 
       <ul className="theme-grid" aria-label="知识图谱主题数量">
         {themeSummaries.map((themeSummary) => (

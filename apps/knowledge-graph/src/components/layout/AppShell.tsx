@@ -3,16 +3,25 @@ import { GraphToolbar } from "./GraphToolbar";
 
 const featureCards = [
   {
-    label: "机制地图",
-    summary: "按顺序看消息、循环、工具和结果写回。",
+    label: "节点详情",
+    summary: "点开机制，先看 why / what / how。",
+    status: "已实现",
   },
   {
     label: "源码引用",
-    summary: "每个机制对应一个本仓库文件。",
+    summary: "查看 lab 源码和 CCB 本地对照路径。",
+    status: "已实现",
   },
   {
     label: "实验命令",
-    summary: "复制命令，在 labs/ts-agent 跑起来。",
+    summary: "复制 Bun 命令，在 labs/ts-agent 跑起来。",
+    status: "已实现",
+  },
+  {
+    label: "搜索筛选",
+    summary: "路径切换、主题筛选和学习进度暂未实现。",
+    status: "暂未实现",
+    isPending: true,
   },
 ] as const;
 
@@ -38,15 +47,22 @@ export function AppShell() {
             <h2>现在能看什么？</h2>
             <p>
               当前有 34 个节点、35 条关系、4 条路径。点击节点后，
-              可以看源码、命令、误解和版本对照。
+              可以先看 why / what / how，再看源码、命令和版本对照。
             </p>
           </div>
           <div className="feature-cards">
             {featureCards.map((feature) => (
-              <article key={feature.label}>
+              <article
+                className={
+                  "isPending" in feature && feature.isPending
+                    ? "is-pending"
+                    : undefined
+                }
+                key={feature.label}
+              >
                 <h3>{feature.label}</h3>
                 <p>{feature.summary}</p>
-                <span aria-hidden="true">-&gt;</span>
+                <span>{feature.status}</span>
               </article>
             ))}
           </div>

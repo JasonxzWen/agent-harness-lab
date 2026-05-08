@@ -20,6 +20,10 @@ export function DetailDrawer({ node, onClose }: DetailDrawerProps) {
   const displayCopy = getNodeDisplayCopy(node);
   const detailCopy = getNodeDetailCopy(node);
   const sourceReferences = [...node.labFiles, ...node.ccbMappings];
+  const firstSourcePath = sourceReferences[0]?.target ?? "查看本节点源码引用";
+  const firstCommand =
+    node.demoCommands[0] ??
+    "Set-Location D:\\agent-harness-lab\\apps\\knowledge-graph; bun run build";
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
@@ -49,13 +53,28 @@ export function DetailDrawer({ node, onClose }: DetailDrawerProps) {
         </button>
       </div>
 
-      <section className="detail-section">
-        <h3>一句短解释</h3>
-        <p>{detailCopy.shortExplanation}</p>
+      <section className="learning-frame" aria-label="why what how 学习卡片">
+        <article>
+          <span>WHY</span>
+          <h3>为什么需要</h3>
+          <p>{detailCopy.why}</p>
+        </article>
+        <article>
+          <span>WHAT</span>
+          <h3>它是什么</h3>
+          <p>{detailCopy.shortExplanation}</p>
+        </article>
+        <article>
+          <span>HOW</span>
+          <h3>如何实现</h3>
+          <p>
+            先看 <code>{firstSourcePath}</code>，再运行下面的 Bun 命令。
+          </p>
+        </article>
       </section>
 
       <section className="detail-section">
-        <h3>对应源码路径</h3>
+        <h3>源码路径</h3>
         <ul className="source-list">
           {sourceReferences.map((reference) => (
             <li key={reference.id}>
@@ -67,9 +86,12 @@ export function DetailDrawer({ node, onClose }: DetailDrawerProps) {
       </section>
 
       <section className="detail-section">
-        <h3>可复制 Bun 命令</h3>
+        <h3>Bun 命令</h3>
         <div className="command-list">
-          {node.demoCommands.map((command) => (
+          {[
+            firstCommand,
+            ...node.demoCommands.filter((command) => command !== firstCommand),
+          ].map((command) => (
             <CommandBlock command={command} key={command} />
           ))}
         </div>

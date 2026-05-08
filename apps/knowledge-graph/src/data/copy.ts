@@ -6,6 +6,7 @@ export type NodeDisplayCopy = {
 };
 
 export type NodeDetailCopy = {
+  why: string;
   shortExplanation: string;
   misconception: string;
   compare: {
@@ -155,6 +156,7 @@ export const nodeDisplayCopy: Record<string, NodeDisplayCopy> = {
 
 export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
   message: {
+    why: "没有稳定消息列表，模型下一轮不知道前面发生了什么。",
     shortExplanation: "消息保存用户输入、模型输出和工具结果，是下一轮推理的输入。",
     misconception: "它不是聊天气泡，而是 loop 每一步都要读取的状态。",
     compare: {
@@ -163,6 +165,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   "system-prompt": {
+    why: "没有它，模型不会知道项目规则、任务边界和优先级。",
     shortExplanation: "系统提示把角色、项目规则、记忆和任务边界放进请求。",
     misconception: "它不是一段固定模板，项目上下文变化时也会变化。",
     compare: {
@@ -171,6 +174,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   "agent-loop": {
+    why: "没有 loop，模型输出和工具执行无法连成可继续的流程。",
     shortExplanation: "Agent Loop 负责观察、决策、调用工具，再写回结果。",
     misconception: "loop 不是模型本身，而是包住模型和工具的控制流程。",
     compare: {
@@ -179,6 +183,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   "model-adapter": {
+    why: "没有它，loop 会被某个 provider 的接口细节绑住。",
     shortExplanation: "模型适配器让 loop 依赖统一接口，而不是绑定单个 provider。",
     misconception: "适配器只有保护 loop 合约时才有价值，不是为了多包一层。",
     compare: {
@@ -187,6 +192,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   "tool-use": {
+    why: "没有结构化工具调用，模型意图很难被安全执行。",
     shortExplanation: "工具调用是模型发出的结构化请求，harness 负责校验和执行。",
     misconception: "它不是任意执行代码，而是受 schema 和权限限制的合约。",
     compare: {
@@ -195,6 +201,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   "tool-result-write-back": {
+    why: "没有写回，模型看不到工具结果，也无法继续修正判断。",
     shortExplanation: "工具结果写回把执行结果放回消息，让模型继续判断。",
     misconception: "只打印工具输出不够，模型必须在下一轮收到这个观察。",
     compare: {
@@ -203,6 +210,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   "tool-registry": {
+    why: "没有注册表，harness 不知道哪些动作可以被调用。",
     shortExplanation: "工具注册表记录工具名、说明、参数和执行函数。",
     misconception: "它不只是一个 map，还承载验证、描述和执行策略。",
     compare: {
@@ -211,6 +219,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   "tool-schema": {
+    why: "没有 schema，模型给错参数时错误会进入工具内部。",
     shortExplanation: "工具 schema 在运行时检查模型给出的 JSON 参数。",
     misconception: "TypeScript 类型不会自动校验模型生成的 JSON。",
     compare: {
@@ -219,6 +228,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   "tool-context": {
+    why: "没有工具上下文，模型不知道什么时候该用哪个工具。",
     shortExplanation: "工具上下文告诉模型有哪些工具、参数是什么、何时使用。",
     misconception: "工具说明不是装饰文档，它会直接影响模型行为。",
     compare: {
@@ -227,6 +237,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   "read-file": {
+    why: "没有读取工具，agent 只能猜项目状态，不能验证文件内容。",
     shortExplanation: "read_file 让 agent 在允许目录内读取项目文件。",
     misconception: "读文件也需要路径规则，不是访问整台机器。",
     compare: {
@@ -235,6 +246,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   "write-file-list-files": {
+    why: "没有写入和列文件，harness 只能观察，不能完成本地改动。",
     shortExplanation: "write_file 和 list_files 证明 harness 能有边界地改本地状态。",
     misconception: "没有 workspace 边界的写工具不是能力，是风险。",
     compare: {
@@ -243,6 +255,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   "run-shell": {
+    why: "没有命令执行，类型检查、测试和构建都无法进入 agent 流程。",
     shortExplanation: "run_shell 执行命令，但必须先判断命令风险。",
     misconception: "shell 权限不是一个开关，不同命令有不同影响范围。",
     compare: {
@@ -251,6 +264,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   "todo-write": {
+    why: "没有计划写入，多步骤任务容易丢失顺序和当前状态。",
     shortExplanation: "TodoWrite 把多步骤意图写成结构化计划状态。",
     misconception: "它不是 UI 清单，而是 agent 可观察的计划协议。",
     compare: {
@@ -259,6 +273,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   "todo-read": {
+    why: "没有计划读取，agent 中断后很难知道下一步该做什么。",
     shortExplanation: "TodoRead 读取当前计划，让 agent 能继续、恢复或总结。",
     misconception: "计划状态不能只写一次，后续步骤也要能读到。",
     compare: {
@@ -267,6 +282,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   "task-state": {
+    why: "没有任务状态，长任务无法记录归属、进度和恢复点。",
     shortExplanation: "任务状态记录比 todo 更长的工作生命周期。",
     misconception: "todo 和 task 会重叠，但 task 需要生命周期和归属。",
     compare: {
@@ -275,6 +291,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   "project-rules": {
+    why: "没有项目规则，agent 容易写出不符合仓库约定的改动。",
     shortExplanation: "项目规则把仓库约定放进上下文，约束 agent 行为。",
     misconception: "规则文件不是事实仓库，太杂会干扰当前任务。",
     compare: {
@@ -283,6 +300,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   memory: {
+    why: "没有 memory，长期偏好和项目事实每次都要重新说明。",
     shortExplanation: "Memory 保存长期偏好和项目事实，按需放进后续请求。",
     misconception: "memory 必须有范围和维护，越多不代表越好。",
     compare: {
@@ -291,6 +309,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   skills: {
+    why: "没有按需 skill，任务专用规则要么缺失，要么挤占上下文。",
     shortExplanation: "Skills 是按任务加载的专门说明，不该启动时全塞进 prompt。",
     misconception: "加载所有 skill 会浪费上下文，并让行为边界变模糊。",
     compare: {
@@ -299,6 +318,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   compact: {
+    why: "没有 compact，长对话会在上下文耗尽时丢失关键状态。",
     shortExplanation: "Compact 在上下文变长时保存关键状态，让任务继续。",
     misconception: "它不是聊天摘要，而是下一段工作可接上的交接材料。",
     compare: {
@@ -307,6 +327,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   "context-budget": {
+    why: "没有预算，历史、规则和工具说明会把请求塞满。",
     shortExplanation: "上下文预算迫使 harness 选择当前最该进入请求的内容。",
     misconception: "更多上下文不一定更好，相关内容比数量重要。",
     compare: {
@@ -315,6 +336,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   permissions: {
+    why: "没有权限层，工具动作只能靠模型自觉，风险不可控。",
     shortExplanation: "权限层决定工具动作允许、拒绝，还是需要用户审批。",
     misconception: "权限不是让模型自觉遵守，而是运行时强制执行。",
     compare: {
@@ -323,6 +345,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   "policy-presets": {
+    why: "没有预设，安全模式会散落在多个工具和配置里。",
     shortExplanation: "权限预设把常用安全规则组合成清楚的运行模式。",
     misconception: "preset 不是随手拼布尔值，而是一组一致的操作边界。",
     compare: {
@@ -331,6 +354,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   "approval-request": {
+    why: "没有审批请求，高风险动作无法在执行前让用户判断。",
     shortExplanation: "审批请求在高风险动作前暂停，并让用户做明确决定。",
     misconception: "审批最安全的形态是具体、窄范围、可理解。",
     compare: {
@@ -339,6 +363,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   "approval-store": {
+    why: "没有审批记录，相同边界会反复打断用户。",
     shortExplanation: "审批记录保存用户批准过的边界，减少重复确认。",
     misconception: "持久审批必须有范围，过宽就接近默认全放行。",
     compare: {
@@ -347,6 +372,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   "path-guard": {
+    why: "没有路径守卫，文件工具可能越过预期 workspace。",
     shortExplanation: "路径守卫把文件访问限制在预期 workspace 内。",
     misconception: "只检查字符串 `..` 不够，必须解析绝对路径后比较。",
     compare: {
@@ -355,6 +381,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   "bun-runtime": {
+    why: "没有统一 runtime，实验命令和前端验证会分散成多套流程。",
     shortExplanation: "Bun 是本仓库运行 TypeScript 实验和前端脚本的默认工具。",
     misconception: "这个 repo 不能按 Node-only 项目处理。",
     compare: {
@@ -363,6 +390,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   "vite-react-shell": {
+    why: "没有前端入口，学习成果只能停留在散落文档和命令里。",
     shortExplanation: "Vite React Shell 是这个公开作品的前端入口。",
     misconception: "展示应用放在 apps/knowledge-graph，不放进 lab 实验目录。",
     compare: {
@@ -371,6 +399,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   "demo-commands": {
+    why: "没有演示命令，用户很难确认一个机制真的跑通。",
     shortExplanation: "演示命令把每个机制连接到可运行的 lab 行为。",
     misconception: "学习节点如果没有命令，就很难证明机制真的跑通。",
     compare: {
@@ -379,6 +408,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   subagents: {
+    why: "没有子代理，复杂任务只能挤在一个上下文里处理。",
     shortExplanation: "Subagents 把有边界的子任务交给隔离消息上下文。",
     misconception: "subagent 不是自动变强，关键是边界和返回摘要。",
     compare: {
@@ -387,6 +417,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   "background-tasks": {
+    why: "没有后台任务，长时间执行会阻塞主对话。",
     shortExplanation: "后台任务记录长任务进度，不阻塞主对话 loop。",
     misconception: "后台任务不是第二个主 loop，而是受管理的执行通道。",
     compare: {
@@ -395,6 +426,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   "worktree-isolation": {
+    why: "没有工作树隔离，并行改动容易互相覆盖。",
     shortExplanation: "工作树隔离避免多个 agent 同时改同一批文件。",
     misconception: "并行 agent 先需要隔离和协议，再谈更多自主动作。",
     compare: {
@@ -403,6 +435,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   mcp: {
+    why: "没有 MCP，外部能力很难按同一套工具流程接入。",
     shortExplanation: "MCP 让外部能力以工具形式进入同一条 harness 流程。",
     misconception: "MCP 不替代 Agent Loop，它只是把能力接入 loop。",
     compare: {
@@ -411,6 +444,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   "plugin-loader": {
+    why: "没有插件加载器，扩展能力无法稳定进入本地 registry。",
     shortExplanation: "插件加载器读取插件元数据，并把能力注册成工具。",
     misconception: "插件仍然需要 schema、权限、执行和结果写回规则。",
     compare: {
@@ -419,6 +453,7 @@ export const nodeDetailCopy: Record<string, NodeDetailCopy> = {
     },
   },
   "memory-hygiene": {
+    why: "没有记忆治理，过期 memory 会不断污染后续上下文。",
     shortExplanation: "记忆治理定期清理、限定和更新 memory。",
     misconception: "memory 会变旧；没有维护路径，就会污染上下文。",
     compare: {
@@ -435,6 +470,7 @@ export function getNodeDisplayCopy(node: KnowledgeNode): NodeDisplayCopy {
 export function getNodeDetailCopy(node: KnowledgeNode): NodeDetailCopy {
   return (
     nodeDetailCopy[node.id] ?? {
+      why: "先理解它，后面的机制才能按顺序接上。",
       shortExplanation: node.summary,
       misconception: node.misconceptions[0] ?? "先看源码路径，再用命令验证。",
       compare: node.compare,

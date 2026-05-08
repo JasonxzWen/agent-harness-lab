@@ -119,6 +119,8 @@ test("node detail copy is complete and Chinese-first", () => {
     const copy = nodeDetailCopy[node.id];
 
     expect(copy).toBeDefined();
+    expect(copy.why.length).toBeGreaterThan(0);
+    expect(copy.why.length).toBeLessThanOrEqual(72);
     expect(copy.shortExplanation.length).toBeGreaterThan(0);
     expect(copy.shortExplanation.length).toBeLessThanOrEqual(72);
     expect(copy.misconception.length).toBeGreaterThan(0);
@@ -126,7 +128,7 @@ test("node detail copy is complete and Chinese-first", () => {
     expect(copy.compare.teachingVersion.length).toBeGreaterThan(0);
     expect(copy.compare.productionVersion.length).toBeGreaterThan(0);
 
-    const text = `${copy.shortExplanation}${copy.misconception}${copy.compare.teachingVersion}${copy.compare.productionVersion}`;
+    const text = `${copy.why}${copy.shortExplanation}${copy.misconception}${copy.compare.teachingVersion}${copy.compare.productionVersion}`;
 
     expect(/[\u4e00-\u9fff]/.test(text)).toBe(true);
 
