@@ -7,14 +7,14 @@ You are an autonomous Codex coding agent running inside a Ralph loop.
 1. Read `scripts/ralph/prd.json`.
 2. Read `scripts/ralph/progress.txt`, especially the `Codebase Patterns` section.
 3. Read `AGENTS.md`, `DESIGN.md`, and `apps/knowledge-graph/AGENTS.md` before changing code.
-4. Check that the repository is on the PRD `branchName`. If it is not, create or check out that branch from `main`.
+4. Check that the repository is on `main`. This repo now develops directly on `main`; do not create or check out another development branch unless the user explicitly changes that rule.
 5. Pick the highest-priority user story where `passes` is `false`.
 6. Implement that single story only. Each story may complete one functional node, not multiple stories at once.
 7. Run the story acceptance commands exactly when applicable:
    - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck`
    - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test`
    - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build`
-8. For every UI story, open the app in the Codex in-app browser, take a screenshot, compare against `AGENTS.md`, `apps/knowledge-graph/AGENTS.md`, and `DESIGN.md`, then tune UI, copy, and interaction states before marking the story passing.
+8. For every UI story, use local Playwright screenshots as the approved visual verification path, compare against `AGENTS.md`, `apps/knowledge-graph/AGENTS.md`, and `DESIGN.md`, then tune UI, copy, and interaction states before marking the story passing.
 9. For every UI story, document in `progress.txt`:
    - Browser screenshot result.
    - Hover / focus / active / click feedback.
@@ -28,7 +28,7 @@ You are an autonomous Codex coding agent running inside a Ralph loop.
 15. Update `scripts/ralph/prd.json` and set that story's `passes` to `true`.
 16. Append a progress entry to `scripts/ralph/progress.txt`.
 
-If the Codex CLI cannot use the in-app browser for a UI story, stop and report that limitation. Do not claim browser verification happened.
+If Playwright cannot create screenshots for a UI story, stop and report that limitation. Do not claim browser verification happened.
 
 ## Progress Entry Format
 
@@ -70,9 +70,9 @@ Examples:
 
 ## UI Stories
 
-For stories that change UI, verify in a browser when the environment supports it. Use Codex browser capabilities, Playwright, or the repository's existing E2E tooling.
+For stories that change UI, verify in a browser when the environment supports it. Use local Playwright or the repository's existing visual regression tooling.
 
-For this repository, UI verification must prefer the Codex in-app browser. Include screenshot notes in `progress.txt`. Also verify:
+For this repository, UI verification should use local Playwright screenshots. Include screenshot notes in `progress.txt`. Also verify:
 
 - Hover / focus / active / click feedback is clear and does not use `box-shadow`, gradients, or scaling.
 - New text is short, Chinese-first, and easy to scan.
