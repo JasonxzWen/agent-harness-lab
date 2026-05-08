@@ -65,8 +65,8 @@
         "Set-Location D:\\agent-harness-lab\\apps\\knowledge-graph; bun run build"
       ],
       "priority": 3,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "2026-05-08: 完成 detail drawer 焦点管理；打开后焦点进入关闭按钮，Esc/关闭后回到原节点。截图：output/playwright/us003-open.png、output/playwright/us003-esc-return.png。验证：typecheck/test/build 通过。"
     },
     {
       "id": "US-004",

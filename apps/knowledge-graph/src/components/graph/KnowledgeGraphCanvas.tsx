@@ -215,6 +215,23 @@ export function KnowledgeGraphCanvas() {
     setPreviewNodeId(nodeId);
   }
 
+  function closeSelectedNode() {
+    const nodeId = selectedNodeId;
+
+    setSelectedNodeId(null);
+    setPreviewNodeId(null);
+
+    if (!nodeId) {
+      return;
+    }
+
+    window.requestAnimationFrame(() => {
+      document
+        .querySelector<HTMLButtonElement>(`button[data-node-id="${nodeId}"]`)
+        ?.focus();
+    });
+  }
+
   return (
     <section className="graph-canvas-panel" id="map" aria-label="Agent harness 机制地图">
       <div className="visual-title">
@@ -376,7 +393,7 @@ export function KnowledgeGraphCanvas() {
       </div>
 
       {selectedNode ? (
-        <DetailDrawer node={selectedNode} onClose={() => setSelectedNodeId(null)} />
+        <DetailDrawer node={selectedNode} onClose={closeSelectedNode} />
       ) : (
         <aside
           aria-label="节点详情等待区"

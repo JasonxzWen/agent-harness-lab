@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { getNodeDetailCopy, getNodeDisplayCopy } from "../../data/copy";
 import { themeLabels } from "../../data/knowledgeGraph";
 import type { KnowledgeNode, SourceReference } from "../../types/graph";
@@ -17,6 +17,7 @@ const referenceLabels: Record<SourceReference["kind"], string> = {
 };
 
 export function DetailDrawer({ node, onClose }: DetailDrawerProps) {
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
   const displayCopy = getNodeDisplayCopy(node);
   const detailCopy = getNodeDetailCopy(node);
   const sourceReferences = [...node.labFiles, ...node.ccbMappings];
@@ -26,8 +27,13 @@ export function DetailDrawer({ node, onClose }: DetailDrawerProps) {
     "Set-Location D:\\agent-harness-lab\\apps\\knowledge-graph; bun run build";
 
   useEffect(() => {
+    closeButtonRef.current?.focus();
+  }, [node.id]);
+
+  useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
+        event.preventDefault();
         onClose();
       }
     }
@@ -42,13 +48,19 @@ export function DetailDrawer({ node, onClose }: DetailDrawerProps) {
       aria-labelledby="detail-drawer-title"
       className="detail-drawer"
       id="node-detail-drawer"
+      role="dialog"
     >
       <div className="detail-drawer-header">
         <div>
           <span>{themeLabels[node.theme]}</span>
           <h2 id="detail-drawer-title">{displayCopy.title}</h2>
         </div>
-        <button aria-label="关闭详情" type="button" onClick={onClose}>
+        <button
+          aria-label="关闭详情"
+          ref={closeButtonRef}
+          type="button"
+          onClick={onClose}
+        >
           关闭
         </button>
       </div>

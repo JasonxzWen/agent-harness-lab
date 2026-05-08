@@ -126,3 +126,36 @@ Branch: ralph/knowledge-graph-completion
   - The summary card is intentionally short; full `why / what / how` remains in the detail drawer.
   - Dedicated per-node visual upgrades remain scoped to `US-004`.
 ---
+
+## 2026-05-08T17:34:00+08:00 - US-003 completion
+- What was implemented
+  - Added drawer open focus: the close button receives focus when a node detail opens.
+  - Added close focus return: `Esc` or the close button closes the drawer and returns focus to the original node.
+  - Marked the drawer as a labelled `dialog` region while keeping it non-modal.
+- Files changed
+  - `apps/knowledge-graph/src/components/drawer/DetailDrawer.tsx`
+  - `apps/knowledge-graph/src/components/graph/KnowledgeGraphCanvas.tsx`
+  - `scripts/ralph/prd.json`
+  - `scripts/ralph/progress.txt`
+  - `output/playwright/us003-open.png`
+  - `output/playwright/us003-esc-return.png`
+- Checks run
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck` passed.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test` passed, 10 tests.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build` passed.
+- Browser screenshot result
+  - Local in-app browser remained blocked for local URLs.
+  - Playwright fallback screenshots passed: `output/playwright/us003-open.png` and `output/playwright/us003-esc-return.png`.
+- Hover / focus / active / click feedback
+  - Click or native button Enter opens detail.
+  - Open state shows focus on the close button.
+  - `Esc` closes detail and returns focus to the node, keeping the summary visible.
+  - Close button hover, focus, active states continue to use border, underline, and token background.
+- Global thinking check
+  - No new permanent panel was added; this story only improves the existing drawer path.
+  - The keyboard path is now predictable: node, drawer close, back to node.
+  - Search, theme filter, path switch, and progress persistence still show `暂未实现`.
+- why / what / how
+  - The drawer still starts with `why / what / how`; this story changes access and focus behavior only.
+  - Dedicated per-node visual upgrades remain scoped to `US-004`.
+---
