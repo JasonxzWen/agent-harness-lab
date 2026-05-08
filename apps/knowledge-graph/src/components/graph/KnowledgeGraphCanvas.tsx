@@ -75,6 +75,20 @@ const progressLabels = {
   reviewed: "已复盘",
 } satisfies Record<ProgressStatus, string>;
 
+function getDisplayTitle(nodeId: string) {
+  const node = nodeById.get(nodeId);
+
+  return node ? getNodeDisplayCopy(node).title : nodeId;
+}
+
+function getRelatedLabels(nodeIds: string[], fallback: string) {
+  if (nodeIds.length === 0) {
+    return fallback;
+  }
+
+  return nodeIds.map(getDisplayTitle).join("、");
+}
+
 function buildGraphLayout() {
   const layers = new Map<number, KnowledgeNode[]>();
 
@@ -125,6 +139,7 @@ function clampZoom(value: number) {
 
 export function KnowledgeGraphCanvas() {
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const [previewNodeId, setPreviewNodeId] = useState<string | null>(null);
   const [viewport, setViewport] = useState<ViewportState>({
     x: 0,
     y: 0,
@@ -132,6 +147,11 @@ export function KnowledgeGraphCanvas() {
   });
   const dragState = useRef<DragState | null>(null);
   const selectedNode = selectedNodeId ? nodeById.get(selectedNodeId) : undefined;
+  const previewNodeIdToShow = previewNodeId ?? selectedNodeId;
+  const previewNode = previewNodeIdToShow
+    ? nodeById.get(previewNodeIdToShow)
+    : undefined;
+  const previewCopy = previewNode ? getNodeDisplayCopy(previewNode) : undefined;
   const graphLayout = useMemo(() => buildGraphLayout(), []);
 
   function zoomBy(delta: number) {
@@ -190,6 +210,11 @@ export function KnowledgeGraphCanvas() {
     return "not-started";
   }
 
+  function selectNode(nodeId: string) {
+    setSelectedNodeId(nodeId);
+    setPreviewNodeId(nodeId);
+  }
+
   return (
     <section className="graph-canvas-panel" id="map" aria-label="Agent harness 机制地图">
       <div className="visual-title">
@@ -217,6 +242,35 @@ export function KnowledgeGraphCanvas() {
               复位
             </button>
           </div>
+        </div>
+
+        <div
+          aria-live="polite"
+          className={`graph-summary-card${previewNode ? "" : " is-empty"}`}
+        >
+          {previewNode && previewCopy ? (
+            <>
+              <span>{themeLabels[previewNode.theme]}</span>
+              <strong>{previewCopy.title}</strong>
+              <p>{previewCopy.summary}</p>
+              <dl>
+                <div>
+                  <dt>前置</dt>
+                  <dd>{getRelatedLabels(previewNode.prerequisites, "无需前置")}</dd>
+                </div>
+                <div>
+                  <dt>下一步</dt>
+                  <dd>{getRelatedLabels(previewNode.recommendedNext, "暂无推荐")}</dd>
+                </div>
+              </dl>
+            </>
+          ) : (
+            <>
+              <span>SUMMARY</span>
+              <strong>悬停或聚焦节点</strong>
+              <p>先看摘要，再决定是否打开详情。</p>
+            </>
+          )}
         </div>
 
         <div
@@ -288,7 +342,11 @@ export function KnowledgeGraphCanvas() {
                   key={node.id}
                   style={{ left: x, top: y }}
                   type="button"
-                  onClick={() => setSelectedNodeId(node.id)}
+                  onBlur={() => setPreviewNodeId(null)}
+                  onClick={() => selectNode(node.id)}
+                  onFocus={() => setPreviewNodeId(node.id)}
+                  onPointerEnter={() => setPreviewNodeId(node.id)}
+                  onPointerLeave={() => setPreviewNodeId(null)}
                 >
                   <span className="graph-node-meta">
                     <span>{themeLabels[node.theme]}</span>

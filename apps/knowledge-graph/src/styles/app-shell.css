@@ -228,6 +228,69 @@ p {
   text-align: center;
 }
 
+.graph-summary-card {
+  display: grid;
+  gap: 10px;
+  min-height: 168px;
+  border: 1px solid var(--color-bg);
+  padding: 16px;
+}
+
+.graph-summary-card > span {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.1;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+.graph-summary-card strong {
+  font-family: var(--font-zh-display), var(--font-display);
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.08;
+}
+
+.graph-summary-card p {
+  max-width: 52ch;
+  font-family: var(--font-zh-serif), var(--font-serif);
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.graph-summary-card dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+}
+
+.graph-summary-card dl div {
+  display: grid;
+  gap: 6px;
+  border-top: 1px solid var(--color-bg);
+  padding-top: 10px;
+}
+
+.graph-summary-card dt {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.1;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+.graph-summary-card dd {
+  margin: 0;
+  font-family: var(--font-zh-serif), var(--font-serif);
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.graph-summary-card.is-empty {
+  align-content: center;
+}
+
 .graph-viewport {
   position: relative;
   min-height: 560px;
@@ -847,6 +910,10 @@ p {
 
   .graph-viewport {
     min-height: 480px;
+  }
+
+  .graph-summary-card dl {
+    grid-template-columns: 1fr;
   }
 
   .feature-cards {

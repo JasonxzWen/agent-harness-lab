@@ -94,3 +94,35 @@ Branch: ralph/knowledge-graph-completion
   - Detail drawer keeps the existing `why / what / how` visual cards.
   - Dedicated per-node visual upgrades remain scoped to `US-004`.
 ---
+
+## 2026-05-08T17:30:00+08:00 - US-002 completion
+- What was implemented
+  - Added a reserved summary card between graph controls and the viewport.
+  - Hover and keyboard focus on a node show title, summary, prerequisites, and recommended next nodes.
+  - Click keeps the selected node as the summary source, which gives touch users an equivalent entry without hover.
+- Files changed
+  - `apps/knowledge-graph/src/components/graph/KnowledgeGraphCanvas.tsx`
+  - `apps/knowledge-graph/src/styles/app-shell.css`
+  - `scripts/ralph/prd.json`
+  - `scripts/ralph/progress.txt`
+  - `output/playwright/us002-hover.png`
+  - `output/playwright/us002-click.png`
+- Checks run
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck` passed.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test` passed, 10 tests.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build` passed.
+- Browser screenshot result
+  - Local in-app browser remained blocked for local URLs.
+  - Playwright fallback screenshots passed: `output/playwright/us002-hover.png` and `output/playwright/us002-click.png`.
+- Hover / focus / active / click feedback
+  - Hover and focus update the summary card without covering the node or drawer.
+  - Active and selected node feedback still uses token background and border only.
+  - Click opens detail and keeps the same node summary visible for touch use.
+- Global thinking check
+  - The summary card adds one area, but it is reserved space, so the graph does not jump when hover changes.
+  - The user path is clear: scan summary first, then click for detail.
+  - Search, theme filter, path switch, and progress persistence still show `暂未实现`.
+- why / what / how
+  - The summary card is intentionally short; full `why / what / how` remains in the detail drawer.
+  - Dedicated per-node visual upgrades remain scoped to `US-004`.
+---

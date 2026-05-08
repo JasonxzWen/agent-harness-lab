@@ -43,8 +43,8 @@
         "Set-Location D:\\agent-harness-lab\\apps\\knowledge-graph; bun run build"
       ],
       "priority": 2,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "2026-05-08: 完成 hover/focus 摘要卡片；点击节点作为 touch 等效入口。截图：output/playwright/us002-hover.png、output/playwright/us002-click.png。验证：typecheck/test/build 通过。"
     },
     {
       "id": "US-003",
