@@ -25,6 +25,23 @@ export function DetailDrawer({ node, onClose }: DetailDrawerProps) {
   const firstCommand =
     node.demoCommands[0] ??
     "Set-Location D:\\agent-harness-lab\\apps\\knowledge-graph; bun run build";
+  const visualSteps = [
+    {
+      label: "WHY",
+      title: "先判断问题",
+      text: detailCopy.why,
+    },
+    {
+      label: "WHAT",
+      title: "确认机制",
+      text: detailCopy.shortExplanation,
+    },
+    {
+      label: "HOW",
+      title: "回到仓库",
+      text: firstSourcePath,
+    },
+  ];
 
   useEffect(() => {
     closeButtonRef.current?.focus();
@@ -64,6 +81,21 @@ export function DetailDrawer({ node, onClose }: DetailDrawerProps) {
           关闭
         </button>
       </div>
+
+      <section
+        aria-label={`${displayCopy.title} why what how 可视化路径`}
+        className="learning-visual"
+      >
+        <ol>
+          {visualSteps.map((step) => (
+            <li key={step.label}>
+              <span>{step.label}</span>
+              <strong>{step.title}</strong>
+              <p>{step.text}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
 
       <section className="learning-frame" aria-label="why what how 学习卡片">
         <article>

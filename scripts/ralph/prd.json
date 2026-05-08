@@ -87,8 +87,8 @@
         "Set-Location D:\\agent-harness-lab\\apps\\knowledge-graph; bun run build"
       ],
       "priority": 4,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "2026-05-08: 完成每个节点详情的 why/what/how 竖向视觉路径；由节点 detail copy 和源码路径生成。截图：output/playwright/us004-visual.png。验证：typecheck/test/build 通过。"
     },
     {
       "id": "US-005",

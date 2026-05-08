@@ -633,6 +633,51 @@ p {
   outline-offset: 4px;
 }
 
+.learning-visual ol {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.learning-visual li {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 8px 12px;
+  align-content: start;
+  border: 1px solid var(--color-bg);
+  padding: 14px;
+}
+
+.learning-visual span {
+  grid-row: 1 / span 2;
+  border-right: 1px solid var(--color-bg);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.1;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+.learning-visual strong {
+  font-family: var(--font-zh-display), var(--font-display);
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.learning-visual p {
+  display: -webkit-box;
+  overflow: hidden;
+  font-family: var(--font-zh-serif), var(--font-serif);
+  font-size: 13px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
 .detail-section {
   display: grid;
   gap: 16px;
@@ -913,6 +958,10 @@ p {
   }
 
   .graph-summary-card dl {
+    grid-template-columns: 1fr;
+  }
+
+  .learning-visual ol {
     grid-template-columns: 1fr;
   }
 

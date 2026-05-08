@@ -159,3 +159,33 @@ Branch: ralph/knowledge-graph-completion
   - The drawer still starts with `why / what / how`; this story changes access and focus behavior only.
   - Dedicated per-node visual upgrades remain scoped to `US-004`.
 ---
+
+## 2026-05-08T17:40:00+08:00 - US-004 completion
+- What was implemented
+  - Added a `why / what / how` visual path at the top of the detail drawer.
+  - The path is generated from each node's detail copy and first source path, so every node gets the same visual structure with node-specific content.
+  - Tuned the visual path from cramped columns to a vertical three-step layout inside the narrow drawer.
+- Files changed
+  - `apps/knowledge-graph/src/components/drawer/DetailDrawer.tsx`
+  - `apps/knowledge-graph/src/styles/app-shell.css`
+  - `scripts/ralph/prd.json`
+  - `scripts/ralph/progress.txt`
+  - `output/playwright/us004-visual.png`
+- Checks run
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck` passed.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test` passed, 10 tests.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build` passed.
+- Browser screenshot result
+  - Local in-app browser remained blocked for local URLs.
+  - Playwright fallback screenshot passed: `output/playwright/us004-visual.png`.
+- Hover / focus / active / click feedback
+  - The story adds a passive visual element; existing node hover, focus, active, and click feedback remains unchanged.
+  - Drawer close feedback remains visible after the US-003 focus work.
+- Global thinking check
+  - The drawer now has one more visual block, but it is directly above the existing text cards and uses the same border language.
+  - The three-step layout avoids narrow-column crowding and keeps the first visible detail focused.
+  - Search, theme filter, path switch, and progress persistence still show `暂未实现`.
+- why / what / how
+  - `why`, `what`, and `how` are now visible both as cards and as a compact path.
+  - The visual path uses only local node copy and source-path metadata.
+---
