@@ -131,8 +131,8 @@
         "Set-Location D:\\agent-harness-lab\\apps\\knowledge-graph; bun run build"
       ],
       "priority": 6,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "2026-05-08: 完成主题筛选控件，和搜索结果联动过滤节点、边和计数，并支持清除主题。截图：output/playwright/us006-theme.png、output/playwright/us006-clear.png。验证：typecheck/test/build 通过。"
     },
     {
       "id": "US-007",

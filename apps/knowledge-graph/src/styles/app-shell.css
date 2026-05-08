@@ -228,6 +228,48 @@ p {
   outline-offset: 4px;
 }
 
+.theme-filter {
+  display: grid;
+  gap: 10px;
+}
+
+.theme-filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.theme-filter-header span {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.1;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+.theme-filter-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.theme-filter-options button {
+  min-height: 34px;
+}
+
+.theme-filter-options button[data-active="true"] {
+  background: var(--color-bg);
+  color: var(--color-dark);
+}
+
+.theme-filter-options span {
+  margin-left: 4px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1;
+}
+
 .graph-controls p {
   font-family: var(--font-zh-serif), var(--font-serif);
   font-size: 16px;
@@ -274,7 +316,7 @@ p {
   outline-offset: 4px;
 }
 
-.graph-controls span {
+.graph-controls > div:not(.graph-search):not(.theme-filter) > span {
   min-width: 48px;
   font-family: var(--font-mono);
   font-size: 13px;

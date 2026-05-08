@@ -161,6 +161,7 @@ export function KnowledgeGraphCanvas() {
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [previewNodeId, setPreviewNodeId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeTheme, setActiveTheme] = useState<Theme | "all">("all");
   const [viewport, setViewport] = useState<ViewportState>({
     x: 0,
     y: 0,
@@ -174,9 +175,16 @@ export function KnowledgeGraphCanvas() {
     : undefined;
   const previewCopy = previewNode ? getNodeDisplayCopy(previewNode) : undefined;
   const normalizedSearch = normalizeSearch(searchQuery);
-  const filteredNodes = useMemo(
+  const searchMatchedNodes = useMemo(
     () => knowledgeNodes.filter((node) => nodeMatchesSearch(node, normalizedSearch)),
     [normalizedSearch],
+  );
+  const filteredNodes = useMemo(
+    () =>
+      activeTheme === "all"
+        ? searchMatchedNodes
+        : searchMatchedNodes.filter((node) => node.theme === activeTheme),
+    [activeTheme, searchMatchedNodes],
   );
   const filteredNodeIds = useMemo(
     () => new Set(filteredNodes.map((node) => node.id)),
@@ -199,6 +207,15 @@ export function KnowledgeGraphCanvas() {
         count: filteredNodes.filter((node) => node.theme === theme).length,
       })),
     [filteredNodes],
+  );
+  const themeFilterOptions = useMemo(
+    () =>
+      Object.entries(themeLabels).map(([theme, label]) => ({
+        theme: theme as Theme,
+        label,
+        count: searchMatchedNodes.filter((node) => node.theme === theme).length,
+      })),
+    [searchMatchedNodes],
   );
 
   function zoomBy(delta: number) {
@@ -308,6 +325,37 @@ export function KnowledgeGraphCanvas() {
                   清除
                 </button>
               ) : null}
+            </div>
+          </div>
+          <div className="theme-filter" aria-label="主题筛选">
+            <div className="theme-filter-header">
+              <span>主题筛选</span>
+              {activeTheme !== "all" ? (
+                <button type="button" onClick={() => setActiveTheme("all")}>
+                  清除主题
+                </button>
+              ) : null}
+            </div>
+            <div className="theme-filter-options">
+              <button
+                data-active={activeTheme === "all"}
+                data-theme-filter="all"
+                type="button"
+                onClick={() => setActiveTheme("all")}
+              >
+                全部 <span>{searchMatchedNodes.length}</span>
+              </button>
+              {themeFilterOptions.map((option) => (
+                <button
+                  data-active={activeTheme === option.theme}
+                  data-theme-filter={option.theme}
+                  key={option.theme}
+                  type="button"
+                  onClick={() => setActiveTheme(option.theme)}
+                >
+                  {option.label} <span>{option.count}</span>
+                </button>
+              ))}
             </div>
           </div>
           <p>拖动画布。点击节点看详情。</p>
@@ -486,7 +534,7 @@ export function KnowledgeGraphCanvas() {
       </div>
 
       <p className="pending-notice">
-        暂未实现：主题筛选、路径切换和学习进度保存。当前可搜索、拖动画布、缩放视口、点击节点查看详情。
+        暂未实现：路径切换和学习进度保存。当前可搜索、主题筛选、拖动画布、缩放视口、点击节点查看详情。
       </p>
 
       <ul className="theme-grid" aria-label="知识图谱主题数量">
