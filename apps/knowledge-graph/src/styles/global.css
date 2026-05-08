@@ -1,0 +1,73 @@
+:root {
+  color-scheme: light;
+  font-family: var(--font-serif);
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-synthesis: none;
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  --color-bg: #F0EEE6;
+  --color-ink: #141413;
+  --color-dark: #1E1D1A;
+  --color-mute: #6B6862;
+  --font-display: "Inter Tight", "Söhne", sans-serif;
+  --font-serif: "Fraunces", "Tiempos", Georgia, serif;
+  --font-mono: "JetBrains Mono", "IBM Plex Mono", monospace;
+  --font-zh-display: "Source Han Sans", "思源黑体", sans-serif;
+  --font-zh-serif: "Source Han Serif", "思源宋体", serif;
+  --radius-card: 12px;
+  --radius-block: 16px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  overflow: auto;
+  background: var(--color-bg);
+}
+
+a {
+  color: var(--color-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--color-ink);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+a:hover,
+a:focus-visible {
+  text-decoration-thickness: 3px;
+}
+
+a:focus-visible {
+  outline: 1px solid var(--color-dark);
+  outline-offset: 4px;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  color: inherit;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+::selection {
+  background: var(--color-dark);
+  color: var(--color-bg);
+}

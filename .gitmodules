@@ -1,0 +1,3 @@
+[submodule "reference/vendor/learn-claude-code"]
+	path = reference/vendor/learn-claude-code
+	url = https://github.com/shareAI-lab/learn-claude-code.git
