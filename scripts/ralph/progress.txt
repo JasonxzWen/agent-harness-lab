@@ -391,3 +391,30 @@ Branch: ralph/knowledge-graph-completion
   - Accessibility polish does not add new knowledge content.
   - Nodes still open the drawer with the `why / what / how` visual path from `US-004`.
 ---
+
+## 2026-05-08T18:22:00+08:00 - US-011 completion
+- What was implemented
+  - Expanded Bun tests from 10 to 15 cases.
+  - Added reference metadata boundary checks for allowed path prefixes and forbidden local path fragments.
+  - Added per-node why / what / how visual input checks.
+  - Added user-facing source copy checks for forbidden filler terms.
+  - Added visible `暂未实现` guard and CSS color / decoration boundary tests.
+- Files changed
+  - `apps/knowledge-graph/tests/knowledgeGraph.test.js`
+  - `scripts/ralph/prd.json`
+  - `scripts/ralph/progress.txt`
+- Checks run
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck` passed.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test` passed, 15 tests.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build` passed.
+- Browser screenshot result
+  - Not a UI story; no new screenshot required.
+- Hover / focus / active / click feedback
+  - No component interaction changed in this story.
+- Global thinking check
+  - The story adds automated guardrails only; it does not add page elements.
+  - Existing UI remains unchanged after US-010 mobile and keyboard polish.
+  - Final visual review remains the only pending story.
+- why / what / how
+  - Tests now require every node to keep why text, what summary, and how references.
+---

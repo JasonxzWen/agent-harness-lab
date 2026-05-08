@@ -236,8 +236,8 @@
         "Set-Location D:\\agent-harness-lab\\apps\\knowledge-graph; bun run build"
       ],
       "priority": 11,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "已扩展内容边界测试：引用元数据、禁用路径、why/what/how 输入、未实现提示、用户文案禁词、CSS 颜色和装饰边界均纳入 bun test；15 项测试通过。"
     },
     {
       "id": "US-012",

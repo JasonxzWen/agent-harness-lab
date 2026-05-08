@@ -8,6 +8,7 @@ import {
 } from "../src/data/knowledgeGraph";
 import { nodeDetailCopy, nodeDisplayCopy } from "../src/data/copy";
 import { learningPaths } from "../src/data/paths";
+import { sourceReferences } from "../src/data/references";
 
 const nodeIds = new Set(knowledgeNodes.map((node) => node.id));
 const referenceKinds = new Set([
@@ -31,6 +32,33 @@ const forbiddenCopyTerms = [
   "数据底座",
   "高信息密度",
 ];
+const forbiddenPathFragments = [
+  ".external/skill-hub",
+  "node_modules",
+  "dist",
+  "labs/ts-agent/workspace",
+];
+const allowedReferencePrefixes = [
+  "learn/",
+  "labs/ts-agent/src/",
+  "labs/ts-agent/docs/",
+  "reference/",
+  "apps/knowledge-graph/",
+  ".external/ccb/",
+  "https://",
+];
+const allowedCssHexColors = new Set([
+  "#F0EEE6",
+  "#141413",
+  "#1E1D1A",
+  "#6B6862",
+]);
+const disallowedCssPatterns = [
+  "box-shadow",
+  "linear-gradient",
+  "radial-gradient",
+  "feTurbulence",
+];
 const projectRoot = resolve(import.meta.dir, "../../..");
 const userFacingDocs = [
   "README.md",
@@ -42,6 +70,19 @@ const userFacingDocs = [
   "learn/01-typescript-bun.md",
   "learn/03-zero-to-one-plan.md",
   "learn/06-mermaid-learning-map.md",
+];
+const userFacingSourceFiles = [
+  "apps/knowledge-graph/src/components/layout/AppShell.tsx",
+  "apps/knowledge-graph/src/components/layout/GraphToolbar.tsx",
+  "apps/knowledge-graph/src/components/graph/KnowledgeGraphCanvas.tsx",
+  "apps/knowledge-graph/src/components/drawer/DetailDrawer.tsx",
+  "apps/knowledge-graph/src/components/ui/CommandBlock.tsx",
+  "apps/knowledge-graph/src/data/copy.ts",
+  "apps/knowledge-graph/src/data/paths.ts",
+];
+const cssFiles = [
+  "apps/knowledge-graph/src/styles/global.css",
+  "apps/knowledge-graph/src/styles/app-shell.css",
 ];
 
 test("seed graph keeps the MVP node count in range", () => {
@@ -84,7 +125,34 @@ test("nodes use known themes and bounded reference kinds", () => {
       ...node.externalLinks,
     ]) {
       expect(referenceKinds.has(reference.kind)).toBe(true);
-      expect(reference.target.includes(".external/skill-hub")).toBe(false);
+
+      for (const fragment of forbiddenPathFragments) {
+        expect(reference.target.includes(fragment)).toBe(false);
+      }
+    }
+  }
+});
+
+test("source references stay inside allowed metadata boundaries", () => {
+  const referenceIds = new Set();
+
+  for (const reference of Object.values(sourceReferences)) {
+    expect(referenceIds.has(reference.id)).toBe(false);
+    referenceIds.add(reference.id);
+    expect(referenceKinds.has(reference.kind)).toBe(true);
+    expect(reference.title.length).toBeGreaterThan(0);
+    expect(reference.title.length).toBeLessThanOrEqual(64);
+    expect(reference.target.length).toBeGreaterThan(0);
+    expect(
+      allowedReferencePrefixes.some((prefix) => reference.target.startsWith(prefix)),
+    ).toBe(true);
+
+    if (reference.note) {
+      expect(reference.note.length).toBeLessThanOrEqual(96);
+    }
+
+    for (const fragment of forbiddenPathFragments) {
+      expect(reference.target.includes(fragment)).toBe(false);
     }
   }
 });
@@ -138,6 +206,22 @@ test("node detail copy is complete and Chinese-first", () => {
   }
 });
 
+test("every node has why, what, and how visual inputs", () => {
+  for (const node of knowledgeNodes) {
+    const detailCopy = nodeDetailCopy[node.id];
+    const displayCopy = nodeDisplayCopy[node.id];
+    const sourceReferencesForNode = [
+      ...node.labFiles,
+      ...node.ccbMappings,
+      ...node.externalLinks,
+    ];
+
+    expect(detailCopy.why.trim().length).toBeGreaterThan(0);
+    expect(displayCopy.summary.trim().length).toBeGreaterThan(0);
+    expect(sourceReferencesForNode.length).toBeGreaterThan(0);
+  }
+});
+
 test("learning path copy stays short and plain", () => {
   for (const path of learningPaths) {
     const text = `${path.title}${path.summary}`;
@@ -157,6 +241,43 @@ test("user-facing docs avoid forbidden filler terms", () => {
 
     for (const term of forbiddenCopyTerms) {
       expect(content.includes(term)).toBe(false);
+    }
+  }
+});
+
+test("user-facing source copy avoids forbidden filler terms", () => {
+  for (const relativePath of userFacingSourceFiles) {
+    const content = readFileSync(resolve(projectRoot, relativePath), "utf8");
+
+    for (const term of forbiddenCopyTerms) {
+      expect(content.includes(term)).toBe(false);
+    }
+  }
+});
+
+test("unfinished entries remain visibly marked", () => {
+  const canvasSource = readFileSync(
+    resolve(
+      projectRoot,
+      "apps/knowledge-graph/src/components/graph/KnowledgeGraphCanvas.tsx",
+    ),
+    "utf8",
+  );
+
+  expect(canvasSource.includes("暂未实现")).toBe(true);
+});
+
+test("css stays within design color and decoration boundaries", () => {
+  for (const relativePath of cssFiles) {
+    const content = readFileSync(resolve(projectRoot, relativePath), "utf8");
+    const hexColors = content.match(/#[0-9a-fA-F]{3,8}\b/g) ?? [];
+
+    for (const color of hexColors) {
+      expect(allowedCssHexColors.has(color.toUpperCase())).toBe(true);
+    }
+
+    for (const pattern of disallowedCssPatterns) {
+      expect(content.includes(pattern)).toBe(false);
     }
   }
 });
