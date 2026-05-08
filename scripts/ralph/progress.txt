@@ -355,3 +355,39 @@ Branch: ralph/knowledge-graph-completion
   - Reference panel does not add new knowledge content.
   - Nodes still open the drawer with the `why / what / how` visual path from `US-004`.
 ---
+
+## 2026-05-08T18:18:00+08:00 - US-010 completion
+- What was implemented
+  - Added keyboard focus reveal for graph nodes, so off-screen focused nodes move into the graph viewport.
+  - Tightened mobile graph layout with a fixed draggable viewport and smaller inner padding.
+  - Restored theme, path, and progress controls to their own layout groups.
+  - Updated feature card copy so search, filter, path, and progress are no longer marked pending.
+  - Added reduced-motion guard for scroll behavior.
+- Files changed
+  - `apps/knowledge-graph/src/components/graph/KnowledgeGraphCanvas.tsx`
+  - `apps/knowledge-graph/src/components/layout/AppShell.tsx`
+  - `apps/knowledge-graph/src/styles/app-shell.css`
+  - `scripts/ralph/prd.json`
+  - `scripts/ralph/progress.txt`
+  - `output/playwright/us010-mobile.png`
+  - `output/playwright/us010-keyboard-focus.png`
+  - `output/playwright/us010-desktop.png`
+- Checks run
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck` passed.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test` passed, 10 tests.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build` passed.
+- Browser screenshot result
+  - Local in-app browser remained blocked for local URLs.
+  - Playwright fallback screenshots passed: `output/playwright/us010-mobile.png`, `output/playwright/us010-keyboard-focus.png`, and `output/playwright/us010-desktop.png`.
+- Hover / focus / active / click feedback
+  - Toolbar links now have visible focus outlines.
+  - Graph controls keep the same border, underline, active fill, and focus outline feedback.
+  - Keyboard node focus updates the summary card and moves the viewport to the focused node.
+- Global thinking check
+  - The graph no longer stretches the mobile page with the full internal graph height.
+  - The existing graph controls stay grouped; no new top-level UI area was added.
+  - Pending copy now names only content boundary checks and final visual review.
+- why / what / how
+  - Accessibility polish does not add new knowledge content.
+  - Nodes still open the drawer with the `why / what / how` visual path from `US-004`.
+---

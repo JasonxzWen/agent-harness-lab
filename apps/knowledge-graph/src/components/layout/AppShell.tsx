@@ -19,9 +19,8 @@ const featureCards = [
   },
   {
     label: "搜索筛选",
-    summary: "路径切换、主题筛选和学习进度暂未实现。",
-    status: "暂未实现",
-    isPending: true,
+    summary: "搜索节点，切换主题和路径，保存学习状态。",
+    status: "已实现",
   },
 ] as const;
 

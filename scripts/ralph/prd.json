@@ -219,8 +219,8 @@
         "Set-Location D:\\agent-harness-lab\\apps\\knowledge-graph; bun run build"
       ],
       "priority": 10,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "已完成窄屏布局和键盘可访问性打磨：移动端固定图谱视窗，键盘聚焦节点会平移画布，toolbar / filter / path / progress / drawer 顺序清楚；截图 output/playwright/us010-mobile.png、output/playwright/us010-keyboard-focus.png、output/playwright/us010-desktop.png。"
     },
     {
       "id": "US-011",

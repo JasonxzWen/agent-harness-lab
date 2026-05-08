@@ -223,6 +223,7 @@ export function KnowledgeGraphCanvas() {
     zoom: 0.72,
   });
   const dragState = useRef<DragState | null>(null);
+  const graphViewportRef = useRef<HTMLDivElement>(null);
   const selectedNode = selectedNodeId ? nodeById.get(selectedNodeId) : undefined;
   const previewNodeIdToShow = previewNodeId ?? selectedNodeId;
   const previewNode = previewNodeIdToShow
@@ -359,6 +360,42 @@ export function KnowledgeGraphCanvas() {
     if (dragState.current?.pointerId === event.pointerId) {
       dragState.current = null;
     }
+  }
+
+  function revealNodeInViewport(nodeX: number, nodeY: number) {
+    const viewportElement = graphViewportRef.current;
+
+    if (!viewportElement) {
+      return;
+    }
+
+    setViewport((current) => {
+      const viewportPadding = 24;
+      const scaledLeft = nodeX * current.zoom + current.x;
+      const scaledRight = (nodeX + nodeWidth) * current.zoom + current.x;
+      const scaledTop = nodeY * current.zoom + current.y;
+      const scaledBottom = (nodeY + nodeHeight) * current.zoom + current.y;
+      const visibleRight = viewportElement.clientWidth - viewportPadding;
+      const visibleBottom = viewportElement.clientHeight - viewportPadding;
+      let nextX = current.x;
+      let nextY = current.y;
+
+      if (scaledLeft < viewportPadding) {
+        nextX += viewportPadding - scaledLeft;
+      } else if (scaledRight > visibleRight) {
+        nextX -= scaledRight - visibleRight;
+      }
+
+      if (scaledTop < viewportPadding) {
+        nextY += viewportPadding - scaledTop;
+      } else if (scaledBottom > visibleBottom) {
+        nextY -= scaledBottom - visibleBottom;
+      }
+
+      return nextX === current.x && nextY === current.y
+        ? current
+        : { ...current, x: nextX, y: nextY };
+    });
   }
 
   function getProgressStatus(nodeId: string): ProgressStatus {
@@ -512,7 +549,7 @@ export function KnowledgeGraphCanvas() {
             </button>
           </div>
           <p>拖动画布。点击节点看详情。</p>
-          <div>
+          <div className="viewport-controls" aria-label="画布缩放">
             <button type="button" onClick={() => zoomBy(-0.08)}>
               缩小
             </button>
@@ -556,6 +593,7 @@ export function KnowledgeGraphCanvas() {
         </div>
 
         <div
+          ref={graphViewportRef}
           className="graph-viewport"
           aria-label="可拖拽知识图谱画布"
           onPointerCancel={endPan}
@@ -626,7 +664,10 @@ export function KnowledgeGraphCanvas() {
                   type="button"
                   onBlur={() => setPreviewNodeId(null)}
                   onClick={() => selectNode(node.id)}
-                  onFocus={() => setPreviewNodeId(node.id)}
+                  onFocus={() => {
+                    setPreviewNodeId(node.id);
+                    revealNodeInViewport(x, y);
+                  }}
                   onPointerEnter={() => setPreviewNodeId(node.id)}
                   onPointerLeave={() => setPreviewNodeId(null)}
                 >
@@ -692,7 +733,7 @@ export function KnowledgeGraphCanvas() {
       </div>
 
       <p className="pending-notice">
-        暂未实现：引用分组面板、移动端最终验收。当前可搜索、筛选、切换路径、保存进度并查看详情。
+        暂未实现：内容边界自动校验、最终视觉验收。当前可搜索、筛选、切换路径、保存进度并查看引用。
       </p>
 
       <ul className="theme-grid" aria-label="知识图谱主题数量">
