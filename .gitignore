@@ -6,3 +6,4 @@ apps/knowledge-graph/dist/
 *.local
 scripts/ralph/.last-branch
 scripts/ralph/.last-message.txt
+.playwright-cli/

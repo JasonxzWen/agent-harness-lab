@@ -111,7 +111,7 @@ p {
 .graph-canvas-panel {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 28fr) minmax(320px, 36fr) minmax(320px, 36fr);
+  grid-template-columns: 160px minmax(0, 1fr) minmax(288px, 0.72fr);
   align-items: stretch;
   gap: 32px;
   min-height: 460px;
@@ -129,9 +129,11 @@ p {
   align-self: end;
   display: grid;
   gap: 8px;
+  max-width: 160px;
   font-family: var(--font-zh-serif), var(--font-serif);
-  font-size: 80px;
-  line-height: 0.92;
+  font-size: 48px;
+  line-height: 0.98;
+  overflow-wrap: anywhere;
 }
 
 .visual-title strong {
@@ -168,6 +170,182 @@ p {
 .trace-header {
   border-bottom: 1px solid var(--color-bg);
   padding-bottom: 16px;
+}
+
+.graph-controls {
+  display: grid;
+  gap: 16px;
+  border-bottom: 1px solid var(--color-bg);
+  padding-bottom: 16px;
+}
+
+.graph-controls p {
+  font-family: var(--font-zh-serif), var(--font-serif);
+  font-size: 16px;
+  line-height: 1.35;
+}
+
+.graph-controls > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.graph-controls button {
+  border: 1px solid var(--color-bg);
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-bg);
+  padding: 8px 16px;
+  font-family: var(--font-zh-display), var(--font-display);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.graph-controls button:hover,
+.graph-controls button:focus-visible,
+.graph-controls button:active {
+  background: var(--color-bg);
+  color: var(--color-dark);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.graph-controls button:focus-visible {
+  outline: 1px solid var(--color-bg);
+  outline-offset: 4px;
+}
+
+.graph-controls span {
+  min-width: 48px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1;
+  text-align: center;
+}
+
+.graph-viewport {
+  position: relative;
+  min-height: 560px;
+  overflow: hidden;
+  border: 1px solid var(--color-bg);
+  cursor: grab;
+  touch-action: none;
+}
+
+.graph-viewport:active {
+  cursor: grabbing;
+}
+
+.graph-surface {
+  position: relative;
+  transform-origin: 0 0;
+}
+
+.graph-edge-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.graph-edge-layer path {
+  fill: none;
+  stroke: var(--color-bg);
+  stroke-width: 1px;
+  opacity: 0.26;
+}
+
+.graph-edge-layer path.is-active {
+  opacity: 0.82;
+}
+
+.graph-node-button {
+  position: absolute;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  width: 152px;
+  min-height: 72px;
+  border: 1px solid var(--color-bg);
+  border-radius: 0;
+  background: var(--color-dark);
+  color: var(--color-bg);
+  padding: 12px;
+  text-align: left;
+  cursor: pointer;
+  opacity: 0.72;
+}
+
+.graph-node-button[data-in-path="true"],
+.graph-node-button:hover,
+.graph-node-button:focus-visible,
+.graph-node-button.is-selected,
+.graph-node-button:active {
+  opacity: 1;
+}
+
+.graph-node-button:hover,
+.graph-node-button:focus-visible,
+.graph-node-button:active {
+  border-color: var(--color-bg);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.graph-node-button:focus-visible {
+  outline: 1px solid var(--color-bg);
+  outline-offset: 4px;
+}
+
+.graph-node-button.is-selected,
+.graph-node-button:active {
+  background: var(--color-bg);
+  color: var(--color-dark);
+}
+
+.graph-node-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.graph-node-meta span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.graph-node-status {
+  flex: 0 0 auto;
+  border-left: 1px solid currentColor;
+  padding-left: 8px;
+}
+
+.graph-node-button strong {
+  font-family: var(--font-zh-display), var(--font-display);
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.graph-node-button > span:last-child {
+  display: -webkit-box;
+  overflow: hidden;
+  font-family: var(--font-zh-serif), var(--font-serif);
+  font-size: 13px;
+  line-height: 1.25;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .trace-header span:last-child,
@@ -655,7 +833,8 @@ p {
   }
 
   .visual-title {
-    font-size: 64px;
+    max-width: none;
+    font-size: 48px;
   }
 
   .harness-diagram {
@@ -664,6 +843,10 @@ p {
 
   .detail-drawer {
     max-height: none;
+  }
+
+  .graph-viewport {
+    min-height: 480px;
   }
 
   .feature-cards {

@@ -30,3 +30,67 @@ Branch: ralph/knowledge-graph-completion
   - Ralph must check `--output-last-message` output for `<promise>COMPLETE</promise>` so it does not match the prompt text.
   - UI stories cannot pass in this CLI environment unless the in-app browser tool is exposed.
 ---
+
+## 2026-05-08T17:00:00+08:00 - US-001
+- What was implemented
+  - Reworked the graph canvas into a draggable, zoomable graph viewport.
+  - Rendered all graph nodes by layer, rendered SVG edges, and highlighted the Beginner Path.
+  - Kept the detail drawer click path and visible `暂未实现` copy for search, theme filtering, path switching, and progress persistence.
+- Files changed
+  - `apps/knowledge-graph/src/components/graph/KnowledgeGraphCanvas.tsx`
+  - `apps/knowledge-graph/src/styles/app-shell.css`
+- Checks run
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck`
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test`
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build`
+- Browser screenshot result
+  - Blocked. The current Codex in-app browser can open public pages, but local targets such as `http://127.0.0.1:5176/`, `http://localhost:5175/`, host IP URLs, and `file://` build output are rejected by the browser client or policy.
+  - Because the required in-app browser screenshot could not be completed, `US-001` remains `passes=false`.
+- Hover / focus / active / click feedback
+  - Graph nodes use border, underline, opacity, and token background changes.
+  - Zoom controls use border and underline feedback.
+  - No `box-shadow`, gradient, scale hover, or icon library was added.
+- Global thinking check
+  - The graph adds more visible nodes, but contains them inside a bounded viewport to avoid pushing the drawer and toolbar.
+  - The first action remains clear: drag the canvas, zoom the viewport, then click a node.
+  - Unfinished controls still show `暂未实现`.
+- why / what / how
+  - Existing drawer still shows `why / what / how`; this story did not change detail content.
+- Learnings for future iterations:
+  - In this desktop session, local in-app browser verification is blocked even though public navigation works.
+  - Do not mark UI stories passing until the local in-app browser route is fixed or the user explicitly approves a different visual verification path.
+---
+
+## 2026-05-08T17:20:00+08:00 - US-001 completion
+- What was implemented
+  - Marked `US-001` complete after the user approved local Playwright screenshots as the visual fallback.
+  - Repaired `scripts/ralph/prd.json` as UTF-8 JSON so future Ralph passes keep Chinese story titles and acceptance criteria readable.
+  - Tightened the graph panel side title to avoid text wrapping into the canvas.
+- Files changed
+  - `.gitignore`
+  - `apps/knowledge-graph/src/components/graph/KnowledgeGraphCanvas.tsx`
+  - `apps/knowledge-graph/src/styles/app-shell.css`
+  - `scripts/ralph/prd.json`
+  - `scripts/ralph/progress.txt`
+  - `output/playwright/us001-desktop.png`
+  - `output/playwright/us001-detail.png`
+- Checks run
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck` passed.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test` passed, 10 tests.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build` passed.
+- Browser screenshot result
+  - Local in-app browser remained blocked for local URLs.
+  - Playwright fallback screenshots passed: `output/playwright/us001-desktop.png` and `output/playwright/us001-detail.png`.
+- Hover / focus / active / click feedback
+  - Nodes expose hover and focus by border, underline, and token background.
+  - Active press uses the same token palette without scale or shadow.
+  - Click opens the detail drawer and changes the selected node progress label to `学习中`.
+  - Zoom controls use visible border and underline feedback.
+- Global thinking check
+  - The graph is dense, but it is contained in a bounded pan/zoom viewport and no longer pushes the drawer.
+  - The first action is visible: drag the canvas, zoom, then click a node.
+  - Search, theme filter, path switch, and progress persistence still show `暂未实现`.
+- why / what / how
+  - Detail drawer keeps the existing `why / what / how` visual cards.
+  - Dedicated per-node visual upgrades remain scoped to `US-004`.
+---
