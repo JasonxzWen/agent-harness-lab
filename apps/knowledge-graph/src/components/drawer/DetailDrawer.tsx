@@ -9,6 +9,7 @@ import type {
 import { CommandBlock } from "../ui/CommandBlock";
 
 type DetailDrawerProps = {
+  interactionState: "selected" | "parked";
   node: KnowledgeNode;
   progressStatus: ProgressStatus;
   onClose: () => void;
@@ -68,6 +69,7 @@ type QuizOption = {
 };
 
 export function DetailDrawer({
+  interactionState,
   node,
   progressStatus,
   onClose,
@@ -201,6 +203,7 @@ export function DetailDrawer({
     <aside
       aria-labelledby="detail-drawer-title"
       className="detail-drawer"
+      data-interaction-state={interactionState}
       id="node-detail-drawer"
       role="dialog"
     >

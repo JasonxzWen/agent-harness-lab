@@ -742,6 +742,19 @@ p {
   text-underline-offset: 4px;
 }
 
+.route-guide-steps li[data-preview="true"]::after {
+  opacity: 1;
+  height: 2px;
+}
+
+.route-guide-steps li[data-preview="true"] button {
+  background: var(--color-bg);
+  color: var(--color-dark);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
 .route-guide-steps button:hover,
 .route-guide-steps button:focus-visible,
 .route-guide-steps button:active {
@@ -971,6 +984,22 @@ p {
   min-height: 168px;
   border: 1px solid var(--color-bg);
   padding: 16px;
+  transition:
+    background 160ms ease,
+    color 160ms ease,
+    border-color 160ms ease;
+}
+
+.graph-summary-card[data-interaction-state="preview"],
+.graph-summary-card[data-interaction-state="selected"] {
+  background: var(--color-bg);
+  color: var(--color-dark);
+}
+
+.graph-summary-card[data-interaction-state="preview"] {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
 }
 
 .graph-summary-card > span {
@@ -979,6 +1008,16 @@ p {
   line-height: 1.1;
   text-transform: uppercase;
   opacity: 0.72;
+}
+
+.graph-summary-state {
+  justify-self: start;
+  border: 1px solid currentColor;
+  padding: 4px 6px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.1;
+  text-transform: uppercase;
 }
 
 .graph-summary-card strong {
@@ -1005,7 +1044,7 @@ p {
 .graph-summary-card dl div {
   display: grid;
   gap: 6px;
-  border-top: 1px solid var(--color-bg);
+  border-top: 1px solid currentColor;
   padding-top: 10px;
 }
 
@@ -1106,9 +1145,15 @@ p {
   text-align: left;
   cursor: pointer;
   opacity: 0.72;
+  transition:
+    background 160ms ease,
+    color 160ms ease,
+    border-color 160ms ease,
+    opacity 160ms ease;
 }
 
 .graph-node-button[data-in-path="true"],
+.graph-node-button[data-preview="true"],
 .graph-node-button:hover,
 .graph-node-button:focus-visible,
 .graph-node-button.is-selected,
@@ -1118,11 +1163,20 @@ p {
 
 .graph-node-button:hover,
 .graph-node-button:focus-visible,
+.graph-node-button[data-preview="true"],
 .graph-node-button:active {
   border-color: var(--color-bg);
   text-decoration: underline;
   text-decoration-thickness: 2px;
   text-underline-offset: 4px;
+}
+
+.graph-node-button[data-preview="true"]::after {
+  position: absolute;
+  inset: -5px;
+  border: 1px solid var(--color-bg);
+  content: "";
+  pointer-events: none;
 }
 
 .graph-node-button:focus-visible {
@@ -1286,6 +1340,10 @@ p {
   border: 1px solid var(--color-bg);
   color: var(--color-bg);
   padding: 24px;
+  transition:
+    background 160ms ease,
+    color 160ms ease,
+    border-color 160ms ease;
 }
 
 .detail-drawer {
@@ -1294,6 +1352,19 @@ p {
   gap: 24px;
   max-height: 720px;
   overflow: auto;
+}
+
+.detail-drawer[data-interaction-state="parked"] .detail-drawer-header {
+  background: var(--color-bg);
+  border-bottom-color: currentColor;
+  color: var(--color-dark);
+}
+
+.detail-empty-state[data-interaction-state="preview"] {
+  border-color: var(--color-bg);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
 }
 
 .detail-empty-state {

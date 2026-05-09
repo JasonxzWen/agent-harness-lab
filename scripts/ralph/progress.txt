@@ -236,3 +236,39 @@ Started: 2026-05-08T20:06:24.8244825+08:00
   - Keep dense supporting content folded unless it is the next likely action.
   - Use marker labels as the table of contents instead of adding a text-heavy explanation block.
 ---
+
+## 2026-05-09T11:52:26+08:00 - US-007
+- What was implemented
+  - Added one shared interaction state across route steps, graph nodes, edges, summary, and detail area.
+  - Route hover/focus now marks the same node in the route map, graph canvas, and summary card.
+  - Clicked nodes keep the detail drawer selected; focusing another route step parks the drawer while the summary previews the new node.
+- Files changed
+  - `apps/knowledge-graph/src/components/graph/KnowledgeGraphCanvas.tsx`
+  - `apps/knowledge-graph/src/components/drawer/DetailDrawer.tsx`
+  - `apps/knowledge-graph/src/styles/app-shell.css`
+  - `output/playwright/us007-interaction-hover-desktop.png`
+  - `output/playwright/us007-interaction-focus-desktop.png`
+- Checks run
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck` passed.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test` passed, 16 tests.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build` passed.
+- Browser screenshot result
+  - Desktop hover screenshot passed for route-to-graph-to-summary feedback.
+  - Desktop click/focus screenshot passed for selected drawer plus another focused preview.
+- Hover / focus / active / click feedback
+  - Hover and focus use border, underline, background switch, and CSS transitions.
+  - Click opens the detail drawer and keeps the selected node visible.
+  - The active detail drawer shows selected state; previewing another node does not replace the selected detail content.
+  - Existing `prefers-reduced-motion` rule still reduces transition duration.
+- Global thinking check
+  - No new panel was added; existing route, graph, summary, and drawer now share state.
+  - The first step and next step remain visible; interaction feedback adds clarity without more text.
+  - Desktop-only verification remains active; no mobile path is required.
+- why / what / how
+  - Why: users need to feel which part changed when they hover, focus, or click.
+  - What: one interaction state now marks the active node across route, canvas, summary, and detail.
+  - How: React derives `interactionState` and `data-preview` attributes; CSS handles border, underline, background, and reduced-motion behavior.
+- Learnings for future iterations:
+  - Prefer shared state attributes over extra explanatory copy.
+  - Keep graph hover screenshots stable by targeting route steps when canvas transform affects pointer hit testing.
+---

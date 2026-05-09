@@ -355,6 +355,12 @@ export function KnowledgeGraphCanvas() {
     ? nodeById.get(previewNodeIdToShow)
     : undefined;
   const previewCopy = previewNode ? getNodeDisplayCopy(previewNode) : undefined;
+  const interactionState =
+    previewNodeId && previewNodeId !== selectedNodeId
+      ? "preview"
+      : selectedNodeId
+        ? "selected"
+        : "idle";
   const normalizedSearch = normalizeSearch(searchQuery);
   const searchMatchedNodes = useMemo(
     () => knowledgeNodes.filter((node) => nodeMatchesSearch(node, normalizedSearch)),
@@ -916,6 +922,8 @@ export function KnowledgeGraphCanvas() {
           <ol className="route-guide-steps">
             {[...activeRouteSteps].reverse().map((step) => (
               <li
+                data-preview={previewNodeIdToShow === step.node.id}
+                data-route-node-id={step.node.id}
                 data-state={
                   step.isCurrent
                     ? "current"
@@ -928,6 +936,7 @@ export function KnowledgeGraphCanvas() {
                 key={step.node.id}
               >
                 <button
+                  data-route-node-id={step.node.id}
                   type="button"
                   onClick={() => openPathNode(step.node.id)}
                   onFocus={() => setPreviewNodeId(step.node.id)}
@@ -985,10 +994,14 @@ export function KnowledgeGraphCanvas() {
         <div
           aria-live="polite"
           className={`graph-summary-card${previewNode ? "" : " is-empty"}`}
+          data-interaction-state={interactionState}
         >
           {previewNode && previewCopy ? (
             <>
               <span>{themeLabels[previewNode.theme]}</span>
+              <small className="graph-summary-state">
+                {interactionState === "preview" ? "预览中" : "详情已选中"}
+              </small>
               <strong>{previewCopy.title}</strong>
               <p>{previewCopy.summary}</p>
               <dl>
@@ -1051,7 +1064,9 @@ export function KnowledgeGraphCanvas() {
                 const isActive =
                   activePathEdges.has(edge.id) ||
                   selectedNodeId === edge.source ||
-                  selectedNodeId === edge.target;
+                  selectedNodeId === edge.target ||
+                  previewNodeIdToShow === edge.source ||
+                  previewNodeIdToShow === edge.target;
 
                 return (
                   <path
@@ -1067,6 +1082,7 @@ export function KnowledgeGraphCanvas() {
             {graphLayout.layoutNodes.map(({ node, x, y }) => {
               const displayCopy = getNodeDisplayCopy(node);
               const isSelected = selectedNodeId === node.id;
+              const isPreviewed = previewNodeIdToShow === node.id;
               const isInActivePath = activePathNodeIds.has(node.id);
               const progressStatus = getProgressStatus(node.id);
 
@@ -1077,6 +1093,7 @@ export function KnowledgeGraphCanvas() {
                   className={`graph-node-button${isSelected ? " is-selected" : ""}`}
                   data-in-path={isInActivePath}
                   data-node-id={node.id}
+                  data-preview={isPreviewed}
                   data-progress={progressStatus}
                   key={node.id}
                   style={{ left: x, top: y }}
@@ -1116,6 +1133,11 @@ export function KnowledgeGraphCanvas() {
 
       {selectedNode ? (
         <DetailDrawer
+          interactionState={
+            previewNodeId && previewNodeId !== selectedNodeId
+              ? "parked"
+              : "selected"
+          }
           node={selectedNode}
           progressStatus={getProgressStatus(selectedNode.id)}
           onClose={closeSelectedNode}
@@ -1125,6 +1147,7 @@ export function KnowledgeGraphCanvas() {
         <aside
           aria-label="节点详情等待区"
           className="detail-empty-state"
+          data-interaction-state={previewNode ? "preview" : "idle"}
           id="node-detail-drawer"
         >
           <span>DETAIL</span>
