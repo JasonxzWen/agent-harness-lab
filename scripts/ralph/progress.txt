@@ -6,6 +6,7 @@ Started: 2026-05-08T20:06:24.8244825+08:00
 
 - UI story screenshots are saved under `output/playwright/`; first-viewport stories should verify both 1365x768 desktop and 390x900 mobile before marking passing.
 - If `npx @playwright/cli` cannot reach npm, local Playwright can run from the cached runtime package with the installed Chrome executable.
+- Dense secondary UI should use the marker-plus-slideout pattern: keep a short marker visible, reveal details on hover/focus, and allow click to pin one card.
 
 ---
 
@@ -51,4 +52,41 @@ Started: 2026-05-08T20:06:24.8244825+08:00
 - Learnings for future iterations:
   - Put the main CTA directly after the first required decision on mobile; secondary progress and explanation can follow.
   - First-viewport screenshots should assert button visibility, not only render the page.
+---
+
+## 2026-05-09T10:37:54+08:00 - US-002
+- What was implemented
+  - Kept search, current path, and next step visible in the default graph controls.
+  - Moved theme filtering, layout choice, progress import/export, and zoom into a stacked control-card area.
+  - Each advanced control keeps a visible marker; hover/focus slides out details and click pins one card open.
+  - Added a visible next-step button that opens the first or next path node.
+- Files changed
+  - `apps/knowledge-graph/src/components/graph/KnowledgeGraphCanvas.tsx`
+  - `apps/knowledge-graph/src/styles/app-shell.css`
+  - `scripts/ralph/prd.json`
+  - `scripts/ralph/progress.txt`
+  - `output/playwright/us002-controls-collapsed.png`
+  - `output/playwright/us002-controls-expanded.png`
+  - `output/playwright/us002-controls-mobile.png`
+- Checks run
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck` passed.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test` passed, 16 tests.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build` passed.
+- Browser screenshot result
+  - Local Playwright screenshots passed for collapsed desktop controls, hover/focus/click expanded controls, and collapsed mobile controls.
+  - The screenshot script asserted zero pinned advanced cards by default, one pinned card after click, and no desktop/mobile horizontal overflow.
+- Hover / focus / active / click feedback
+  - Control-card markers invert background and underline on hover, focus, and active.
+  - Details slide in from the marker area with opacity/translate animation; no box-shadow, gradient, or scale.
+  - Clicking a marker pins that card; clicking the next-step button opens the path node.
+- Global thinking check
+  - Default visible controls are reduced to search, current path, next step, and four summary rows.
+  - The graph starts closer to the top because low-frequency controls no longer occupy the default panel.
+  - The first action in the graph block is clear: search, choose a path, or open the next step.
+- why / what / how
+  - This story changes graph controls only.
+  - The learning entry and node detail drawer still keep visible why / what / how sequences.
+- Learnings for future iterations:
+  - Use the marker-plus-slideout card pattern for secondary controls and dense supporting information.
+  - Avoid Chinese literal assertions in inline PowerShell-to-Node Playwright scripts; use CSS selectors or Unicode escapes.
 ---

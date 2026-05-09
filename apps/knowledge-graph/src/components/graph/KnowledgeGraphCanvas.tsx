@@ -72,6 +72,8 @@ type ProgressByNode = Partial<Record<string, ProgressStatus>>;
 
 type LayoutMode = keyof typeof layoutSettings;
 
+type AdvancedControlId = "theme" | "layout" | "progress" | "viewport";
+
 type ProgressExportPayload = {
   version: 1;
   exportedAt: string;
@@ -259,6 +261,8 @@ export function KnowledgeGraphCanvas() {
     "beginner",
   );
   const [layoutMode, setLayoutMode] = useState<LayoutMode>("compact");
+  const [activeControlId, setActiveControlId] =
+    useState<AdvancedControlId | null>(null);
   const [progressMessage, setProgressMessage] = useState<string | null>(null);
   const [progressByNode, setProgressByNode] =
     useState<ProgressByNode>(readStoredProgress);
@@ -358,6 +362,24 @@ export function KnowledgeGraphCanvas() {
 
     return counts;
   }, [progressByNode]);
+  const startedProgressCount = knowledgeNodes.length - progressSummary["not-started"];
+  const selectedPathIndex = selectedNodeId
+    ? activePath.nodeIds.indexOf(selectedNodeId)
+    : -1;
+  const currentPathNodeId =
+    selectedPathIndex >= 0 ? selectedNodeId : null;
+  const nextPathNodeId =
+    selectedPathIndex >= 0
+      ? activePath.nodeIds[selectedPathIndex + 1] ?? null
+      : activePath.nodeIds[0];
+  const currentPathLabel = currentPathNodeId
+    ? getDisplayTitle(currentPathNodeId)
+    : "未选择节点";
+  const nextPathLabel = nextPathNodeId
+    ? getDisplayTitle(nextPathNodeId)
+    : "本路径已完成";
+  const activeThemeLabel =
+    activeTheme === "all" ? "全部主题" : themeLabels[activeTheme];
 
   useEffect(() => {
     window.localStorage.setItem(progressStorageKey, JSON.stringify(progressByNode));
@@ -483,6 +505,20 @@ export function KnowledgeGraphCanvas() {
     );
   }
 
+  function openPathNode(nodeId: string) {
+    const layoutNode = graphLayout.nodePositionById.get(nodeId);
+
+    selectNode(nodeId);
+
+    if (layoutNode) {
+      revealNodeInViewport(layoutNode.x, layoutNode.y);
+    }
+  }
+
+  function toggleControl(controlId: AdvancedControlId) {
+    setActiveControlId((current) => (current === controlId ? null : controlId));
+  }
+
   function closeSelectedNode() {
     const nodeId = selectedNodeId;
 
@@ -576,45 +612,32 @@ export function KnowledgeGraphCanvas() {
               ) : null}
             </div>
           </div>
-          <div className="theme-filter" aria-label="主题筛选">
-            <div className="theme-filter-header">
-              <span>主题筛选</span>
-              {activeTheme !== "all" ? (
-                <button type="button" onClick={() => setActiveTheme("all")}>
-                  清除主题
-                </button>
-              ) : null}
-            </div>
-            <div className="theme-filter-options">
-              <button
-                data-active={activeTheme === "all"}
-                data-theme-filter="all"
-                type="button"
-                onClick={() => setActiveTheme("all")}
-              >
-                全部 <span>{searchMatchedNodes.length}</span>
-              </button>
-              {themeFilterOptions.map((option) => (
-                <button
-                  data-active={activeTheme === option.theme}
-                  data-theme-filter={option.theme}
-                  key={option.theme}
-                  type="button"
-                  onClick={() => setActiveTheme(option.theme)}
-                >
-                  {option.label} <span>{option.count}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="path-filter" aria-label="路径模式">
+          <div className="path-filter" aria-label="当前学习路径">
             <div className="path-filter-header">
-              <span>路径模式</span>
+              <span>当前路径</span>
               <strong>
                 {visibleActivePathSteps} / {activePath.nodeIds.length} 步可见
               </strong>
             </div>
             <p>{activePath.summary}</p>
+            <div className="path-step-summary" aria-label="当前路径下一步">
+              <div>
+                <span>当前位置</span>
+                <strong>{currentPathLabel}</strong>
+              </div>
+              <div>
+                <span>下一步</span>
+                <strong>{nextPathLabel}</strong>
+              </div>
+              {nextPathNodeId ? (
+                <button
+                  type="button"
+                  onClick={() => openPathNode(nextPathNodeId)}
+                >
+                  打开下一步
+                </button>
+              ) : null}
+            </div>
             <div className="path-filter-options">
               {learningPaths.map((path) => (
                 <button
@@ -629,81 +652,157 @@ export function KnowledgeGraphCanvas() {
               ))}
             </div>
           </div>
-          <div className="layout-filter" aria-label="布局模式">
-            <div className="layout-filter-header">
-              <span>布局</span>
-              <strong>{layoutMode === "compact" ? "紧凑" : "分层"}</strong>
-            </div>
-            <div className="layout-filter-options">
+          <div className="control-stack" aria-label="高级图谱控制">
+            <section
+              className="control-card theme-filter"
+              data-open={activeControlId === "theme"}
+            >
               <button
-                data-active={layoutMode === "compact"}
+                className="control-card-marker"
                 type="button"
-                onClick={() => setLayoutMode("compact")}
+                onClick={() => toggleControl("theme")}
               >
-                紧凑
+                <span>主题</span>
+                <strong>{activeThemeLabel}</strong>
               </button>
+              <div className="control-card-body">
+                {activeTheme !== "all" ? (
+                  <button type="button" onClick={() => setActiveTheme("all")}>
+                    清除主题
+                  </button>
+                ) : null}
+                <div className="theme-filter-options">
+                  <button
+                    data-active={activeTheme === "all"}
+                    data-theme-filter="all"
+                    type="button"
+                    onClick={() => setActiveTheme("all")}
+                  >
+                    全部 <span>{searchMatchedNodes.length}</span>
+                  </button>
+                  {themeFilterOptions.map((option) => (
+                    <button
+                      data-active={activeTheme === option.theme}
+                      data-theme-filter={option.theme}
+                      key={option.theme}
+                      type="button"
+                      onClick={() => setActiveTheme(option.theme)}
+                    >
+                      {option.label} <span>{option.count}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            <section
+              className="control-card layout-filter"
+              data-open={activeControlId === "layout"}
+            >
               <button
-                data-active={layoutMode === "layered"}
+                className="control-card-marker"
                 type="button"
-                onClick={() => setLayoutMode("layered")}
+                onClick={() => toggleControl("layout")}
               >
-                分层
+                <span>布局</span>
+                <strong>{layoutMode === "compact" ? "紧凑" : "分层"}</strong>
               </button>
-            </div>
-          </div>
-          <div className="progress-control" aria-label="学习进度">
-            <div className="progress-control-header">
-              <span>学习进度</span>
-              <strong>
-                {knowledgeNodes.length - progressSummary["not-started"]} /{" "}
-                {knowledgeNodes.length} 已开始
-              </strong>
-            </div>
-            <div className="progress-control-counts">
-              {progressStatuses.map((status) => (
-                <span key={status}>
-                  {progressLabels[status]} {progressSummary[status]}
-                </span>
-              ))}
-            </div>
-            <div className="progress-actions">
-              <button type="button" onClick={clearProgress}>
-                清除本地进度
-              </button>
-              <button type="button" onClick={exportProgress}>
-                导出进度
-              </button>
+              <div className="control-card-body layout-filter-options">
+                <button
+                  data-active={layoutMode === "compact"}
+                  type="button"
+                  onClick={() => setLayoutMode("compact")}
+                >
+                  紧凑
+                </button>
+                <button
+                  data-active={layoutMode === "layered"}
+                  type="button"
+                  onClick={() => setLayoutMode("layered")}
+                >
+                  分层
+                </button>
+              </div>
+            </section>
+
+            <section
+              className="control-card progress-control"
+              data-open={activeControlId === "progress"}
+            >
               <button
+                className="control-card-marker"
                 type="button"
-                onClick={() => importProgressInputRef.current?.click()}
+                onClick={() => toggleControl("progress")}
               >
-                导入进度
+                <span>进度</span>
+                <strong>
+                  {startedProgressCount} / {knowledgeNodes.length} 已开始
+                </strong>
               </button>
-              <input
-                ref={importProgressInputRef}
-                accept="application/json,.json"
-                type="file"
-                onChange={importProgressFromFile}
-              />
-            </div>
-            {progressMessage ? (
-              <span className="progress-message" role="status">
-                {progressMessage}
-              </span>
-            ) : null}
-          </div>
-          <p>拖动画布。点击节点看详情。</p>
-          <div className="viewport-controls" aria-label="画布缩放">
-            <button type="button" onClick={() => zoomBy(-0.08)}>
-              缩小
-            </button>
-            <span>{Math.round(viewport.zoom * 100)}%</span>
-            <button type="button" onClick={() => zoomBy(0.08)}>
-              放大
-            </button>
-            <button type="button" onClick={resetViewport}>
-              复位
-            </button>
+              <div className="control-card-body">
+                <div className="progress-control-counts">
+                  {progressStatuses.map((status) => (
+                    <span key={status}>
+                      {progressLabels[status]} {progressSummary[status]}
+                    </span>
+                  ))}
+                </div>
+                <div className="progress-actions">
+                  <button type="button" onClick={clearProgress}>
+                    清除本地进度
+                  </button>
+                  <button type="button" onClick={exportProgress}>
+                    导出进度
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => importProgressInputRef.current?.click()}
+                  >
+                    导入进度
+                  </button>
+                  <input
+                    ref={importProgressInputRef}
+                    accept="application/json,.json"
+                    type="file"
+                    onChange={importProgressFromFile}
+                  />
+                </div>
+                {progressMessage ? (
+                  <span className="progress-message" role="status">
+                    {progressMessage}
+                  </span>
+                ) : null}
+              </div>
+            </section>
+
+            <section
+              className="control-card viewport-control-group"
+              data-open={activeControlId === "viewport"}
+            >
+              <button
+                className="control-card-marker"
+                type="button"
+                onClick={() => toggleControl("viewport")}
+              >
+                <span>缩放</span>
+                <strong>{Math.round(viewport.zoom * 100)}%</strong>
+              </button>
+              <div className="control-card-body">
+                <p>拖动画布。点击节点看详情。</p>
+                <div className="viewport-controls" aria-label="画布缩放">
+                  <button type="button" onClick={() => zoomBy(-0.08)}>
+                    缩小
+                  </button>
+                  <span>{Math.round(viewport.zoom * 100)}%</span>
+                  <button type="button" onClick={() => zoomBy(0.08)}>
+                    放大
+                  </button>
+                  <button type="button" onClick={resetViewport}>
+                    复位
+                  </button>
+                </div>
+              </div>
+            </section>
           </div>
         </div>
 
