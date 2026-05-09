@@ -20,11 +20,15 @@ https://jasonxzwen.github.io/agent-harness-lab/
 
 - 查看 34 个机制节点和 35 条关系。
 - 按 4 条学习路径浏览节点。
+- 首屏只保留推荐入口、第一步和继续学习按钮。
+- 路线图用自下而上的步骤卡展示学习顺序，点击步骤打开对应详情。
 - 搜索节点，按主题筛选，切换紧凑或分层布局。
-- hover 看摘要，click 打开详情，`Esc` 关闭并回到原节点。
+- 控制区、功能预览和详情内容使用标识卡收纳，hover / focus 滑出，click 固定。
+- hover / focus 看摘要和本仓库源码短预览，click 打开详情，`Esc` 关闭并回到原节点。
 - 查看 why / what / how 可视化卡片、引用面板、Bun 命令和节点测验。
 - 本地保存学习进度，支持导入和导出 JSON。
 - 从 typed data 生成引用索引，不复制 CCB、skill-hub 或第三方正文。
+- 当前不要求设计、编写、构建、测试移动端。
 
 ## 技术栈
 
@@ -50,6 +54,8 @@ Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build
 Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run visual:regression
 Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build:pages
 ```
+
+`visual:regression` 只覆盖桌面：首屏、详情抽屉、源码 hover 预览。
 
 ## 发布
 

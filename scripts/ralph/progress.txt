@@ -272,3 +272,42 @@ Started: 2026-05-08T20:06:24.8244825+08:00
   - Prefer shared state attributes over extra explanatory copy.
   - Keep graph hover screenshots stable by targeting route steps when canvas transform affects pointer hit testing.
 ---
+
+## 2026-05-09T11:59:52+08:00 - US-008
+- What was implemented
+  - Updated README, development plan, and milestones for the completed clarity refactor.
+  - Reworked `visual:regression` to use blocking Playwright CLI commands instead of async run-code snippets.
+  - Desktop visual regression now covers first screen, detail drawer, and source hover preview.
+- Files changed
+  - `apps/knowledge-graph/README.md`
+  - `apps/knowledge-graph/docs/development-plan.md`
+  - `apps/knowledge-graph/docs/milestones.md`
+  - `apps/knowledge-graph/scripts/visual-regression.mjs`
+  - `scripts/ralph/prd.json`
+  - `scripts/ralph/progress.txt`
+- Checks run
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run generate:references` passed, 25 reference index items.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck` passed.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test` passed, 16 tests.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build` passed.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run visual:regression` passed.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build:pages` passed.
+- Browser screenshot result
+  - `output/playwright/regression/desktop.png` passed for the desktop first screen.
+  - `output/playwright/regression/detail-drawer.png` passed for the selected detail drawer.
+  - `output/playwright/regression/source-preview.png` passed for the source hover preview.
+- Hover / focus / active / click feedback
+  - Final regression covers click-to-detail and hover-to-source-preview.
+  - US-007 screenshots cover route hover/focus and selected drawer state.
+- Global thinking check
+  - Docs now describe the reduced first screen, folded controls, route guide, previews, and desktop-only rule.
+  - Visual regression checks the three highest-risk desktop states without adding mobile work.
+  - No CCB, skill-hub, third-party body text, or local skill body content was copied into docs or code.
+- why / what / how
+  - Why: the finished refactor needs a repeatable desktop check and written project state.
+  - What: docs and visual regression now describe and verify the clarity refactor.
+  - How: Playwright CLI commands open the built app, save three screenshots, and fail on CLI errors or horizontal overflow.
+- Learnings for future iterations:
+  - Avoid Playwright CLI `run-code` for async snippets; command steps are easier to verify.
+  - Keep visual regression focused on desktop states that map to actual user decisions.
+---

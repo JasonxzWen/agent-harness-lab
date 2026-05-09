@@ -130,3 +130,27 @@ Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test
 Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build
 Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run visual:regression
 ```
+
+## M7：清晰度重构
+
+状态：已完成。
+
+目标：
+
+- 首屏入口减法，只保留推荐路线、第一步和继续学习动作。
+- 控制区、功能预览和详情抽屉使用标识卡收纳，hover / focus 滑出，click 固定。
+- 学习路线改成主要导航索引，按自下而上的步骤引导。
+- 本仓库源码引用支持 hover / focus 短预览，CCB、外部链接和 skill 内容不展开正文。
+- 路线、图谱、摘要和详情共享 hover / focus / click 状态反馈。
+- 不要求设计、编写、构建、测试移动端。
+
+验收：
+
+```powershell
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run generate:references
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run visual:regression
+Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build:pages
+```

@@ -150,7 +150,7 @@
         "Set-Location D:\\agent-harness-lab\\apps\\knowledge-graph; bun run visual:regression"
       ],
       "priority": 8,
-      "passes": false,
+      "passes": true,
       "notes": ""
     }
   ]
