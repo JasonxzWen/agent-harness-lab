@@ -90,3 +90,41 @@ Started: 2026-05-08T20:06:24.8244825+08:00
   - Use the marker-plus-slideout card pattern for secondary controls and dense supporting information.
   - Avoid Chinese literal assertions in inline PowerShell-to-Node Playwright scripts; use CSS selectors or Unicode escapes.
 ---
+
+## 2026-05-09T10:56:42+08:00 - US-003
+- What was implemented
+  - Added a central bottom-up route guide inside the graph panel for the active learning path.
+  - Replaced the old compact trace row with a Mermaid-like route index that shows current path, every step, started count, and next step.
+  - Clicking a route step opens that node in the detail drawer, so the learner can jump from the route to why / what / how.
+  - Fixed the mobile hero heading line-height so the first screen does not overlap on narrow screens.
+- Files changed
+  - `apps/knowledge-graph/src/components/graph/KnowledgeGraphCanvas.tsx`
+  - `apps/knowledge-graph/src/styles/app-shell.css`
+  - `scripts/ralph/prd.json`
+  - `scripts/ralph/progress.txt`
+  - `output/playwright/us003-route-map-desktop.png`
+  - `output/playwright/us003-route-map-click-agent-loop.png`
+  - `output/playwright/us003-route-map-mobile.png`
+- Checks run
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck` passed.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test` passed, 16 tests.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build` passed.
+- Browser screenshot result
+  - Local Playwright screenshots passed for desktop route guide, clicking Agent Loop from the route, and mobile route guide.
+  - The screenshot script asserted 9 route steps and no desktop/mobile horizontal overflow.
+- Hover / focus / active / click feedback
+  - Route step buttons invert background and underline on hover, focus, and active.
+  - Keyboard focus uses a visible outline.
+  - Click opens the selected node detail and marks the path step as current.
+- Global thinking check
+  - The path guide now gives one visible next action instead of making users infer it from the node layout.
+  - The old trace row was removed, so the new guide adds direction without duplicating another summary strip.
+  - Mobile stacks the route steps as full-width cards and no longer lets the hero heading collide with itself.
+- why / what / how
+  - The route guide explains why it exists in one sentence: start from the bottom first step.
+  - The guide itself is the what: a clickable path index.
+  - The how is visible after click because the detail drawer opens the selected node's why / what / how and source path.
+- Learnings for future iterations:
+  - The main learning manual should be a clickable map, not a table.
+  - Keep route labels short; detailed explanation belongs in the drawer opened by the route step.
+---

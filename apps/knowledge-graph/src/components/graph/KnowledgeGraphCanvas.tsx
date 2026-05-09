@@ -380,6 +380,24 @@ export function KnowledgeGraphCanvas() {
     : "本路径已完成";
   const activeThemeLabel =
     activeTheme === "all" ? "全部主题" : themeLabels[activeTheme];
+  const activeRouteSteps = activePath.nodeIds
+    .map((nodeId, index) => {
+      const node = nodeById.get(nodeId);
+
+      if (!node) {
+        return null;
+      }
+
+      return {
+        copy: getNodeDisplayCopy(node),
+        index,
+        isCurrent: currentPathNodeId === nodeId,
+        isNext: nextPathNodeId === nodeId,
+        node,
+        status: getProgressStatus(nodeId),
+      };
+    })
+    .filter((step): step is NonNullable<typeof step> => Boolean(step));
 
   useEffect(() => {
     window.localStorage.setItem(progressStorageKey, JSON.stringify(progressByNode));
@@ -806,6 +824,48 @@ export function KnowledgeGraphCanvas() {
           </div>
         </div>
 
+        <section className="route-guide-map" aria-label="自下而上的学习路线">
+          <div className="route-guide-header">
+            <span>学习路线</span>
+            <strong>{activePath.title}</strong>
+            <p>
+              从底部第一步开始。点任一步，右侧打开 why / what / how。
+            </p>
+          </div>
+          <ol className="route-guide-steps">
+            {[...activeRouteSteps].reverse().map((step) => (
+              <li
+                data-state={
+                  step.isCurrent
+                    ? "current"
+                    : step.isNext
+                      ? "next"
+                      : step.status === "not-started"
+                        ? "idle"
+                        : "started"
+                }
+                key={step.node.id}
+              >
+                <button
+                  type="button"
+                  onClick={() => openPathNode(step.node.id)}
+                  onFocus={() => setPreviewNodeId(step.node.id)}
+                  onPointerEnter={() => setPreviewNodeId(step.node.id)}
+                  onPointerLeave={() => setPreviewNodeId(null)}
+                >
+                  <span>STEP {step.index + 1}</span>
+                  <strong>{step.copy.title}</strong>
+                  <small>{step.copy.summary}</small>
+                </button>
+              </li>
+            ))}
+          </ol>
+          <div className="route-guide-footer">
+            <span>{startedProgressCount} 个节点已开始</span>
+            <strong>下一步：{nextPathLabel}</strong>
+          </div>
+        </section>
+
         <div
           aria-live="polite"
           className={`graph-summary-card${previewNode ? "" : " is-empty"}`}
@@ -935,18 +995,6 @@ export function KnowledgeGraphCanvas() {
               </button>
             </div>
           ) : null}
-        </div>
-
-        <div className="trace-route" aria-label="入门路径前五步">
-          {activePath.nodeIds.slice(0, 5).map((nodeId) => {
-            const routeNode = nodeById.get(nodeId);
-
-            return (
-              <span key={nodeId}>
-                {routeNode ? getNodeDisplayCopy(routeNode).title : nodeId}
-              </span>
-            );
-          })}
         </div>
       </div>
 

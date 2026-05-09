@@ -270,8 +270,7 @@ p {
   padding: 24px;
 }
 
-.trace-header,
-.trace-route {
+.trace-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -608,6 +607,165 @@ p {
   text-align: center;
 }
 
+.route-guide-map {
+  position: relative;
+  display: grid;
+  gap: 16px;
+  border: 1px solid var(--color-bg);
+  padding: 24px;
+}
+
+.route-guide-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px 24px;
+  align-items: start;
+}
+
+.route-guide-header span,
+.route-guide-footer span,
+.route-guide-steps span {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.1;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+.route-guide-header strong,
+.route-guide-footer strong {
+  font-family: var(--font-zh-display), var(--font-display);
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.route-guide-header p {
+  grid-column: 1 / -1;
+  max-width: 640px;
+  font-family: var(--font-zh-serif), var(--font-serif);
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.route-guide-steps {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.route-guide-steps::before {
+  position: absolute;
+  top: 18px;
+  bottom: 18px;
+  left: 50%;
+  width: 1px;
+  background: var(--color-bg);
+  content: "";
+  opacity: 0.72;
+}
+
+.route-guide-steps li {
+  position: relative;
+  display: flex;
+  justify-content: flex-start;
+  width: 50%;
+}
+
+.route-guide-steps li:nth-child(even) {
+  align-self: end;
+  justify-content: flex-end;
+}
+
+.route-guide-steps li::after {
+  position: absolute;
+  top: 24px;
+  right: -16px;
+  width: 32px;
+  height: 1px;
+  background: var(--color-bg);
+  content: "";
+  opacity: 0.72;
+}
+
+.route-guide-steps li:nth-child(even)::after {
+  right: auto;
+  left: -16px;
+}
+
+.route-guide-steps button {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 4px;
+  width: min(100%, 280px);
+  min-height: 64px;
+  border: 1px solid var(--color-bg);
+  border-radius: 0;
+  background: var(--color-dark);
+  color: var(--color-bg);
+  padding: 8px 16px;
+  font-family: var(--font-zh-display), var(--font-display);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.1;
+  cursor: pointer;
+  text-align: left;
+  transition:
+    background 160ms ease,
+    color 160ms ease,
+    border-color 160ms ease;
+}
+
+.route-guide-steps small {
+  color: inherit;
+  font-family: var(--font-zh-serif), var(--font-serif);
+  font-size: 13px;
+  line-height: 1.25;
+  opacity: 0.84;
+}
+
+.route-guide-steps li[data-state="next"] button,
+.route-guide-steps li[data-state="current"] button,
+.route-guide-steps li[data-state="started"] button {
+  background: var(--color-bg);
+  color: var(--color-dark);
+}
+
+.route-guide-steps li[data-state="current"] button {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.route-guide-steps button:hover,
+.route-guide-steps button:focus-visible,
+.route-guide-steps button:active {
+  background: var(--color-bg);
+  color: var(--color-dark);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.route-guide-steps button:focus-visible {
+  outline: 1px solid var(--color-bg);
+  outline-offset: 4px;
+}
+
+.route-guide-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-top: 1px solid var(--color-bg);
+  padding-top: 16px;
+}
+
 .graph-summary-card {
   display: grid;
   gap: 10px;
@@ -918,25 +1076,6 @@ p {
   font-family: var(--font-zh-serif), var(--font-serif);
   font-size: 16px;
   line-height: 1.35;
-}
-
-.trace-route {
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  border-top: 1px solid var(--color-bg);
-  padding-top: 16px;
-}
-
-.trace-route span {
-  display: inline-flex;
-  align-items: center;
-  white-space: nowrap;
-}
-
-.trace-route span:not(:last-child)::after {
-  margin-left: 8px;
-  content: "->";
-  opacity: 0.72;
 }
 
 .detail-drawer,
@@ -1584,6 +1723,15 @@ p {
     gap: 16px;
   }
 
+  .hero-section h1 {
+    line-height: 1.1;
+  }
+
+  .hero-section h1 span {
+    text-decoration-thickness: 4px;
+    text-underline-offset: 5px;
+  }
+
   .hero-section p {
     font-size: 18px;
   }
@@ -1632,6 +1780,36 @@ p {
     grid-template-columns: 1fr;
   }
 
+  .route-guide-map {
+    padding: 16px;
+  }
+
+  .route-guide-header,
+  .route-guide-footer {
+    grid-template-columns: 1fr;
+  }
+
+  .route-guide-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .route-guide-steps::before,
+  .route-guide-steps li::after {
+    display: none;
+  }
+
+  .route-guide-steps li,
+  .route-guide-steps li:nth-child(even) {
+    align-self: stretch;
+    justify-content: stretch;
+    width: 100%;
+  }
+
+  .route-guide-steps button {
+    width: 100%;
+  }
+
   .graph-viewport {
     height: 360px;
     min-height: 360px;
@@ -1664,5 +1842,6 @@ p {
   *::before,
   *::after {
     scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
   }
 }
