@@ -342,3 +342,38 @@ Started: 2026-05-08T20:06:24.8244825+08:00
 - Learnings for future iterations:
   - Before starting a new Ralph cycle, replace stale completed PRD JSON with the current highest-priority PRD and keep only the first unfinished story in scope.
 ---
+
+## 2026-05-09T14:11:00+08:00 - US-002
+- What was implemented
+  - Locked the app into a desktop viewport shell with page-level overflow hidden.
+  - Reworked the main page into a two-column desktop stage: intro on the left, graph workspace on the right, compact status strip below.
+  - Moved supporting status content into the stage bottom row so primary content does not require page-level vertical scroll.
+  - Tuned graph/detail column widths and status card text so the 1365x900 viewport is not squeezed.
+- Files changed
+  - `apps/knowledge-graph/src/styles/global.css`
+  - `apps/knowledge-graph/src/styles/app-shell.css`
+  - `scripts/ralph/prd.json`
+  - `scripts/ralph/progress.txt`
+  - `output/playwright/us002-desktop-stage.png`
+- Checks run
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck` passed.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test` passed, 16 tests.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build` passed.
+- Browser screenshot result
+  - Local Playwright screenshot passed: `output/playwright/us002-desktop-stage.png`.
+  - Playwright asserted `document.documentElement.scrollHeight === window.innerHeight` at 1365x900.
+  - Playwright asserted the main stage bottom stays inside the viewport.
+- Hover / focus / active / click feedback
+  - No interaction behavior changed in this story.
+  - Existing buttons still use border, underline, and background switch states from the current component rules.
+- Global thinking check
+  - Page-level vertical scroll is gone for the primary desktop stage.
+  - Graph and detail now share one right-side workspace instead of appearing below the intro.
+  - The bottom status strip is compact and no longer forces the user to scroll.
+- why / what / how
+  - Why: users should not scroll down to find the learning workspace.
+  - What: the app is now a fixed desktop stage with intro, graph, detail, and status areas.
+  - How: CSS sets a 100vh grid shell and constrains overflow to internal panels instead of the page.
+- Learnings for future iterations:
+  - For the horizontal refactor, keep page scroll locked and move dense content into internal panels or folded rails.
+---

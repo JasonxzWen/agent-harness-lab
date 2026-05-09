@@ -35,8 +35,8 @@
         "Set-Location D:\\agent-harness-lab\\apps\\knowledge-graph; bun run build"
       ],
       "priority": 2,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "App shell now uses a fixed desktop viewport stage. Playwright confirmed 1365x900 scrollHeight equals innerHeight and primary stage stays within view."
     },
     {
       "id": "US-003",
