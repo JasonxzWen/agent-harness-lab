@@ -1,10 +1,17 @@
+export type AppScene = "intro" | "map";
+
+type GraphToolbarProps = {
+  activeScene: AppScene;
+  onSceneChange: (scene: AppScene) => void;
+};
+
 const navLinks = [
-  { href: "#research", label: "项目定位" },
-  { href: "#map", label: "机制地图" },
-  { href: "#references", label: "当前进度" },
+  { scene: "intro", label: "入口" },
+  { scene: "map", label: "机制地图" },
+  { scene: "map", label: "当前状态" },
 ] as const;
 
-export function GraphToolbar() {
+export function GraphToolbar({ activeScene, onSceneChange }: GraphToolbarProps) {
   return (
     <header className="graph-toolbar">
       <div className="toolbar-brand" aria-label="Application identity">
@@ -13,14 +20,15 @@ export function GraphToolbar() {
 
       <nav className="path-tabs" aria-label="页面导航">
         {navLinks.map((navLink) => (
-          <a
-            aria-current={navLink.label === "项目定位" ? "page" : undefined}
-            className={navLink.label === "项目定位" ? "is-active" : undefined}
-            href={navLink.href}
-            key={navLink.href}
+          <button
+            aria-current={activeScene === navLink.scene ? "page" : undefined}
+            className={activeScene === navLink.scene ? "is-active" : undefined}
+            key={navLink.label}
+            type="button"
+            onClick={() => onSceneChange(navLink.scene)}
           >
             {navLink.label}
-          </a>
+          </button>
         ))}
       </nav>
     </header>

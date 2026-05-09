@@ -377,3 +377,41 @@ Started: 2026-05-08T20:06:24.8244825+08:00
 - Learnings for future iterations:
   - For the horizontal refactor, keep page scroll locked and move dense content into internal panels or folded rails.
 ---
+
+## 2026-05-09T14:17:00+08:00 - US-003
+- What was implemented
+  - Added horizontal scene state for `intro` and `map`.
+  - Replaced anchor navigation with scene buttons so the top nav changes the visible scene.
+  - Added visible `Intro / Map / Detail` markers.
+  - Changed the continue action from an anchor to a button that slides left into the map workspace and focuses search.
+- Files changed
+  - `apps/knowledge-graph/src/components/layout/AppShell.tsx`
+  - `apps/knowledge-graph/src/components/layout/GraphToolbar.tsx`
+  - `apps/knowledge-graph/src/styles/app-shell.css`
+  - `scripts/ralph/prd.json`
+  - `scripts/ralph/progress.txt`
+  - `output/playwright/us003-intro-scene.png`
+  - `output/playwright/us003-map-scene.png`
+- Checks run
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck` passed.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test` passed, 16 tests.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build` passed.
+- Browser screenshot result
+  - Local Playwright screenshots passed for intro and map scenes.
+  - Playwright asserted the intro scene does not leak the map panel.
+  - After clicking continue, Playwright asserted `data-scene="map"` and focus on `#graph-search-input`.
+- Hover / focus / active / click feedback
+  - Scene nav buttons use underline and active marker states.
+  - Continue button uses the existing dark primary button hover/focus/active treatment.
+  - Click feedback is visible through the scene marker switching from Intro to Map.
+- Global thinking check
+  - The first scene now shows only the intro, current path, first step, and continue action.
+  - The map no longer competes with the intro before the user chooses to continue.
+  - The first action is clear: click continue, then search or open the next step.
+- why / what / how
+  - Why: the page should feel like a focused lab, not a long scroll page.
+  - What: there are now separate horizontal Intro and Map scenes.
+  - How: React stores scene state, CSS slides the stage track, and focus is moved after click.
+- Learnings for future iterations:
+  - Put scene padding inside each scene so hidden scenes do not leak into the viewport.
+---

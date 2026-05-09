@@ -54,8 +54,8 @@
         "Set-Location D:\\agent-harness-lab\\apps\\knowledge-graph; bun run build"
       ],
       "priority": 3,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Intro and Map scenes now slide horizontally. Continue learning moves focus to graph search and Playwright captured both states."
     },
     {
       "id": "US-004",
