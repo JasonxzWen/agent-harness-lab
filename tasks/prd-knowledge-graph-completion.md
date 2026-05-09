@@ -2,7 +2,7 @@
 
 ## Introduction/Overview
 
-`apps/knowledge-graph` 现在已完成 M2 静态数据和一个早期交互入口。M3-M5 要把它推进到可演示的学习工具：用户能在图谱里点击节点、看 `why / what / how`、搜索、筛选、按路径学习、保存进度，并在移动端和键盘下正常使用。
+`apps/knowledge-graph` 现在已完成 M2 静态数据和一个早期交互入口。M3-M5 要把它推进到可演示的学习工具：用户能在图谱里点击节点、看 `why / what / how`、搜索、筛选、按路径学习、保存进度，并用键盘正常操作。
 
 本 PRD 只覆盖 `apps/knowledge-graph` 的 M3-M5。每个 user story 必须能由 Ralph Loop 的一次 Codex 执行完成。
 
@@ -12,7 +12,7 @@
 - 完成 hover、click、focus、Esc 和返回焦点。
 - 每个知识点都能看到 `why / what / how` 可视化元素。
 - 支持搜索、主题筛选、路径模式和进度保存。
-- 增加引用面板、内容边界校验、移动端和键盘可访问性。
+- 增加引用面板、内容边界校验和键盘可访问性。
 - 每个 story 完成后都通过 Bun 验证、截图检查和 Conventional Commit。
 
 ## User Stories
@@ -44,7 +44,7 @@ Acceptance criteria:
 - hover 和 keyboard focus 节点时显示摘要卡片。
 - 摘要卡片包含标题、摘要、前置节点和推荐下一步。
 - 卡片文案短、准、中文优先，不遮挡当前节点和主要操作。
-- touch 或窄屏环境下有不依赖 hover 的等效入口。
+- 键盘 focus 下有不依赖 hover 的等效入口。
 - 未完成能力继续显示“暂未实现”。
 - UI story 必须 in-app browser 截图。
 - UI story 必须说明 hover / focus / active / click 反馈。
@@ -187,13 +187,12 @@ Acceptance criteria:
 - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test`
 - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build`
 
-### US-010: 移动端和键盘可访问性打磨
+### US-010: 键盘可访问性打磨
 
-As a mobile or keyboard user, I want the graph, controls, hover card, and drawer to remain usable so that I can study without a mouse or large screen.
+As a keyboard user, I want the graph, controls, hover card, and drawer to remain usable so that I can study without a mouse.
 
 Acceptance criteria:
 
-- 窄屏下 toolbar、图谱、详情和筛选顺序清楚，不互相遮挡。
 - 键盘可以进入搜索、筛选、路径、节点、progress 和 drawer。
 - `prefers-reduced-motion` 下没有强制动画。
 - focus ring、hover、active、click 反馈符合 DESIGN.md。
@@ -230,7 +229,7 @@ Acceptance criteria:
 - 没有 token 外颜色、`box-shadow`、渐变、图标库或多余深色块。
 - 页面元素没有过度堆叠，用户第一步操作清楚。
 - 所有未完成入口都有“暂未实现”或同义可见提示。
-- 最终截图覆盖桌面和窄屏。
+- 最终截图覆盖桌面。
 - UI story 必须 in-app browser 截图。
 - UI story 必须说明 hover / focus / active / click 反馈。
 - UI story 必须说明全局思维检查：元素是否过多、是否挤压布局、用户是否会疑惑。
@@ -255,6 +254,7 @@ Acceptance criteria:
 - Do not add backend services, analytics, remote logging, or external data upload.
 - Do not modify CCB reference source directories.
 - Do not submit `.external/`, `node_modules`, `dist`, or `labs/ts-agent/workspace`.
+- Do not require mobile design, code, build, or tests.
 
 ## Design Considerations
 
@@ -277,7 +277,7 @@ Acceptance criteria:
 - All 12 stories have `passes: true`.
 - `bun run typecheck`, `bun test`, and `bun run build` pass for every completed story.
 - UI stories include screenshot evidence and written checks in `progress.txt`.
-- Final app supports graph interaction, search, theme filter, path mode, progress persistence, references, keyboard use, and mobile layout.
+- Final app supports graph interaction, search, theme filter, path mode, progress persistence, references, and keyboard use.
 
 ## Open Questions
 

@@ -18,11 +18,12 @@
 - 节点 hover 显示摘要，click 打开详情。
 - 详情抽屉包含 why / what / how 可视化卡片、引用面板、Bun 命令和节点测验。
 - progress 支持 localStorage、导入和导出。
-- Playwright 视觉回归输出桌面和移动端截图。
+- Playwright 视觉回归输出桌面截图。
 
 ## 保留检查项
 
-- 桌面和窄屏截图都要检查。
+- 桌面截图要检查。
+- 不要求设计、编写、构建、测试移动端。
 - 标题、按钮和节点文字不能溢出。
 - 筛选区、画布和详情不能互相挤压。
 - hover / focus / active / click 反馈必须清楚。

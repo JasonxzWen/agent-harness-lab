@@ -83,7 +83,7 @@ Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build
 - 画布可缩放。
 - 画布可拖拽。
 - 节点文本不溢出。
-- 宽屏和窄屏布局不重叠。
+- 桌面布局不重叠。
 
 ## 阶段 3：节点交互和详情抽屉
 
@@ -134,7 +134,7 @@ Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build
 Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test
 ```
 
-## 阶段 5：可访问性、响应式和安全校验
+## 阶段 5：可访问性和安全校验
 
 状态：已完成。
 
@@ -168,7 +168,8 @@ Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run visual:regressio
 - 键盘可打开和关闭详情。
 - `Esc` 能关闭 drawer。
 - 关闭 drawer 后焦点回到原节点。
-- 窄屏下筛选、画布、详情不互相遮挡。
+- 桌面下筛选、画布、详情不互相遮挡。
+- 不要求设计、编写、构建、测试移动端。
 - diff 中没有 `src/`、`packages/`、`docs/` 或 `.external/skill-hub` 正文变更。
 
 ## MVP 完成标准

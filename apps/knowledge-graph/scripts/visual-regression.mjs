@@ -66,7 +66,6 @@ async function main() {
 
   mkdirSync(outputDir, { recursive: true });
   const desktopPath = resolve(outputDir, "desktop.png");
-  const mobilePath = resolve(outputDir, "mobile.png");
   const runCodePaths = [];
   const port = await getFreePort();
   const url = `http://127.0.0.1:${port}`;
@@ -133,25 +132,6 @@ async (page) => {
   await page.screenshot({ path: ${JSON.stringify(desktopPath)}, fullPage: true });
 }`;
 
-  const mobileRunCode = `
-async (page) => {
-  async function assertNoHorizontalOverflow(label) {
-    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
-    if (overflow > 2) {
-      throw new Error(label + " horizontal overflow: " + overflow + "px");
-    }
-  }
-
-  await page.setViewportSize({ width: 390, height: 900 });
-  await page.goto(${JSON.stringify(url)}, { waitUntil: "networkidle" });
-  await page.evaluate(() => localStorage.clear());
-  await page.reload({ waitUntil: "networkidle" });
-  await page.locator("button[data-node-id='agent-loop']").dispatchEvent("click");
-  await page.locator(".detail-drawer").waitFor({ state: "attached" });
-  await assertNoHorizontalOverflow("mobile");
-  await page.screenshot({ path: ${JSON.stringify(mobilePath)}, fullPage: true });
-}`;
-
   try {
     await new Promise((resolveWait) => setTimeout(resolveWait, 800));
     await runPlaywrightSnippet(
@@ -159,12 +139,6 @@ async (page) => {
       desktopRunCode,
       desktopPath,
       `${sessionName}-desktop`,
-    );
-    await runPlaywrightSnippet(
-      "visual-regression-mobile.js",
-      mobileRunCode,
-      mobilePath,
-      `${sessionName}-mobile`,
     );
     console.log(`Visual regression screenshots written to ${outputDir}`);
   } finally {

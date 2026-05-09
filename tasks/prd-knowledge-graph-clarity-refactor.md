@@ -13,7 +13,7 @@
 - 可视化不足：已有图谱和 why / what / how，但缺少对“搜索、路径、进度、代码查看”等界面功能的效果预览。
 - 代码可见性不足：引用面板只显示路径，用户要离开页面才能看代码，学习链路断开。
 - 动态反馈不足：hover / focus / active 已有基础反馈，但缺少被捕捉、被预览、被引导的连续感。
-- 文案偏多：详情抽屉把 why / what / how、测验、引用、命令、误解、对照说明连续堆叠，移动端尤其长。
+- 文案偏多：详情抽屉把 why / what / how、测验、引用、命令、误解、对照说明连续堆叠。
 - 路线指引不足：路径按钮能切换，但没有明确当前第几步、下一步、完成后做什么。
 
 ## Goals
@@ -69,7 +69,6 @@ Acceptance criteria:
 - 新增或改造路径指引区，显示当前路径、当前节点、下一步节点、已开始数量。
 - 点击路径步骤能聚焦对应节点或打开详情。
 - 当没有选择节点时，引导用户从路径第一步开始。
-- 移动端路径指引不遮挡图谱。
 - UI story 必须使用 Playwright 截图。
 - 全局思维检查必须说明用户是否知道下一步。
 - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck`
@@ -118,7 +117,7 @@ Acceptance criteria:
 - 分组标题必须说明里面是什么，不写长解释。
 - `Esc` 关闭和焦点返回不回退。
 - UI story 必须使用 Playwright 截图。
-- 全局思维检查必须说明详情内容是否变短、移动端是否更容易扫读。
+- 全局思维检查必须说明详情内容是否变短、桌面是否更容易扫读。
 - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck`
 - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test`
 - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build`
@@ -132,7 +131,7 @@ Acceptance criteria:
 - 选中、hover、focus 节点时，摘要、路径指引和详情入口有一致的状态反馈。
 - 控件 hover / focus / active 使用边框、下划线、背景切换或轻量 CSS 状态，不使用 `box-shadow`、渐变、缩放。
 - 支持 `prefers-reduced-motion`，不强制动画。
-- 新增动效不影响键盘和移动端阅读。
+- 新增动效不影响键盘和桌面阅读。
 - UI story 必须使用 Playwright 截图。
 - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck`
 - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test`
@@ -145,9 +144,10 @@ As the project owner, I want the refactor documented and verified so that the pr
 Acceptance criteria:
 
 - 更新 `apps/knowledge-graph/README.md`、`docs/development-plan.md`、`docs/milestones.md`，说明本次清晰度重构完成。
-- 更新或扩展 Playwright 视觉回归，覆盖首屏、详情抽屉、源码 hover 预览、移动端。
+- 更新或扩展 Playwright 视觉回归，覆盖首屏、详情抽屉、源码 hover 预览。
 - 测试覆盖新增源码预览边界，不复制 CCB、外部正文或 skill 内容。
-- 最终截图包含桌面和移动端。
+- 最终截图包含桌面。
+- 不要求设计、编写、构建、测试移动端。
 - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run generate:references`
 - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck`
 - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test`
@@ -179,7 +179,7 @@ Acceptance criteria:
 - Use progressive disclosure before adding new permanent panels.
 - Do not use card-in-card layouts.
 - Use border, underline, token background, and focus outline for interaction feedback.
-- Mobile should show hero, learning entry, graph controls, graph, detail, then secondary summaries.
+- Do not add mobile-specific design, code, build, or tests.
 
 ## Technical Considerations
 
@@ -196,7 +196,6 @@ Acceptance criteria:
 - A first-time user can name the next action within 5 seconds: choose / continue a path, then click the current node.
 - The visible control count in the default graph area is reduced.
 - Code preview is visible from at least lab source references without leaving the page.
-- Mobile screenshot has no horizontal overflow and no unreadable title splits.
 - `typecheck`, `test`, `build`, and visual regression pass.
 
 ## Open Questions

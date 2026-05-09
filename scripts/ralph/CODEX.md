@@ -76,7 +76,8 @@ For this repository, UI verification should use local Playwright screenshots. In
 
 - Hover / focus / active / click feedback is clear and does not use `box-shadow`, gradients, or scaling.
 - New text is short, Chinese-first, and easy to scan.
-- New layout does not push the primary graph, drawer, toolbar, or mobile flow out of view.
+- New layout does not push the primary graph, drawer, or toolbar out of view.
+- Mobile design, code, build, and testing are not required.
 - Unimplemented controls show `暂未实现`.
 - `why / what / how` is visible for knowledge points.
 

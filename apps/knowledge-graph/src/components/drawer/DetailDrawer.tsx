@@ -36,6 +36,22 @@ const progressOptions: ProgressStatus[] = [
   "reviewed",
 ];
 
+function getReferenceBoundary(reference: SourceReference): string {
+  if (reference.codePreview) {
+    return "hover / focus 显示本仓库短摘录。";
+  }
+
+  if (reference.kind === "ccb-source-mapping") {
+    return "只显示对照路径，不展开 CCB 正文。";
+  }
+
+  if (reference.kind === "external-link") {
+    return "只显示外部地址，不复制网页正文。";
+  }
+
+  return "只显示本仓库路径，不展开文档正文。";
+}
+
 type QuizResult = "idle" | "correct" | "incorrect";
 
 type QuizOption = {
@@ -284,13 +300,38 @@ export function DetailDrawer({
               <h4>{group.label}</h4>
               <ul>
                 {group.references.map((reference) => (
-                  <li key={reference.id}>
+                  <li
+                    className={
+                      reference.codePreview ? "has-code-preview" : undefined
+                    }
+                    key={reference.id}
+                    tabIndex={reference.codePreview ? 0 : undefined}
+                  >
                     <div>
                       <span>{reference.title}</span>
                       <strong>{referenceLabels[reference.kind]}</strong>
                     </div>
                     <code>{reference.target}</code>
                     {reference.note ? <p>{reference.note}</p> : null}
+                    <p className="source-boundary-note">
+                      {getReferenceBoundary(reference)}
+                    </p>
+                    {reference.codePreview ? (
+                      <aside
+                        aria-label={`${reference.title} 源码短预览`}
+                        className="source-code-preview"
+                      >
+                        <span>CODE PREVIEW</span>
+                        <strong>
+                          {reference.target}:{reference.codePreview.startLine}
+                        </strong>
+                        <pre>
+                          <code>
+                            {reference.codePreview.lines.join("\n")}
+                          </code>
+                        </pre>
+                      </aside>
+                    ) : null}
                     <button
                       type="button"
                       onClick={() => copyReferenceTarget(reference)}

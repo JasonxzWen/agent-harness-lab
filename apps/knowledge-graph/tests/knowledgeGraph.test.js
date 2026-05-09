@@ -168,6 +168,20 @@ test("source references stay inside allowed metadata boundaries", () => {
       expect(reference.note.length).toBeLessThanOrEqual(96);
     }
 
+    if (reference.codePreview) {
+      expect(reference.kind).toBe("lab-source");
+      expect(reference.target.startsWith("labs/ts-agent/src/")).toBe(true);
+      expect(reference.codePreview.language).toBe("ts");
+      expect(reference.codePreview.startLine).toBeGreaterThan(0);
+      expect(reference.codePreview.lines.length).toBeGreaterThan(0);
+      expect(reference.codePreview.lines.length).toBeLessThanOrEqual(5);
+      expect(reference.codePreview.lines.join("\n").length).toBeLessThanOrEqual(360);
+    }
+
+    if (reference.kind !== "lab-source") {
+      expect(reference.codePreview).toBeUndefined();
+    }
+
     for (const fragment of forbiddenPathFragments) {
       expect(reference.target.includes(fragment)).toBe(false);
     }

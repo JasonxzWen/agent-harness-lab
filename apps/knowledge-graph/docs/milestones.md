@@ -97,8 +97,9 @@ Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build
 目标：
 
 - 搜索、筛选、路径模式、progress 持久化完整。
-- 键盘可用、响应式可用、视觉达到开发工具质感。
+- 键盘可用，桌面视觉达到开发工具质感。
 - 内容安全边界完成校验。
+- 不要求设计、编写、构建、测试移动端。
 
 验收：
 

@@ -33,6 +33,11 @@ export type SourceReference = {
   title: string;
   target: string;
   note?: string;
+  codePreview?: {
+    language: "ts";
+    startLine: number;
+    lines: string[];
+  };
 };
 
 export type KnowledgeNode = {
