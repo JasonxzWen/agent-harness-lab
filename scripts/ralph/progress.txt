@@ -201,3 +201,38 @@ Started: 2026-05-08T20:06:24.8244825+08:00
   - Keep snippets short enough to scan inside a reference row.
   - Boundary notes should be explicit whenever a source must not expand.
 ---
+
+## 2026-05-09T11:31:27+08:00 - US-006
+- What was implemented
+  - Detail drawer now keeps why / what / how and the main code entry visible first.
+  - Quiz, source references, Bun commands, misconception, and comparison moved into folded marker cards.
+  - Each marker opens on hover or focus and can be pinned open by click.
+- Files changed
+  - `apps/knowledge-graph/src/components/drawer/DetailDrawer.tsx`
+  - `apps/knowledge-graph/src/styles/app-shell.css`
+  - `output/playwright/us006-drawer-default-desktop.png`
+  - `output/playwright/us006-drawer-references-open-desktop.png`
+- Checks run
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck` passed.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test` passed, 16 tests.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build` passed.
+- Browser screenshot result
+  - Desktop default drawer screenshot passed with all supporting groups closed.
+  - Desktop source group screenshot passed after clicking the SOURCE marker.
+  - The screenshot script asserted no horizontal overflow and Esc focus return to the selected graph node.
+- Hover / focus / active / click feedback
+  - Fold markers switch background with their card on hover and focus.
+  - Focus uses a visible outline and underline; active/click pins the selected group with `aria-expanded`.
+  - Esc still closes the drawer and returns focus to the graph node.
+- Global thinking check
+  - The drawer is shorter by default because secondary panels are folded behind five labels.
+  - The first visible actions are still why / what / how and code entry, so the next step is clear.
+  - No mobile design, code, build, or test path is required under the active spec.
+- why / what / how
+  - Why: users should not scan every reference, command, and quiz before reading the core explanation.
+  - What: secondary detail content is grouped as a marker stack with short labels.
+  - How: React tracks one pinned group while CSS hover/focus reveals the same body for quick inspection.
+- Learnings for future iterations:
+  - Keep dense supporting content folded unless it is the next likely action.
+  - Use marker labels as the table of contents instead of adding a text-heavy explanation block.
+---

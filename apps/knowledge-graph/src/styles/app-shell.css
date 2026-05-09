@@ -1576,6 +1576,141 @@ p {
   overflow-wrap: anywhere;
 }
 
+.primary-source-card {
+  display: grid;
+  gap: 8px;
+  border: 1px solid var(--color-bg);
+  padding: 16px;
+}
+
+.primary-source-card span,
+.detail-fold-marker span,
+.detail-fold-marker small {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.2;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+.primary-source-card strong {
+  font-family: var(--font-zh-display), var(--font-display);
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.primary-source-card code,
+.primary-source-card pre {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.primary-source-card p {
+  font-family: var(--font-zh-serif), var(--font-serif);
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.primary-source-card pre {
+  overflow: auto;
+  border: 1px solid var(--color-bg);
+  margin: 0;
+  padding: 12px;
+}
+
+.detail-fold-stack {
+  display: grid;
+  gap: 8px;
+}
+
+.detail-fold-card {
+  display: grid;
+  overflow: hidden;
+  border: 1px solid var(--color-bg);
+  transition:
+    background 160ms ease,
+    color 160ms ease;
+}
+
+.detail-fold-card:hover,
+.detail-fold-card:focus-within,
+.detail-fold-card[data-open="true"] {
+  background: var(--color-bg);
+  color: var(--color-dark);
+}
+
+.detail-fold-marker {
+  display: grid;
+  grid-template-columns: 80px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  padding: 14px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.detail-fold-marker strong {
+  font-family: var(--font-zh-display), var(--font-display);
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.detail-fold-marker:hover,
+.detail-fold-marker:focus-visible,
+.detail-fold-marker:active {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.detail-fold-marker:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: -5px;
+}
+
+.detail-fold-body {
+  display: grid;
+  max-height: 0;
+  overflow: hidden;
+  border-top: 1px solid currentColor;
+  padding: 0 14px;
+  opacity: 0;
+  transition:
+    max-height 180ms ease,
+    opacity 160ms ease,
+    padding 160ms ease;
+}
+
+.detail-fold-card:hover .detail-fold-body,
+.detail-fold-card:focus-within .detail-fold-body,
+.detail-fold-card[data-open="true"] .detail-fold-body {
+  max-height: 1200px;
+  padding: 14px;
+  opacity: 1;
+}
+
+.detail-fold-card:hover .quiz-panel button,
+.detail-fold-card:focus-within .quiz-panel button,
+.detail-fold-card[data-open="true"] .quiz-panel button,
+.detail-fold-card:hover .reference-panel button,
+.detail-fold-card:focus-within .reference-panel button,
+.detail-fold-card[data-open="true"] .reference-panel button {
+  border-color: currentColor;
+  color: currentColor;
+}
+
+.detail-fold-body .quiz-panel {
+  border: 0;
+  padding: 0;
+}
+
 .source-list,
 .command-list {
   display: grid;

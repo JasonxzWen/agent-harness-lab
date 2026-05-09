@@ -36,6 +36,13 @@ const progressOptions: ProgressStatus[] = [
   "reviewed",
 ];
 
+type DetailGroupId =
+  | "quiz"
+  | "references"
+  | "commands"
+  | "misconception"
+  | "compare";
+
 function getReferenceBoundary(reference: SourceReference): string {
   if (reference.codePreview) {
     return "hover / focus 显示本仓库短摘录。";
@@ -72,6 +79,8 @@ export function DetailDrawer({
     null,
   );
   const [quizResult, setQuizResult] = useState<QuizResult>("idle");
+  const [activeDetailGroupId, setActiveDetailGroupId] =
+    useState<DetailGroupId | null>(null);
   const displayCopy = getNodeDisplayCopy(node);
   const detailCopy = getNodeDetailCopy(node);
   const sourceReferences = [
@@ -80,6 +89,10 @@ export function DetailDrawer({
     ...node.externalLinks,
   ];
   const firstSourcePath = sourceReferences[0]?.target ?? "查看本节点源码引用";
+  const primarySourceReference =
+    sourceReferences.find((reference) => reference.codePreview) ??
+    sourceReferences[0] ??
+    null;
   const firstCommand =
     node.demoCommands[0] ??
     "Set-Location D:\\agent-harness-lab\\apps\\knowledge-graph; bun run build";
@@ -156,6 +169,10 @@ export function DetailDrawer({
     setQuizResult("incorrect");
   }
 
+  function toggleDetailGroup(groupId: DetailGroupId) {
+    setActiveDetailGroupId((current) => (current === groupId ? null : groupId));
+  }
+
   useEffect(() => {
     closeButtonRef.current?.focus();
   }, [node.id]);
@@ -164,6 +181,7 @@ export function DetailDrawer({
     setCopiedReferenceId(null);
     setSelectedQuizOptionId(null);
     setQuizResult("idle");
+    setActiveDetailGroupId(null);
   }, [node.id]);
 
   useEffect(() => {
@@ -255,126 +273,234 @@ export function DetailDrawer({
         </article>
       </section>
 
-      <section className="detail-section quiz-panel" aria-label="节点测验">
-        <div>
-          <span>QUIZ</span>
-          <h3>先解决什么问题？</h3>
-          <p>选出这个机制的 why。答对后，本节点会标记为已复盘。</p>
-        </div>
-        <div className="quiz-options">
-          {quizOptions.map((option) => {
-            const isSelected = selectedQuizOptionId === option.id;
-            const state =
-              isSelected && option.isCorrect
-                ? "correct"
-                : isSelected
-                  ? "incorrect"
-                  : "idle";
+      {primarySourceReference ? (
+        <section className="primary-source-card" aria-label="主要源码入口">
+          <span>CODE</span>
+          <strong>{primarySourceReference.title}</strong>
+          <code>{primarySourceReference.target}</code>
+          <p>{getReferenceBoundary(primarySourceReference)}</p>
+          {primarySourceReference.codePreview ? (
+            <pre>
+              <code>
+                {primarySourceReference.codePreview.lines.join("\n")}
+              </code>
+            </pre>
+          ) : null}
+        </section>
+      ) : null}
 
-            return (
-              <button
-                data-state={state}
-                key={option.id}
-                type="button"
-                onClick={() => chooseQuizOption(option)}
-              >
-                {option.text}
-              </button>
-            );
-          })}
-        </div>
-        <p className="quiz-feedback" role="status">
-          {quizResult === "correct"
-            ? "答对了，已标记为已复盘。"
-            : quizResult === "incorrect"
-              ? "不对，回到 WHY 再看一遍。"
-              : "未作答。"}
-        </p>
-      </section>
+      <section className="detail-fold-stack" aria-label="更多详情分组">
+        <article
+          className="detail-fold-card"
+          data-open={activeDetailGroupId === "quiz"}
+        >
+          <button
+            aria-controls="detail-fold-quiz"
+            aria-expanded={activeDetailGroupId === "quiz"}
+            className="detail-fold-marker"
+            type="button"
+            onClick={() => toggleDetailGroup("quiz")}
+          >
+            <span>QUIZ</span>
+            <strong>测验</strong>
+            <small>选出这个机制的 why。</small>
+          </button>
+          <div className="detail-fold-body" id="detail-fold-quiz">
+            <section className="detail-section quiz-panel" aria-label="节点测验">
+              <div>
+                <span>QUIZ</span>
+                <h3>先解决什么问题？</h3>
+                <p>答对后，本节点会标记为已复盘。</p>
+              </div>
+              <div className="quiz-options">
+                {quizOptions.map((option) => {
+                  const isSelected = selectedQuizOptionId === option.id;
+                  const state =
+                    isSelected && option.isCorrect
+                      ? "correct"
+                      : isSelected
+                        ? "incorrect"
+                        : "idle";
 
-      <section className="detail-section reference-panel" aria-label="引用面板">
-        <h3>引用面板</h3>
-        <div>
-          {referenceGroups.map((group) => (
-            <section key={group.kind} aria-label={group.label}>
-              <h4>{group.label}</h4>
-              <ul>
-                {group.references.map((reference) => (
-                  <li
-                    className={
-                      reference.codePreview ? "has-code-preview" : undefined
-                    }
-                    key={reference.id}
-                    tabIndex={reference.codePreview ? 0 : undefined}
-                  >
-                    <div>
-                      <span>{reference.title}</span>
-                      <strong>{referenceLabels[reference.kind]}</strong>
-                    </div>
-                    <code>{reference.target}</code>
-                    {reference.note ? <p>{reference.note}</p> : null}
-                    <p className="source-boundary-note">
-                      {getReferenceBoundary(reference)}
-                    </p>
-                    {reference.codePreview ? (
-                      <aside
-                        aria-label={`${reference.title} 源码短预览`}
-                        className="source-code-preview"
-                      >
-                        <span>CODE PREVIEW</span>
-                        <strong>
-                          {reference.target}:{reference.codePreview.startLine}
-                        </strong>
-                        <pre>
-                          <code>
-                            {reference.codePreview.lines.join("\n")}
-                          </code>
-                        </pre>
-                      </aside>
-                    ) : null}
+                  return (
                     <button
+                      data-state={state}
+                      key={option.id}
                       type="button"
-                      onClick={() => copyReferenceTarget(reference)}
+                      onClick={() => chooseQuizOption(option)}
                     >
-                      {copiedReferenceId === reference.id ? "已复制" : "复制路径"}
+                      {option.text}
                     </button>
-                  </li>
-                ))}
-              </ul>
+                  );
+                })}
+              </div>
+              <p className="quiz-feedback" role="status">
+                {quizResult === "correct"
+                  ? "答对了，已标记为已复盘。"
+                  : quizResult === "incorrect"
+                    ? "不对，回到 WHY 再看一遍。"
+                    : "未作答。"}
+              </p>
             </section>
-          ))}
-        </div>
-      </section>
-
-      <section className="detail-section">
-        <h3>Bun 命令</h3>
-        <div className="command-list">
-          {[
-            firstCommand,
-            ...node.demoCommands.filter((command) => command !== firstCommand),
-          ].map((command) => (
-            <CommandBlock command={command} key={command} />
-          ))}
-        </div>
-      </section>
-
-      <section className="detail-section">
-        <h3>常见误解</h3>
-        <p>{detailCopy.misconception}</p>
-      </section>
-
-      <section className="detail-section compare-section">
-        <h3>教学版 vs 生产版</h3>
-        <dl>
-          <div>
-            <dt>教学版</dt>
-            <dd>{detailCopy.compare.teachingVersion}</dd>
           </div>
-          <div>
-            <dt>生产版</dt>
-            <dd>{detailCopy.compare.productionVersion}</dd>
+        </article>
+
+        <article
+          className="detail-fold-card"
+          data-open={activeDetailGroupId === "references"}
+        >
+          <button
+            aria-controls="detail-fold-references"
+            aria-expanded={activeDetailGroupId === "references"}
+            className="detail-fold-marker"
+            type="button"
+            onClick={() => toggleDetailGroup("references")}
+          >
+            <span>SOURCE</span>
+            <strong>引用和源码</strong>
+            <small>{sourceReferences.length} 条引用，lab 可预览。</small>
+          </button>
+          <div className="detail-fold-body" id="detail-fold-references">
+            <section className="detail-section reference-panel" aria-label="引用面板">
+              <h3>引用面板</h3>
+              <div>
+                {referenceGroups.map((group) => (
+                  <section key={group.kind} aria-label={group.label}>
+                    <h4>{group.label}</h4>
+                    <ul>
+                      {group.references.map((reference) => (
+                        <li
+                          className={
+                            reference.codePreview ? "has-code-preview" : undefined
+                          }
+                          key={reference.id}
+                          tabIndex={reference.codePreview ? 0 : undefined}
+                        >
+                          <div>
+                            <span>{reference.title}</span>
+                            <strong>{referenceLabels[reference.kind]}</strong>
+                          </div>
+                          <code>{reference.target}</code>
+                          {reference.note ? <p>{reference.note}</p> : null}
+                          <p className="source-boundary-note">
+                            {getReferenceBoundary(reference)}
+                          </p>
+                          {reference.codePreview ? (
+                            <aside
+                              aria-label={`${reference.title} 源码短预览`}
+                              className="source-code-preview"
+                            >
+                              <span>CODE PREVIEW</span>
+                              <strong>
+                                {reference.target}:{reference.codePreview.startLine}
+                              </strong>
+                              <pre>
+                                <code>
+                                  {reference.codePreview.lines.join("\n")}
+                                </code>
+                              </pre>
+                            </aside>
+                          ) : null}
+                          <button
+                            type="button"
+                            onClick={() => copyReferenceTarget(reference)}
+                          >
+                            {copiedReferenceId === reference.id ? "已复制" : "复制路径"}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                ))}
+              </div>
+            </section>
           </div>
-        </dl>
+        </article>
+
+        <article
+          className="detail-fold-card"
+          data-open={activeDetailGroupId === "commands"}
+        >
+          <button
+            aria-controls="detail-fold-commands"
+            aria-expanded={activeDetailGroupId === "commands"}
+            className="detail-fold-marker"
+            type="button"
+            onClick={() => toggleDetailGroup("commands")}
+          >
+            <span>RUN</span>
+            <strong>Bun 命令</strong>
+            <small>{node.demoCommands.length} 条可运行命令。</small>
+          </button>
+          <div className="detail-fold-body" id="detail-fold-commands">
+            <section className="detail-section">
+              <h3>Bun 命令</h3>
+              <div className="command-list">
+                {[
+                  firstCommand,
+                  ...node.demoCommands.filter((command) => command !== firstCommand),
+                ].map((command) => (
+                  <CommandBlock command={command} key={command} />
+                ))}
+              </div>
+            </section>
+          </div>
+        </article>
+
+        <article
+          className="detail-fold-card"
+          data-open={activeDetailGroupId === "misconception"}
+        >
+          <button
+            aria-controls="detail-fold-misconception"
+            aria-expanded={activeDetailGroupId === "misconception"}
+            className="detail-fold-marker"
+            type="button"
+            onClick={() => toggleDetailGroup("misconception")}
+          >
+            <span>CHECK</span>
+            <strong>常见误解</strong>
+            <small>先排除一个错误理解。</small>
+          </button>
+          <div className="detail-fold-body" id="detail-fold-misconception">
+            <section className="detail-section">
+              <h3>常见误解</h3>
+              <p>{detailCopy.misconception}</p>
+            </section>
+          </div>
+        </article>
+
+        <article
+          className="detail-fold-card"
+          data-open={activeDetailGroupId === "compare"}
+        >
+          <button
+            aria-controls="detail-fold-compare"
+            aria-expanded={activeDetailGroupId === "compare"}
+            className="detail-fold-marker"
+            type="button"
+            onClick={() => toggleDetailGroup("compare")}
+          >
+            <span>COMPARE</span>
+            <strong>教学版 vs 生产版</strong>
+            <small>看本仓库和生产系统差异。</small>
+          </button>
+          <div className="detail-fold-body" id="detail-fold-compare">
+            <section className="detail-section compare-section">
+              <h3>教学版 vs 生产版</h3>
+              <dl>
+                <div>
+                  <dt>教学版</dt>
+                  <dd>{detailCopy.compare.teachingVersion}</dd>
+                </div>
+                <div>
+                  <dt>生产版</dt>
+                  <dd>{detailCopy.compare.productionVersion}</dd>
+                </div>
+              </dl>
+            </section>
+          </div>
+        </article>
       </section>
     </aside>
   );
