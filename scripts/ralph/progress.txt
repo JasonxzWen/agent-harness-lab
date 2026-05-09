@@ -311,3 +311,34 @@ Started: 2026-05-08T20:06:24.8244825+08:00
   - Avoid Playwright CLI `run-code` for async snippets; command steps are easier to verify.
   - Keep visual regression focused on desktop states that map to actual user decisions.
 ---
+
+## 2026-05-09T12:40:00+08:00 - US-001
+- What was implemented
+  - Converted `scripts/ralph/prd.json` from the completed clarity refactor to `KnowledgeGraphHorizontalMindMapRefactor`.
+  - Kept `branchName` as `main` and created US-001 through US-008 for the horizontal mind-map refactor.
+  - Verified active specs, CSS, and Playwright workflow keep mobile design, implementation, build, and testing out of scope.
+  - Marked only US-001 as passing; US-002 through US-008 remain pending for later Ralph iterations.
+- Files changed
+  - `scripts/ralph/prd.json`
+  - `scripts/ralph/progress.txt`
+- Checks run
+  - `Set-Location D:\agent-harness-lab; rg -n "mobile|移动端|@media \\(max-width|Mobile" apps/knowledge-graph DESIGN.md tasks scripts/ralph` passed; active hits are desktop-only scope statements, and old mobile expectations are under archive.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck` passed.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test` passed, 16 tests.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build` passed.
+- Browser screenshot result
+  - Not run for US-001 because this story only updates Ralph scope and validates existing desktop-only workflow; no UI surface changed.
+- Hover / focus / active / click feedback
+  - No component interaction changed in this story.
+  - Existing interaction rules remain governed by `DESIGN.md` and the app-local `AGENTS.md`.
+- Global thinking check
+  - No page elements were added.
+  - No layout region was pushed or squeezed.
+  - The next user path is clearer because the active Ralph plan now points to the horizontal mind-map refactor before agent comparison work.
+- why / what / how
+  - Why: future iterations should not spend time on mobile work.
+  - What: Ralph now tracks the desktop-only horizontal mind-map refactor.
+  - How: `prd.json` contains the new story sequence and US-001 records the verified mobile boundary.
+- Learnings for future iterations:
+  - Before starting a new Ralph cycle, replace stale completed PRD JSON with the current highest-priority PRD and keep only the first unfinished story in scope.
+---
