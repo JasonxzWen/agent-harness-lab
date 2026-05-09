@@ -415,3 +415,42 @@ Started: 2026-05-08T20:06:24.8244825+08:00
 - Learnings for future iterations:
   - Put scene padding inside each scene so hidden scenes do not leak into the viewport.
 ---
+
+## 2026-05-09T14:29:00+08:00 - US-004
+- What was implemented
+  - Added a central `Agent Harness` mind-map canvas rendered with React/CSS/SVG.
+  - Added seven mechanism branches: Agent Loop, Tool System, Context System, Safety, Planning, Orchestration, MCP / Plugins.
+  - Clicking a branch expands related feature nodes in the map.
+  - Clicking a feature node opens the existing why / what / how detail panel.
+  - Kept learning paths as secondary buttons above the mind map.
+- Files changed
+  - `apps/knowledge-graph/src/components/layout/AppShell.tsx`
+  - `apps/knowledge-graph/src/components/graph/KnowledgeGraphCanvas.tsx`
+  - `apps/knowledge-graph/src/styles/app-shell.css`
+  - `scripts/ralph/prd.json`
+  - `scripts/ralph/progress.txt`
+  - `output/playwright/us004-mind-map-scene.png`
+  - `output/playwright/us004-expanded-branch.png`
+  - `output/playwright/us004-feature-detail.png`
+- Checks run
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck` passed.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test` passed, 16 tests.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build` passed.
+- Browser screenshot result
+  - Local Playwright screenshots passed for mind-map scene, expanded Tool System branch, and feature detail.
+  - Playwright asserted seven branches, four secondary learning path buttons, branch expansion, and detail why / how content.
+- Hover / focus / active / click feedback
+  - Branches and feature nodes invert background and underline on hover, focus, active, and selected state.
+  - Clicking a branch changes the expanded feature strip.
+  - Clicking a feature node selects it and opens detail.
+- Global thinking check
+  - The old linear route-guide no longer owns the first map viewport.
+  - Learning paths remain visible as secondary buttons, not the main structure.
+  - The first map action is clear: pick a mechanism branch, then pick a feature node.
+- why / what / how
+  - Why: learners need to see mechanism branches instead of a linear checklist.
+  - What: the map now centers on Agent Harness and branches into mechanism clusters.
+  - How: typed branch data maps to existing graph nodes; node click reuses the existing detail drawer.
+- Learnings for future iterations:
+  - Keep the mind map opaque and first in the map scene so older controls cannot visually compete with it.
+---

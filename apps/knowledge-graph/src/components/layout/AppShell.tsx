@@ -61,6 +61,15 @@ export function AppShell() {
 
     if (nextScene === "map") {
       window.requestAnimationFrame(() => {
+        const firstBranch = document.querySelector<HTMLButtonElement>(
+          '.mind-map-branch[data-branch="agent-loop"]',
+        );
+
+        if (firstBranch) {
+          firstBranch.focus();
+          return;
+        }
+
         document.querySelector<HTMLInputElement>("#graph-search-input")?.focus();
       });
     }

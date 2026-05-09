@@ -74,6 +74,97 @@ type LayoutMode = keyof typeof layoutSettings;
 
 type AdvancedControlId = "theme" | "layout" | "progress" | "viewport";
 type FeaturePreviewId = "search" | "path" | "progress" | "code";
+type MindMapBranchId =
+  | "agent-loop"
+  | "tool-system"
+  | "context-system"
+  | "safety"
+  | "planning"
+  | "orchestration"
+  | "mcp-plugins";
+
+const mindMapBranches: Array<{
+  id: MindMapBranchId;
+  title: string;
+  summary: string;
+  lineEnd: {
+    x: number;
+    y: number;
+  };
+  nodeIds: string[];
+}> = [
+  {
+    id: "agent-loop",
+    title: "Agent Loop",
+    summary: "消息、模型、工具结果连成一轮。",
+    lineEnd: { x: 50, y: 12 },
+    nodeIds: ["message", "agent-loop", "model-adapter", "tool-result-write-back"],
+  },
+  {
+    id: "tool-system",
+    title: "Tool System",
+    summary: "工具注册、参数校验和执行边界。",
+    lineEnd: { x: 82, y: 20 },
+    nodeIds: [
+      "tool-use",
+      "tool-registry",
+      "tool-schema",
+      "tool-context",
+      "read-file",
+      "write-file-list-files",
+      "run-shell",
+    ],
+  },
+  {
+    id: "context-system",
+    title: "Context System",
+    summary: "规则、记忆、预算和压缩进入请求。",
+    lineEnd: { x: 88, y: 50 },
+    nodeIds: [
+      "system-prompt",
+      "project-rules",
+      "memory",
+      "context-budget",
+      "compact",
+      "skills",
+      "memory-hygiene",
+    ],
+  },
+  {
+    id: "safety",
+    title: "Safety",
+    summary: "权限、审批和路径守卫拦住风险动作。",
+    lineEnd: { x: 80, y: 82 },
+    nodeIds: [
+      "permissions",
+      "policy-presets",
+      "approval-request",
+      "approval-store",
+      "path-guard",
+    ],
+  },
+  {
+    id: "planning",
+    title: "Planning",
+    summary: "Todo 和任务状态让工作可继续。",
+    lineEnd: { x: 22, y: 82 },
+    nodeIds: ["todo-write", "todo-read", "task-state"],
+  },
+  {
+    id: "orchestration",
+    title: "Orchestration",
+    summary: "子代理、后台任务和工作树隔离。",
+    lineEnd: { x: 12, y: 50 },
+    nodeIds: ["subagents", "background-tasks", "worktree-isolation"],
+  },
+  {
+    id: "mcp-plugins",
+    title: "MCP / Plugins",
+    summary: "外部能力进入同一个工具流程。",
+    lineEnd: { x: 50, y: 90 },
+    nodeIds: ["mcp", "plugin-loader"],
+  },
+];
 
 const featurePreviews: Array<{
   id: FeaturePreviewId;
@@ -338,6 +429,8 @@ export function KnowledgeGraphCanvas() {
     useState<AdvancedControlId | null>(null);
   const [activeFeaturePreviewId, setActiveFeaturePreviewId] =
     useState<FeaturePreviewId | null>(null);
+  const [activeBranchId, setActiveBranchId] =
+    useState<MindMapBranchId>("agent-loop");
   const [progressMessage, setProgressMessage] = useState<string | null>(null);
   const [progressByNode, setProgressByNode] =
     useState<ProgressByNode>(readStoredProgress);
@@ -378,6 +471,19 @@ export function KnowledgeGraphCanvas() {
     [filteredNodes],
   );
   const activePath = useMemo(() => getLearningPath(activePathId), [activePathId]);
+  const activeBranch = useMemo(
+    () =>
+      mindMapBranches.find((branch) => branch.id === activeBranchId) ??
+      mindMapBranches[0],
+    [activeBranchId],
+  );
+  const activeBranchNodes = useMemo(
+    () =>
+      (activeBranch?.nodeIds ?? [])
+        .map((nodeId) => nodeById.get(nodeId))
+        .filter((node): node is KnowledgeNode => Boolean(node)),
+    [activeBranch],
+  );
   const activePathNodeIds = useMemo(
     () => new Set(activePath.nodeIds),
     [activePath],
@@ -611,6 +717,22 @@ export function KnowledgeGraphCanvas() {
 
     if (layoutNode) {
       revealNodeInViewport(layoutNode.x, layoutNode.y);
+    }
+  }
+
+  function openMindMapFeature(nodeId: string) {
+    selectNode(nodeId);
+    setPreviewNodeId(nodeId);
+  }
+
+  function selectMindMapBranch(branchId: MindMapBranchId) {
+    const branch = mindMapBranches.find((candidate) => candidate.id === branchId);
+    const firstNodeId = branch?.nodeIds[0] ?? null;
+
+    setActiveBranchId(branchId);
+
+    if (firstNodeId) {
+      setPreviewNodeId(firstNodeId);
     }
   }
 
@@ -911,224 +1033,141 @@ export function KnowledgeGraphCanvas() {
           </div>
         </div>
 
-        <section className="route-guide-map" aria-label="自下而上的学习路线">
-          <div className="route-guide-header">
-            <span>学习路线</span>
-            <strong>{activePath.title}</strong>
-            <p>
-              从底部第一步开始。点任一步，右侧打开 why / what / how。
-            </p>
-          </div>
-          <ol className="route-guide-steps">
-            {[...activeRouteSteps].reverse().map((step) => (
-              <li
-                data-preview={previewNodeIdToShow === step.node.id}
-                data-route-node-id={step.node.id}
-                data-state={
-                  step.isCurrent
-                    ? "current"
-                    : step.isNext
-                      ? "next"
-                      : step.status === "not-started"
-                        ? "idle"
-                        : "started"
-                }
-                key={step.node.id}
-              >
+        <section className="mind-map-workbench" aria-label="Agent Harness 思维导图">
+          <div className="mind-map-heading">
+            <span>知识脉络</span>
+            <strong>Agent Harness</strong>
+            <p>先点机制簇，再点功能点。右侧打开 why / what / how。</p>
+            <div className="mind-map-path-rail" aria-label="次级学习路径">
+              {learningPaths.map((path) => (
                 <button
-                  data-route-node-id={step.node.id}
+                  data-active={activePathId === path.id}
+                  key={path.id}
                   type="button"
-                  onClick={() => openPathNode(step.node.id)}
-                  onFocus={() => setPreviewNodeId(step.node.id)}
-                  onPointerEnter={() => setPreviewNodeId(step.node.id)}
-                  onPointerLeave={() => setPreviewNodeId(null)}
+                  onClick={() => setActivePathId(path.id)}
                 >
-                  <span>STEP {step.index + 1}</span>
-                  <strong>{step.copy.title}</strong>
-                  <small>{step.copy.summary}</small>
+                  {path.title}
                 </button>
-              </li>
-            ))}
-          </ol>
-          <div className="route-guide-footer">
-            <span>{startedProgressCount} 个节点已开始</span>
-            <strong>下一步：{nextPathLabel}</strong>
+              ))}
+            </div>
           </div>
-        </section>
 
-        <section className="feature-preview-stack" aria-label="功能效果预览">
-          <div className="feature-preview-heading">
-            <span>功能预览</span>
-            <strong>先看会发生什么</strong>
-            <p>悬停标识卡。卡片滑出展示效果。</p>
-          </div>
-          <div className="feature-preview-cards">
-            {featurePreviews.map((preview) => (
-              <article
-                className="feature-preview-card"
-                data-open={activeFeaturePreviewId === preview.id}
-                key={preview.id}
-              >
-                <button
-                  aria-controls={`feature-preview-${preview.id}`}
-                  aria-expanded={activeFeaturePreviewId === preview.id}
-                  className="feature-preview-marker"
-                  type="button"
-                  onClick={() => toggleFeaturePreview(preview.id)}
-                >
-                  <span>{preview.marker}</span>
-                  <strong>{preview.title}</strong>
-                </button>
-                <div
-                  className="feature-preview-body"
-                  id={`feature-preview-${preview.id}`}
-                >
-                  <p>{preview.summary}</p>
-                  {renderFeaturePreviewDemo(preview.id)}
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <div
-          aria-live="polite"
-          className={`graph-summary-card${previewNode ? "" : " is-empty"}`}
-          data-interaction-state={interactionState}
-        >
-          {previewNode && previewCopy ? (
-            <>
-              <span>{themeLabels[previewNode.theme]}</span>
-              <small className="graph-summary-state">
-                {interactionState === "preview" ? "预览中" : "详情已选中"}
-              </small>
-              <strong>{previewCopy.title}</strong>
-              <p>{previewCopy.summary}</p>
-              <dl>
-                <div>
-                  <dt>前置</dt>
-                  <dd>{getRelatedLabels(previewNode.prerequisites, "无需前置")}</dd>
-                </div>
-                <div>
-                  <dt>下一步</dt>
-                  <dd>{getRelatedLabels(previewNode.recommendedNext, "暂无推荐")}</dd>
-                </div>
-              </dl>
-            </>
-          ) : (
-            <>
-              <span>SUMMARY</span>
-              <strong>悬停或聚焦节点</strong>
-              <p>先看摘要，再决定是否打开详情。</p>
-            </>
-          )}
-        </div>
-
-        <div
-          ref={graphViewportRef}
-          className="graph-viewport"
-          aria-label="可拖拽知识图谱画布"
-          onPointerCancel={endPan}
-          onPointerDown={beginPan}
-          onPointerMove={movePan}
-          onPointerUp={endPan}
-        >
-          <div
-            className="graph-surface"
-            style={{
-              height: graphLayout.graphHeight,
-              transform: `translate(${viewport.x}px, ${viewport.y}px) scale(${viewport.zoom})`,
-              width: graphLayout.graphWidth,
-            }}
-          >
+          <div className="mind-map-canvas">
             <svg
               aria-hidden="true"
-              className="graph-edge-layer"
-              height={graphLayout.graphHeight}
-              viewBox={`0 0 ${graphLayout.graphWidth} ${graphLayout.graphHeight}`}
-              width={graphLayout.graphWidth}
+              className="mind-map-lines"
+              preserveAspectRatio="none"
+              viewBox="0 0 100 100"
             >
-              {visibleEdges.map((edge) => {
-                const source = graphLayout.nodePositionById.get(edge.source);
-                const target = graphLayout.nodePositionById.get(edge.target);
-
-                if (!source || !target) {
-                  return null;
-                }
-
-                const sourceX = source.x + nodeWidth;
-                const sourceY = source.y + nodeHeight / 2;
-                const targetX = target.x;
-                const targetY = target.y + nodeHeight / 2;
-                const midX = sourceX + (targetX - sourceX) / 2;
-                const isActive =
-                  activePathEdges.has(edge.id) ||
-                  selectedNodeId === edge.source ||
-                  selectedNodeId === edge.target ||
-                  previewNodeIdToShow === edge.source ||
-                  previewNodeIdToShow === edge.target;
-
-                return (
-                  <path
-                    className={isActive ? "is-active" : undefined}
-                    d={`M ${sourceX} ${sourceY} C ${midX} ${sourceY}, ${midX} ${targetY}, ${targetX} ${targetY}`}
-                    data-relation={edge.relation}
-                    key={edge.id}
-                  />
-                );
-              })}
+              {mindMapBranches.map((branch) => (
+                <line
+                  data-active={activeBranchId === branch.id}
+                  data-branch={branch.id}
+                  key={branch.id}
+                  x1="50"
+                  x2={branch.lineEnd.x}
+                  y1="50"
+                  y2={branch.lineEnd.y}
+                />
+              ))}
             </svg>
 
-            {graphLayout.layoutNodes.map(({ node, x, y }) => {
-              const displayCopy = getNodeDisplayCopy(node);
-              const isSelected = selectedNodeId === node.id;
-              const isPreviewed = previewNodeIdToShow === node.id;
-              const isInActivePath = activePathNodeIds.has(node.id);
-              const progressStatus = getProgressStatus(node.id);
+            <button
+              className="mind-map-center"
+              type="button"
+              onClick={() => selectMindMapBranch("agent-loop")}
+            >
+              <span>CENTER</span>
+              <strong>Agent Harness</strong>
+            </button>
 
-              return (
+            <div className="mind-map-branch-layer">
+              {mindMapBranches.map((branch) => (
                 <button
-                  aria-controls="node-detail-drawer"
-                  aria-expanded={isSelected}
-                  className={`graph-node-button${isSelected ? " is-selected" : ""}`}
-                  data-in-path={isInActivePath}
-                  data-node-id={node.id}
-                  data-preview={isPreviewed}
-                  data-progress={progressStatus}
-                  key={node.id}
-                  style={{ left: x, top: y }}
+                  className="mind-map-branch"
+                  data-active={activeBranchId === branch.id}
+                  data-branch={branch.id}
+                  key={branch.id}
                   type="button"
-                  onBlur={() => setPreviewNodeId(null)}
-                  onClick={() => selectNode(node.id)}
-                  onFocus={() => {
-                    setPreviewNodeId(node.id);
-                    revealNodeInViewport(x, y);
-                  }}
-                  onPointerEnter={() => setPreviewNodeId(node.id)}
-                  onPointerLeave={() => setPreviewNodeId(null)}
+                  onClick={() => selectMindMapBranch(branch.id)}
+                  onFocus={() => selectMindMapBranch(branch.id)}
                 >
-                  <span className="graph-node-meta">
-                    <span>{themeLabels[node.theme]}</span>
-                    <span className="graph-node-status">
-                      {progressLabels[progressStatus]}
-                    </span>
-                  </span>
-                  <strong>{displayCopy.title}</strong>
-                  <span>{displayCopy.summary}</span>
+                  <span>{branch.title}</span>
+                  <small>{branch.summary}</small>
                 </button>
-              );
-            })}
-          </div>
-          {filteredNodes.length === 0 ? (
-            <div className="graph-empty-results" role="status">
-              <strong>没有匹配节点</strong>
-              <p>换个关键词，或清除搜索回到完整图谱。</p>
-              <button type="button" onClick={() => setSearchQuery("")}>
-                清除搜索
-              </button>
+              ))}
             </div>
-          ) : null}
-        </div>
+
+            <section className="mind-map-feature-strip" aria-label="当前机制簇功能点">
+              <div>
+                <span>展开机制簇</span>
+                <strong>{activeBranch?.title}</strong>
+                <p>{activeBranch?.summary}</p>
+              </div>
+              <ol>
+                {activeBranchNodes.map((node) => {
+                  const displayCopy = getNodeDisplayCopy(node);
+                  const progressStatus = getProgressStatus(node.id);
+
+                  return (
+                    <li key={node.id}>
+                      <button
+                        aria-controls="node-detail-drawer"
+                        aria-expanded={selectedNodeId === node.id}
+                        data-node-id={node.id}
+                        data-preview={previewNodeIdToShow === node.id}
+                        data-progress={progressStatus}
+                        type="button"
+                        onBlur={() => setPreviewNodeId(null)}
+                        onClick={() => openMindMapFeature(node.id)}
+                        onFocus={() => setPreviewNodeId(node.id)}
+                        onPointerEnter={() => setPreviewNodeId(node.id)}
+                        onPointerLeave={() => setPreviewNodeId(null)}
+                      >
+                        <span>{progressLabels[progressStatus]}</span>
+                        <strong>{displayCopy.title}</strong>
+                        <small>{displayCopy.summary}</small>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ol>
+            </section>
+          </div>
+
+          <div
+            aria-live="polite"
+            className={`graph-summary-card${previewNode ? "" : " is-empty"}`}
+            data-interaction-state={interactionState}
+          >
+            {previewNode && previewCopy ? (
+              <>
+                <span>{themeLabels[previewNode.theme]}</span>
+                <small className="graph-summary-state">
+                  {interactionState === "preview" ? "预览中" : "详情已选中"}
+                </small>
+                <strong>{previewCopy.title}</strong>
+                <p>{previewCopy.summary}</p>
+                <dl>
+                  <div>
+                    <dt>前置</dt>
+                    <dd>{getRelatedLabels(previewNode.prerequisites, "无需前置")}</dd>
+                  </div>
+                  <div>
+                    <dt>下一步</dt>
+                    <dd>{getRelatedLabels(previewNode.recommendedNext, "暂无推荐")}</dd>
+                  </div>
+                </dl>
+              </>
+            ) : (
+              <>
+                <span>SUMMARY</span>
+                <strong>选择一个机制簇</strong>
+                <p>功能点会在图中展开，点击后打开详情。</p>
+              </>
+            )}
+          </div>
+        </section>
       </div>
 
       {selectedNode ? (
