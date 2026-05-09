@@ -73,6 +73,39 @@ type ProgressByNode = Partial<Record<string, ProgressStatus>>;
 type LayoutMode = keyof typeof layoutSettings;
 
 type AdvancedControlId = "theme" | "layout" | "progress" | "viewport";
+type FeaturePreviewId = "search" | "path" | "progress" | "code";
+
+const featurePreviews: Array<{
+  id: FeaturePreviewId;
+  marker: string;
+  title: string;
+  summary: string;
+}> = [
+  {
+    id: "search",
+    marker: "搜索",
+    title: "输入后只留命中节点",
+    summary: "结果卡同步显示命中范围。",
+  },
+  {
+    id: "path",
+    marker: "路径",
+    title: "点击步骤打开详情",
+    summary: "下一步会在路线图里高亮。",
+  },
+  {
+    id: "progress",
+    marker: "进度",
+    title: "状态写回本地",
+    summary: "每个节点可标记学习状态。",
+  },
+  {
+    id: "code",
+    marker: "代码",
+    title: "源码预览跟着引用走",
+    summary: "hover 引用时先看短代码。",
+  },
+];
 
 type ProgressExportPayload = {
   version: 1;
@@ -252,6 +285,46 @@ function getLearningPath(pathId: LearningPathId) {
   return path;
 }
 
+function renderFeaturePreviewDemo(previewId: FeaturePreviewId) {
+  if (previewId === "search") {
+    return (
+      <div className="feature-preview-demo is-search">
+        <span>输入：tool</span>
+        <strong>4 个节点命中</strong>
+        <small>Tool Use</small>
+        <small>Tool Result Write-back</small>
+      </div>
+    );
+  }
+
+  if (previewId === "path") {
+    return (
+      <ol className="feature-preview-demo is-path">
+        <li>Message</li>
+        <li>Agent Loop</li>
+        <li>Tool Use</li>
+      </ol>
+    );
+  }
+
+  if (previewId === "progress") {
+    return (
+      <div className="feature-preview-demo is-progress">
+        <span>未开始</span>
+        <span>学习中</span>
+        <span>已掌握</span>
+      </div>
+    );
+  }
+
+  return (
+    <pre className="feature-preview-demo is-code" aria-label="源码 hover 预览示意">
+      <code>{`onFocus -> showPreview()
+onClick -> openDetail()`}</code>
+    </pre>
+  );
+}
+
 export function KnowledgeGraphCanvas() {
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [previewNodeId, setPreviewNodeId] = useState<string | null>(null);
@@ -263,6 +336,8 @@ export function KnowledgeGraphCanvas() {
   const [layoutMode, setLayoutMode] = useState<LayoutMode>("compact");
   const [activeControlId, setActiveControlId] =
     useState<AdvancedControlId | null>(null);
+  const [activeFeaturePreviewId, setActiveFeaturePreviewId] =
+    useState<FeaturePreviewId | null>(null);
   const [progressMessage, setProgressMessage] = useState<string | null>(null);
   const [progressByNode, setProgressByNode] =
     useState<ProgressByNode>(readStoredProgress);
@@ -535,6 +610,12 @@ export function KnowledgeGraphCanvas() {
 
   function toggleControl(controlId: AdvancedControlId) {
     setActiveControlId((current) => (current === controlId ? null : controlId));
+  }
+
+  function toggleFeaturePreview(previewId: FeaturePreviewId) {
+    setActiveFeaturePreviewId((current) =>
+      current === previewId ? null : previewId,
+    );
   }
 
   function closeSelectedNode() {
@@ -863,6 +944,41 @@ export function KnowledgeGraphCanvas() {
           <div className="route-guide-footer">
             <span>{startedProgressCount} 个节点已开始</span>
             <strong>下一步：{nextPathLabel}</strong>
+          </div>
+        </section>
+
+        <section className="feature-preview-stack" aria-label="功能效果预览">
+          <div className="feature-preview-heading">
+            <span>功能预览</span>
+            <strong>先看会发生什么</strong>
+            <p>悬停标识卡。卡片滑出展示效果。</p>
+          </div>
+          <div className="feature-preview-cards">
+            {featurePreviews.map((preview) => (
+              <article
+                className="feature-preview-card"
+                data-open={activeFeaturePreviewId === preview.id}
+                key={preview.id}
+              >
+                <button
+                  aria-controls={`feature-preview-${preview.id}`}
+                  aria-expanded={activeFeaturePreviewId === preview.id}
+                  className="feature-preview-marker"
+                  type="button"
+                  onClick={() => toggleFeaturePreview(preview.id)}
+                >
+                  <span>{preview.marker}</span>
+                  <strong>{preview.title}</strong>
+                </button>
+                <div
+                  className="feature-preview-body"
+                  id={`feature-preview-${preview.id}`}
+                >
+                  <p>{preview.summary}</p>
+                  {renderFeaturePreviewDemo(preview.id)}
+                </div>
+              </article>
+            ))}
           </div>
         </section>
 

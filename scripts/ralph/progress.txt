@@ -128,3 +128,40 @@ Started: 2026-05-08T20:06:24.8244825+08:00
   - The main learning manual should be a clickable map, not a table.
   - Keep route labels short; detailed explanation belongs in the drawer opened by the route step.
 ---
+
+## 2026-05-09T11:11:12+08:00 - US-004
+- What was implemented
+  - Added a folded feature preview stack after the route guide.
+  - The stack covers search, path, progress, and code preview with lightweight React/CSS visuals.
+  - Default state shows only marker rows; hover, focus, or click slides a card open.
+  - Click pins one preview card so touch and keyboard users can inspect the effect.
+- Files changed
+  - `apps/knowledge-graph/src/components/graph/KnowledgeGraphCanvas.tsx`
+  - `apps/knowledge-graph/src/styles/app-shell.css`
+  - `scripts/ralph/prd.json`
+  - `scripts/ralph/progress.txt`
+  - `output/playwright/us004-feature-preview-collapsed.png`
+  - `output/playwright/us004-feature-preview-mobile-code.png`
+- Checks run
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck` passed.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test` passed, 16 tests.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build` passed.
+- Browser screenshot result
+  - Local Playwright screenshots passed for folded desktop previews and mobile code preview pinned open.
+  - The screenshot script asserted default folded state and no desktop/mobile horizontal overflow.
+- Hover / focus / active / click feedback
+  - Preview markers open on hover and focus through the same slide-out CSS state.
+  - Marker active state underlines the label without box-shadow, gradient, or scale.
+  - Click toggles a pinned preview card; the mobile screenshot verifies the code card stays open after tap.
+- Global thinking check
+  - The new preview area adds four feature examples without adding four full cards to the default view.
+  - The route guide remains the main manual; previews sit below it as short supporting proof.
+  - Mobile keeps the markers stacked and opens one card inside the panel, with no sideways overflow.
+- why / what / how
+  - Why: users can see what a feature changes before trying it.
+  - What: each marker names one feature and exposes a compact visual example.
+  - How: React state pins the active preview, while CSS hover/focus reveals the same card for quick inspection.
+- Learnings for future iterations:
+  - Use folded marker rows for supporting demos so the route map stays central.
+  - Add visual examples beside feature names before adding more explanatory text.
+---
