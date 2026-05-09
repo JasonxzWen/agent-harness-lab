@@ -23,10 +23,6 @@ export function GraphToolbar() {
           </a>
         ))}
       </nav>
-
-      <a className="toolbar-cta" href="#map">
-        打开图谱
-      </a>
     </header>
   );
 }

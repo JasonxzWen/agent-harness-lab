@@ -1,34 +1,76 @@
 import { KnowledgeGraphCanvas } from "../graph/KnowledgeGraphCanvas";
 import { GraphToolbar } from "./GraphToolbar";
 import { referenceIndexStats } from "../../data/generatedReferenceIndex";
-import { graphStats } from "../../data/knowledgeGraph";
+import { graphStats, knowledgeNodes } from "../../data/knowledgeGraph";
 import { learningPaths } from "../../data/paths";
+import { getNodeDisplayCopy } from "../../data/copy";
 
-const featureCards = [
+const nodeById = new Map(knowledgeNodes.map((node) => [node.id, node]));
+
+function getLearningEntry() {
+  const path = learningPaths.find((learningPath) => learningPath.id === "beginner");
+
+  if (!path) {
+    throw new Error("Beginner learning path is required.");
+  }
+
+  const firstStepId = path.nodeIds[0];
+
+  if (!firstStepId) {
+    throw new Error("Beginner learning path needs a first step.");
+  }
+
+  const firstStep = nodeById.get(firstStepId);
+
+  if (!firstStep) {
+    throw new Error(`Unknown first step node: ${firstStepId}`);
+  }
+
+  return {
+    firstStep,
+    firstStepCopy: getNodeDisplayCopy(firstStep),
+    path,
+  };
+}
+
+const learningEntry = getLearningEntry();
+const learningProgressPercent = Math.round(
+  (1 / learningEntry.path.nodeIds.length) * 100,
+);
+
+const learningEntrySteps = [
   {
-    label: "节点详情",
-    summary: "点开机制，先看 why / what / how。",
-    status: "已实现",
+    label: "why",
+    title: "先固定状态",
+    summary: "理解消息为什么是下一轮输入。",
   },
   {
-    label: "源码引用",
-    summary: "查看 lab 源码和 CCB 本地对照路径。",
-    status: "已实现",
+    label: "what",
+    title: "看一个节点",
+    summary: "先读摘要，再决定是否展开详情。",
   },
   {
-    label: "实验命令",
-    summary: "复制 Bun 命令，在 labs/ts-agent 跑起来。",
-    status: "已实现",
+    label: "how",
+    title: "进入图谱",
+    summary: "点击继续，打开第一步和后续路径。",
+  },
+] as const;
+
+const statusItems = [
+  {
+    label: "节点",
+    value: graphStats.nodeCount,
+    summary: "点击后看 why / what / how",
   },
   {
-    label: "搜索筛选",
-    summary: "搜索节点，切换主题和路径，保存学习状态。",
-    status: "已实现",
+    label: "路径",
+    value: learningPaths.length,
+    summary: "按入门、上下文、安全、进阶阅读",
   },
   {
-    label: "引用索引",
-    summary: `生成 ${referenceIndexStats.uniqueReferences} 条引用，覆盖 ${referenceIndexStats.nodeCount} 个节点。`,
-    status: "已实现",
+    label: "引用",
+    value: referenceIndexStats.uniqueReferences,
+    summary: `覆盖 ${referenceIndexStats.nodeCount} 个节点`,
   },
 ] as const;
 
@@ -38,35 +80,76 @@ export function AppShell() {
       <GraphToolbar />
       <main className="anthropic-page" aria-label="Agent harness 知识图谱工作台">
         <section className="hero-section" id="research">
-          <h1>
-            用一张中文图，学会 <span>Agent Harness</span>
-          </h1>
-          <p>
-            先用 TypeScript/Bun 写一个小 harness，再把每个机制做成节点。
-            你可以按路径学习，也可以直接看源码和命令。
-          </p>
+          <div className="hero-copy">
+            <span>LEARNING ENTRY</span>
+            <h1>
+              从 <span>Message</span> 开始学 Agent Harness
+            </h1>
+            <p>先走入门路径，再打开图谱看源码和命令。</p>
+          </div>
+
+          <aside className="learning-entry" aria-label="推荐学习入口">
+            <div className="learning-entry-header">
+              <span>推荐路径</span>
+              <strong>{learningEntry.path.title}</strong>
+              <p>{learningEntry.path.summary}</p>
+            </div>
+
+            <div className="learning-step">
+              <span>第一步</span>
+              <strong>{learningEntry.firstStepCopy.title}</strong>
+              <p>{learningEntry.firstStepCopy.summary}</p>
+            </div>
+
+            <a className="learning-entry-cta" href="#map">
+              继续学习第一步 →
+            </a>
+
+            <div
+              aria-label={`当前章节学习进度 ${learningProgressPercent}%`}
+              className="learning-progress"
+            >
+              <div>
+                <span>章节进度</span>
+                <strong>
+                  1 / {learningEntry.path.nodeIds.length} · {learningProgressPercent}%
+                </strong>
+              </div>
+              <span className="learning-progress-track">
+                <span style={{ width: `${learningProgressPercent}%` }} />
+              </span>
+            </div>
+
+            <ol className="learning-entry-map" aria-label="why what how 学习顺序">
+              {learningEntrySteps.map((step) => (
+                <li key={step.label}>
+                  <span>{step.label}</span>
+                  <strong>{step.title}</strong>
+                  <p>{step.summary}</p>
+                </li>
+              ))}
+            </ol>
+          </aside>
         </section>
 
         <KnowledgeGraphCanvas />
 
-        <section className="feature-band" id="references" aria-label="当前站点能力">
+        <section className="feature-band" id="references" aria-label="当前站点状态">
           <div>
-            <h2>现在能看什么？</h2>
-            <p>
-              当前有 {graphStats.nodeCount} 个节点、{graphStats.edgeCount} 条关系、
-              {learningPaths.length} 条路径。点击节点后，
-              可以先看 why / what / how，再看源码、命令和版本对照。
-            </p>
+            <h2>后面能看到什么？</h2>
+            <p>图谱、详情、源码路径和命令都在同一条学习线上。</p>
           </div>
-          <div className="feature-cards">
-            {featureCards.map((feature) => (
-              <article key={feature.label}>
-                <h3>{feature.label}</h3>
-                <p>{feature.summary}</p>
-                <span>{feature.status}</span>
-              </article>
+          <dl className="feature-status-row">
+            {statusItems.map((item) => (
+              <div key={item.label}>
+                <dt>{item.label}</dt>
+                <dd>
+                  <strong>{item.value}</strong>
+                  <span>{item.summary}</span>
+                </dd>
+              </div>
             ))}
-          </div>
+          </dl>
         </section>
       </main>
     </div>
