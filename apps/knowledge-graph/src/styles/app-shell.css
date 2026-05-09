@@ -1736,10 +1736,14 @@ p {
 
 .detail-drawer {
   display: grid;
-  align-content: start;
+  grid-template-rows: minmax(0, 1fr);
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(240px, 320px);
+  align-content: stretch;
   gap: 16px;
   max-height: none;
-  overflow: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .detail-drawer[data-interaction-state="parked"] .detail-drawer-header {
@@ -1795,11 +1799,13 @@ p {
 
 .detail-drawer-header {
   display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: start;
+  align-content: start;
+  grid-template-columns: 1fr;
   gap: 16px;
-  border-bottom: 1px solid var(--color-bg);
-  padding-bottom: 24px;
+  border-right: 1px solid var(--color-bg);
+  border-bottom: 0;
+  padding-right: 16px;
+  padding-bottom: 0;
 }
 
 .detail-drawer-header > div {
@@ -1819,6 +1825,7 @@ p {
 }
 
 .detail-drawer-header button {
+  justify-self: start;
   background: transparent;
   color: var(--color-bg);
   padding: 8px 16px;
@@ -1846,15 +1853,18 @@ p {
 
 .learning-visual ol {
   display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(180px, 1fr);
   gap: 8px;
   margin: 0;
+  overflow-x: auto;
   padding: 0;
   list-style: none;
 }
 
 .learning-visual li {
   display: grid;
-  grid-template-columns: 64px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 8px 12px;
   align-content: start;
   border: 1px solid var(--color-bg);
@@ -1862,8 +1872,8 @@ p {
 }
 
 .learning-visual span {
-  grid-row: 1 / span 2;
-  border-right: 1px solid var(--color-bg);
+  border-bottom: 1px solid var(--color-bg);
+  padding-bottom: 8px;
   font-family: var(--font-mono);
   font-size: 12px;
   line-height: 1.1;
@@ -1891,9 +1901,11 @@ p {
 
 .progress-editor {
   display: grid;
+  align-content: start;
   gap: 12px;
   border: 1px solid var(--color-bg);
   padding: 16px;
+  overflow: auto;
 }
 
 .progress-editor > div:first-child {
@@ -2012,7 +2024,10 @@ p {
 
 .learning-frame {
   display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(220px, 1fr);
   gap: 16px;
+  overflow-x: auto;
 }
 
 .learning-frame article {
@@ -2037,9 +2052,11 @@ p {
 
 .primary-source-card {
   display: grid;
+  align-content: start;
   gap: 8px;
   border: 1px solid var(--color-bg);
   padding: 16px;
+  overflow: auto;
 }
 
 .primary-source-card span,
@@ -2081,31 +2098,37 @@ p {
 }
 
 .detail-fold-stack {
-  display: grid;
+  display: flex;
   gap: 8px;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .detail-fold-card {
   display: grid;
+  flex: 0 0 176px;
   overflow: hidden;
   border: 1px solid var(--color-bg);
   transition:
     background 160ms ease,
-    color 160ms ease;
+    color 160ms ease,
+    flex-basis 180ms ease;
 }
 
 .detail-fold-card:hover,
 .detail-fold-card:focus-within,
 .detail-fold-card[data-open="true"] {
+  flex-basis: 360px;
   background: var(--color-bg);
   color: var(--color-dark);
 }
 
 .detail-fold-marker {
   display: grid;
-  grid-template-columns: 80px minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
   gap: 12px;
-  align-items: center;
+  align-items: start;
   border: 0;
   background: transparent;
   color: inherit;

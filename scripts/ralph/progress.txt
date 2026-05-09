@@ -454,3 +454,39 @@ Started: 2026-05-08T20:06:24.8244825+08:00
 - Learnings for future iterations:
   - Keep the mind map opaque and first in the map scene so older controls cannot visually compete with it.
 ---
+
+## 2026-05-09T14:33:00+08:00 - US-005
+- What was implemented
+  - Reworked detail drawer layout into a horizontal panel strip.
+  - Kept title and close action as the first detail panel so opening detail starts at the node identity.
+  - Made why / what / how, progress, source entry, commands, references, quiz, and comparison reachable as horizontal cards.
+  - Folded detail cards still expand on hover/focus and pin on click.
+  - Source hover preview remains available inside the horizontal detail strip.
+- Files changed
+  - `apps/knowledge-graph/src/styles/app-shell.css`
+  - `scripts/ralph/prd.json`
+  - `scripts/ralph/progress.txt`
+  - `output/playwright/us005-horizontal-detail.png`
+  - `output/playwright/us005-source-preview-horizontal.png`
+- Checks run
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run typecheck` passed.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun test` passed, 16 tests.
+  - `Set-Location D:\agent-harness-lab\apps\knowledge-graph; bun run build` passed.
+- Browser screenshot result
+  - Local Playwright screenshots passed for horizontal detail and source preview.
+  - Playwright asserted detail horizontal scroll, no page-level vertical overflow, and why / how content present.
+- Hover / focus / active / click feedback
+  - Detail group cards keep marker labels by default.
+  - Hover/focus expands a group; click pins it with `data-open=true`.
+  - Source preview opens on hover/focus in the references group.
+- Global thinking check
+  - Detail no longer pushes the page downward.
+  - Long supporting content moves sideways inside the right panel.
+  - The first visible detail action is still close, then why / what / how.
+- why / what / how
+  - Why: long details should not force vertical page scroll.
+  - What: detail is now a horizontal panel strip.
+  - How: CSS grid auto-columns and folded cards keep the content inside the existing detail region.
+- Learnings for future iterations:
+  - Do not focus a far-right header control in a horizontal strip; it can scroll the strip away from the first panel.
+---

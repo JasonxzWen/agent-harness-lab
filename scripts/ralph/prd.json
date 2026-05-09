@@ -96,8 +96,8 @@
         "Set-Location D:\\agent-harness-lab\\apps\\knowledge-graph; bun run build"
       ],
       "priority": 5,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Feature detail now uses a horizontal scrollable panel strip with why/what/how, source, progress, commands, references, quiz, and comparison groups."
     },
     {
       "id": "US-006",
